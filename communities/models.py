@@ -1,6 +1,13 @@
 from django.db import models
+from taggit.managers import TaggableManager
+from taggit.models import TaggedItemBase
+from users.models import User
+from products.models import Products
 
 # Create your models here.
+class TaggedFeed(TaggedItemBase): # 태그추가 부분
+    content_object = models.ForeignKey('Feed', on_delete=models.CASCADE)
+
 
 class Feed(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -17,7 +24,7 @@ class Feed(models.Model):
     
 
 class Comment(models.Model):
-    feed = models.ForeignKey(Feed, on_delete=models.CASCADE, blank=True, related_name="comment_set")
+    feed = models.ForeignKey(Feed, on_delete=models.CASCADE, blank=True, related_name="feeds")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
     comment_like = models.ManyToManyField(User, related_name='like_comments', blank=True)
@@ -26,22 +33,22 @@ class Comment(models.Model):
 
 
 class ReComment(models.Model):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, related_name="comment_set")
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, related_name="comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recomment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
-
-class TaggedFeed(TaggedItemBase): # 테그추가 부분
-    content_object = models.ForeignKey('Feed', on_delete=models.CASCADE)
     
 
 class FeedImage(models.Model):
-    feed = models.ForeignKey(Feed, on_delete=models.CASCADE, blank=True, related_name="comment_set")
+    feed = models.ForeignKey(Feed, on_delete=models.CASCADE, blank=True, related_name="feed_images")
     image1 = models.ImageField(blank=True, upload_to="feed_images/", null=True)
     image2 = models.ImageField(blank=True, upload_to="feed_images/", null=True)
     image3 = models.ImageField(blank=True, upload_to="feed_images/", null=True)
     image4 = models.ImageField(blank=True, upload_to="feed_images/", null=True)
     image5 = models.ImageField(blank=True, upload_to="feed_images/", null=True)
     
+
+class FeedProductRelation(models.Model):
+    products = models.ForeignKey(Products, on_delete=models.CASCADE)
+    Feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
     
