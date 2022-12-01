@@ -32,7 +32,15 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt', # jwt
     "users",
     "communities",
+    "products",
+    
+    'taggit.apps.TaggitAppConfig', # 태그
+    'taggit_templatetags2', # 태그
 ]
+
+
+TAGGIT_CASE_INSENSITIVE = True
+TAGGIT_LIMIT = 50
 
 
 REST_FRAMEWORK = {  # jwt
