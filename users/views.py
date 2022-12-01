@@ -6,11 +6,11 @@ from rest_framework import status
 from rest_framework import permissions
 from users import serializers
 from users.models import User
-from users.serializers import UserSerializer
-# from rest_framework_simplejwt.views import (
-#     TokenObtainPairView,
-#     TokenRefreshView,
-# )
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 # Create your views here.
 class UserView(APIView):
@@ -21,4 +21,7 @@ class UserView(APIView):
             return Response({"message":"가입완료!"}, status=status.HTTP_201_CREATED)
         else:
             return Response({"message":f"${serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
+class CustomTokenObtainPairView(TokenObtainPairView): # jwt payload 커스텀
+    serializer_class = CustomTokenObtainPairSerializer
