@@ -3,19 +3,6 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 
-USER_STATUS = (
-    ('ACTIVE',  'ACTIVE'), # 정상
-    ('STOP', 'STOP'), # 정지(탈퇴)
-    ('PAUSE', 'PAUSE'), # 계정 휴면
-    ('BAN', 'BAN'), # 계정 정지
-)
-
-
-ROLES = (
-    ('ROLE_NORMAL', 'NORMAL'), # 일반 사용자
-    ('ROLE_MANAGER', 'MANAGER'), # 일반 관리자
-    ('ROLE_SUPER', 'SUPER'), # 슈퍼 관리자
-    )
 
 
 class UserManager(BaseUserManager):
@@ -47,6 +34,19 @@ class User(AbstractBaseUser):
         ('M', '남성(Man)'),
         ('W', '여성(Woman)'),
     )
+    USER_STATUS = (
+        ('ACTIVE',  'ACTIVE'), # 정상
+        ('STOP', 'STOP'), # 정지(탈퇴)
+        ('PAUSE', 'PAUSE'), # 계정 휴면
+        ('BAN', 'BAN'), # 계정 정지
+    )
+
+
+    ROLES = (
+        ('ROLE_NORMAL', 'NORMAL'), # 일반 사용자
+        ('ROLE_MANAGER', 'MANAGER'), # 일반 관리자
+        ('ROLE_SUPER', 'SUPER'), # 슈퍼 관리자
+        )
 
     username = models.CharField("아이디", max_length=20, unique=True)
     nickname = models.CharField("닉네임", max_length=16, unique=True)
@@ -55,6 +55,7 @@ class User(AbstractBaseUser):
     address = models.CharField("주소", max_length=100)
     gender = models.CharField("성별", choices=GENDERS, max_length=1)
     status = models.CharField("상태", choices=USER_STATUS, max_length=10, default=USER_STATUS[0][0])
+    rolse = models.CharField("권한",  choices=ROLES, max_length=20, default=ROLES[0][0])
     date_of_birth = models.DateField("생년월일")
     point = models.PositiveIntegerField("포인트", default=0)
     height = models.CharField("키", max_length=20)
@@ -89,7 +90,3 @@ class User(AbstractBaseUser):
         return self.is_admin
     
 
-# 권한 테이블 모델
-class Auth(models.Model):
-    user = models.ForeignKey(User, related_name='auths', on_delete=models.CASCADE)
-    role = models.CharField("권한설정", choices=ROLES, max_length=30, default=ROLES[0][0])
