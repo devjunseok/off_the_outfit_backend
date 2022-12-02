@@ -54,13 +54,13 @@ class FeedCommentDetailView(APIView):  #댓글(수정,삭제) View
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message":"댓글 수정했습니다!"}, status=status.HTTP_200_OK)
-   def delete(self, request, feed_id, comment_id): # 댓글 삭제
-        comment = get_object_or_404(Comment, id= comment_id)
-        if request.user == comment.user:
-            comment.delete()
-            return Response({"message":"댓글 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN) 
+    def delete(self, request, feed_id, comment_id): # 댓글 삭제
+            comment = get_object_or_404(Comment, id= comment_id)
+            if request.user == comment.user:
+                comment.delete()
+                return Response({"message":"댓글 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN) 
 
         
 
