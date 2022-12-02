@@ -169,3 +169,15 @@ MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
 CORS_ALLOW_ALL_ORIGINS = True
+# email
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = '587'
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_HOST_USER = 'shdntjr96.naver.com'
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_USER_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SECRET_SSL_REDIRECT = True
+
+
