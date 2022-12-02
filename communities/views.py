@@ -30,6 +30,7 @@ class ArticlesFeedView(APIView):  # 게시글 전체보기, 등록 View
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 class FeedCommentView(APIView): # 댓글 등록 View
 
     def post(self, request, feed_id): # 댓글 등록
