@@ -72,6 +72,8 @@ class User(AbstractBaseUser):
     followings = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
     is_active = models.BooleanField("계정 활성화 여부", default=True)
     is_admin = models.BooleanField("관리자 권한", default=False)
+    term = models.BooleanField("이용약관 여부", default=False)
+    creating_date = models.DateTimeField(auto_now_add=True)
 
     objects = UserManager()
 
