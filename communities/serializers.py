@@ -18,3 +18,14 @@ class FeedListSerializer(serializers.ModelSerializer): # 게시글 전체 보기
     class Meta:
         model = Feed
         fields = '__all__'
+
+
+class FeedDetailSerializer(serializers.ModelSerializer): #게시글 상세보기 serializer
+    user = serializers.SerializerMethodField()
+
+    def get_user(self, obj):
+        return obj.user.nickname
+    
+    class Meta:
+        model = Feed
+        fields = '__all__'
