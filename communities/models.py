@@ -20,7 +20,7 @@ class Feed(models.Model):
     tags = TaggableManager(through=TaggedFeed, blank=True)
     
     def __str__(self):
-        return str(self.title)
+        return str(self.content)
     
 
 class Comment(models.Model):
@@ -37,18 +37,9 @@ class ReComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recomment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    
 
-class FeedImage(models.Model):
-    feed = models.ForeignKey(Feed, on_delete=models.CASCADE, blank=True, related_name="feed_images")
-    image1 = models.ImageField(blank=True, upload_to="feed_images/", null=True)
-    image2 = models.ImageField(blank=True, upload_to="feed_images/", null=True)
-    image3 = models.ImageField(blank=True, upload_to="feed_images/", null=True)
-    image4 = models.ImageField(blank=True, upload_to="feed_images/", null=True)
-    image5 = models.ImageField(blank=True, upload_to="feed_images/", null=True)
-    
 
 class FeedProductRelation(models.Model):
     products = models.ForeignKey(Products, on_delete=models.CASCADE)
-    Feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
+    feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
     
