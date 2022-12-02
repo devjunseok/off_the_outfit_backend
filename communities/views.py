@@ -97,3 +97,36 @@ class ArticlesFeedDetailView(APIView): #게시글 상세조회, 수정, 삭제 V
             return Response({"message":"게시글이 삭제되었습니다!"},status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
+
+class CommunitiesFeedLikeView(APIView): # 게시글 좋아요 View
+    
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def post(self, request,feed_id ): # 게시글 좋아요
+        feed = get_object_or_404(Feed, id=feed_id)
+        if request.user in feed.like.all():
+            feed.like.remove(request.user)
+            return Response({"message":"좋아요 취소했습니다!"}, status=status.HTTP_200_OK)
+        else:
+            feed.like.add(request.user)
+            return Response({"message":"좋아요 했습니다!"}, status=status.HTTP_200_OK)
+        
+
+class CommunitiesFeedUnlikeView(APIView): # 게시글 싫아요 View
+    
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def post(self, request,feed_id ): # 게시글 싫아요
+        feed = get_object_or_404(Feed, id=feed_id)
+        if request.user in feed.unlike.all():
+            feed.unlike.remove(request.user)
+            return Response({"message":"싫어요 취소했습니다!"}, status=status.HTTP_200_OK)
+        else:
+            feed.unlike.add(request.user)
+            return Response({"message":"싫어요 했습니다!"}, status=status.HTTP_200_OK) 
+        
+    
+
+        
