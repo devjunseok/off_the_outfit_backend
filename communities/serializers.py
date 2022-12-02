@@ -33,12 +33,12 @@ class CommentListSerializer(serializers.ModelSerializer): # 게시글 댓글을 
         fields='__all__'
         
 class FeedDetailSerializer(serializers.ModelSerializer): #게시글 상세보기 serializer
-  user = serializers.SerializerMethodField()
+    
+    user = serializers.SerializerMethodField()
   
   
-  def get_user(self, obj):
+    def get_user(self, obj):
         return obj.user.nickname
-
     class Meta:
         model = Feed
         fields = '__all__'
