@@ -6,7 +6,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
 
 from communities.models import Feed
-from communities.serializers import FeedSerializer, FeedListSerializer, FeedDetailSerializer, SearchProductSerializer
+from communities.serializers import FeedSerializer, FeedListSerializer, FeedDetailSerializer, SearchProductSerializer, FeedTagSerializer
 
 
 # Create your views here.
@@ -75,4 +75,14 @@ class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
     # 검색 키워드를 지정했을 때, 매칭을 시도할 필드
     # search_fields = ["user","products_name"]
     search_fields = ["user__username"]
+
+
+class CommunityTagView(generics.ListAPIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    queryset = Feed.objects.all()
+    serializer_class = FeedTagSerializer # 게시글 태그
+
 
