@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from communities.models import Feed, FeedImage
-
+from communities.models import Feed
 
 
 class FeedSerializer(serializers.ModelSerializer): #게시글 작성, 수정 시리얼라이즈
