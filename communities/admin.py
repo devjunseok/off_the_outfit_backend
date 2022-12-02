@@ -1,4 +1,4 @@
-from django.contrib import admin
+
 from communities.models import Feed, Comment
 
 # Register your models here.
