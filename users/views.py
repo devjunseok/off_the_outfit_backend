@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from users import serializers
 from users.models import User
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
