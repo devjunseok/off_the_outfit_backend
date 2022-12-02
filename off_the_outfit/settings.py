@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     
     'taggit.apps.TaggitAppConfig', # 태그
     'taggit_templatetags2', # 태그
+    'taggit_serializer', #태그
 ]
 
 
