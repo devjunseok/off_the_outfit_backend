@@ -32,6 +32,11 @@ class FeedDetailSerializer(serializers.ModelSerializer): #게시글 상세보기
         model = Feed
         fields = '__all__'
 
+class FeedTagSerializer(TaggitSerializer, serializers.ModelSerializer): #게시글 태그
+    tags = TagListSerializerField()
+    class Meta:
+        model = Feed
+        fields = '__all__'
 class SearchProductSerializer(serializers.ModelSerializer): # 상품 검색
     
 
