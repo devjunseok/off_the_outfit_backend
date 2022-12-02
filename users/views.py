@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from users import serializers
 from users.models import User
 from users.serializers import UserSerializer, CustomTokenObtainPairSerializer, UserProfileSerializer
@@ -15,7 +16,7 @@ from rest_framework_simplejwt.views import (
 
 # Create your views here.
 class UserView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
     
     def get(self, request): # 회원정보 전체 보기
         user = get_object_or_404(User, id=request.user.id)
@@ -52,3 +53,15 @@ class UserView(APIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView): # jwt payload 커스텀
     serializer_class = CustomTokenObtainPairSerializer
+    
+
+class ProfileView(APIView):  # 회원정보 조회
+    
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        serializer = UserProfileSerializer(user)  
+        return Response(serializer.data)
+    
