@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions
+from rest_framework import status, permissions, filters, generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
 
 from communities.models import Feed
-from communities.serializers import FeedSerializer, FeedListSerializer, FeedDetailSerializer
+from communities.serializers import FeedSerializer, FeedListSerializer, FeedDetailSerializer, SearchProductSerializer
 
 
 # Create your views here.
@@ -61,3 +61,18 @@ class ArticlesFeedDetailView(APIView): #게시글 상세조회, 수정, 삭제 V
         else:
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
     
+
+
+class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
+        
+    permission_classes = [permissions.AllowAny]    
+    
+    queryset = Feed.objects.all()
+    serializer_class = FeedListSerializer # 게시글 전체 보기
+    # serializer_class = SearchProductSerializer # 상품 검색 시리얼라이즈
+
+    filter_backends = [filters.SearchFilter]
+    # 검색 키워드를 지정했을 때, 매칭을 시도할 필드
+    # search_fields = ["user","products_name"]
+    search_fields = ["user__username"]
+
