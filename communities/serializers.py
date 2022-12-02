@@ -1,4 +1,4 @@
-from rest_framework import serializers
+
 from communities.models import Feed
 
 
@@ -18,3 +18,4 @@ class FeedListSerializer(serializers.ModelSerializer): # 게시글 전체 보기
     class Meta:
         model = Feed
         fields = '__all__'
+
