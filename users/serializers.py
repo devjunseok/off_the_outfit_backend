@@ -17,12 +17,16 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
-    def update(self, validated_data):
-        user = super().create(validated_data)
-        password = user.password
-        user.set_password(password) # 패스워드 해싱
-        user.save()
-        return user 
+    def update(self, instance, validated_data): # 비밀번호 수정 
+        for key, value in validated_data.items():
+            if key == "password":
+                instance.set_password(value)
+                continue
+            setattr(instance, key, value)
+            
+        instance.save()
+        
+        return instance
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payload 커스텀
@@ -32,3 +36,10 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payloa
         token['username'] = user.username
 
         return token
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('username', 'nickname', 'email', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'profile_image', 'point')
