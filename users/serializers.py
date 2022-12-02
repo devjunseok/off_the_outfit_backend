@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
     password2= serializers.CharField(error_messages={'required':'비밀번호를 입력해주세요.', 'blank':'비밀번호를 입력해주세요.', 'write_only':True})
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ('username', 'email', 'nickname', 'nickname', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'password', 'password2', 'profile_image',)
         
     def validate(self, data):
         PASSWORD_VALIDATION = r"^(?=.*[a-z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,16}"
@@ -26,7 +26,6 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
         address = data.get('address')
         height = data.get('height')
         weight = data.get('weight')
-        date_of_birth = data.get('date_of_birth')
         
         
         if re.search(NICKNAME_VALIDATION, str(nickname)): # 닉네임 유효성 검사
@@ -43,7 +42,7 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
         
         if re.search(HEIGHT_VALIDATION, str(weight)): # 몸무게 유효성 검사
             raise serializers.ValidationError(detail={"weight": "숫자만 입력 가능합니다!"})
-
+        
         
         if password: # 비밀번호 유효성 검사
             if password != password2:
@@ -55,6 +54,7 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
             if re.search(PASSWORD_PATTERN, str(password)):
                 raise serializers.ValidationError(detail={"password":"너무 일상적인 숫자or단어 입니다!"})
 
+
         return data    
     
     def create(self, validated_data):
@@ -64,7 +64,9 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
         address = validated_data['address']
         height = validated_data['height']
         weight = validated_data['weight']
-        
+        date_of_birth = validated_data['date_of_birth']
+        gender = validated_data['gender']
+
         user = User(
             username=username,
             email=email,
@@ -72,6 +74,8 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
             address=address,
             height=height,
             weight=weight,
+            date_of_birth=date_of_birth,
+            gender=gender,
         )
         user.set_password(validated_data['password']) # 패스워드 해싱
         user.save()
