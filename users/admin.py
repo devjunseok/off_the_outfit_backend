@@ -14,7 +14,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email',) #하나만 있어도 콤마 붙혀야함.
+        fields = ('username',) #하나만 있어도 콤마 붙혀야함.
 
     def clean_password2(self):
         # Check that the two password entries match
