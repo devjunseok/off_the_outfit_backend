@@ -13,10 +13,11 @@ class Brand(models.Model):
 
 class Products(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
-    products_name = models.CharField('상품명', max_length=50)
+    product_number = models.IntegerField('상품번호')
+    product_name = models.CharField('상품명', max_length=50)
+    product_image = models.CharField('이미지', max_length=100)
     original_price = models.IntegerField('정상가', null=True, blank=True)
     discount_price = models.IntegerField('할인가', null=True, blank=True)
-    discount_rate = models.DecimalField('할인율', max_digits=3, decimal_places=2, null=True, blank=True)
     review_count = models.IntegerField('리뷰', null=True, blank=True)
     category = models.ManyToManyField("Category", through="ProductCategoryRelation", through_fields=("products", "category"))
     
