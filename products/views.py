@@ -4,7 +4,7 @@ from rest_framework.response import Response
 import pandas as pd
 from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer
 from rest_framework import status, permissions
-from products.models import Brand, Category, Product
+from products.models import Brand, Category, Product, Post, Reply
 from products.crawling import ProductsUpdate
 
 
@@ -40,38 +40,38 @@ class ProductInfoDetailView(APIView):
     def delete(self, request): # 상품 정보 삭제
         pass
 
-class ProductReviewBoardView(APIView):
+class ProductPostView(APIView):
     
-    def get(self, request): # 상품 리뷰 전체 조회
+    def get(self, request): # 상품 정보 게시글 전체 조회
         pass
     
-    def post(self, request): # 상품 리뷰 작성
-        pass
-    
-
-class ProductReviewDetailView(APIView):
-    
-    def get(self, request): # 상품 리뷰 상세 조회
-        pass
-    
-    def put(self, request): # 상품 리뷰 수정
-        pass
-    
-    def delete(self, request): # 상품 리뷰 삭제
+    def post(self, request): # 상품 정보 게시글 작성
         pass
     
 
-class ProductReviewReplyView(APIView):
+class ProductPostDetailView(APIView):
     
-    def get(self, request): # 상품 리뷰 댓글 전체 조회
+    def get(self, request): # 상품 정보 게시글 상세 조회
         pass
     
-    def post(self, request): # 상품 리뷰 댓글 등록
+    def put(self, request): # 상품 정보 게시글 수정
+        pass
+    
+    def delete(self, request): # 상품 정보 게시글 삭제
+        pass
+    
+
+class ProductPostReplyView(APIView):
+    
+    def get(self, request): # 상품 정보 게시글 댓글 전체 조회
+        pass
+    
+    def post(self, request): # 상품 정보 게시글 댓글 등록
         pass
 
-class ProductReviewReplyDetailView(APIView):
+class ProductPostReplyDetailView(APIView):
 
-    def delete(self, request): # 상품 리뷰 댓글 삭제
+    def delete(self, request): # 상품 정보 게시글 댓글 삭제
         pass
 
 
