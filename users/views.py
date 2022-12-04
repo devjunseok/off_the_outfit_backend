@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from .models import User
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -59,7 +59,7 @@ class CustomTokenObtainPairView(TokenObtainPairView): # jwt payload 커스텀
 
 
 class FollowView(APIView): # follow View
-                                                                                                       
+
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
@@ -89,4 +89,3 @@ class ProfileView(APIView):  # 회원정보 조회
         serializer = UserProfileSerializer(user)  
         return Response(serializer.data)
     
-

@@ -3,6 +3,7 @@ from communities.models import Feed,Comment,ReComment
 
 class FeedSerializer(serializers.ModelSerializer): #게시글 작성, 수정 시리얼라이즈
     user = serializers.SerializerMethodField()
+
     
     def get_user(self, obj):
         return obj.user.email
