@@ -24,8 +24,9 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # 게�
         fields = '__all__'
 
 
-class FeedDetailSerializer(serializers.ModelSerializer): #게시글 상세보기 serializer
+class FeedDetailSerializer(TaggitSerializer, serializers.ModelSerializer): #게시글 상세보기serializer
     user = serializers.SerializerMethodField()
+    tags = TagListSerializerField()
 
     def get_user(self, obj):
         return obj.user.nickname
