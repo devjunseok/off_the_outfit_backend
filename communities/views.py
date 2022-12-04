@@ -1,11 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions
+from rest_framework import status, permissions, filters, generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
-
 from communities.models import Feed ,Comment,ReComment
-from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer
+from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer
 
 
 
@@ -180,4 +179,20 @@ class ReCommentLike(APIView): # 대댓글 좋아요 View
             return Response({"message":"대댓글 좋아요 했습니다!"}, status=status.HTTP_200_OK)
     
     
+
+
+
+class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
+        
+    permission_classes = [permissions.AllowAny]    
     
+    queryset = Feed.objects.all()
+    serializer_class = FeedListSerializer # 게시글 전체 보기
+    # serializer_class = SearchProductSerializer # 상품 검색 시리얼라이즈
+
+    filter_backends = [filters.SearchFilter]
+    # 검색 키워드를 지정했을 때, 매칭을 시도할 필드
+    # search_fields = ["user","products_name"]
+    search_fields = ["user__username"]
+
+

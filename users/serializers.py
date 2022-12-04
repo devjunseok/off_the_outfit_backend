@@ -5,6 +5,7 @@ from users.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
 
+
 class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
     password2= serializers.CharField(error_messages={'required':'비밀번호를 입력해주세요.', 'blank':'비밀번호를 입력해주세요.', 'write_only':True})
     class Meta:
