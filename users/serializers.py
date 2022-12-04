@@ -1,5 +1,16 @@
 import re
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, PasswordField
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
+from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
+
+
+
+
+
 from rest_framework import serializers, viewsets, status
 from users.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -169,12 +180,16 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payload 커스텀
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['username'] = user.username
+    username_field = get_user_model().USERNAME_FIELD
+    token_class = RefreshToken
 
-        return token
+    default_error_messages = {"no_active_account": _("아이디 or 비밀번호를 확인해주세요. ")}
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields[self.username_field] = serializers.CharField()
+        self.fields["password"] = PasswordField()
     
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -185,6 +200,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payloa
         data['username'] = self.user.username
         return data
 
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['username'] = user.username
+
+        return token
 
 class UserProfileSerializer(serializers.ModelSerializer): # 회원정보 조회 serializer
 

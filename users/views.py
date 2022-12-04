@@ -19,33 +19,6 @@ from rest_framework_simplejwt.views import (
 )
 
 
-class SignInView(APIView):
-    permission_classes = ()
-    authentication_classes = ()
-
-    def post(self, request):
-        received_json_data=request.data
-        serializer = CustomTokenObtainPairSerializer(data=received_json_data)
-        if serializer.is_valid():
-            user = authenticate(
-                request, 
-                username=received_json_data['username'], 
-                password=received_json_data['password'])
-            if user is not None:
-                refresh = RefreshToken.for_user(user)
-                return JsonResponse({
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                    # your other stuffs <- add here
-                }, status=200)
-            else:
-                return JsonResponse({
-                    'message': 'invalid username or password',
-                }, status=403)
-        else:
-            return JsonResponse({'message':serializer.errors}, status=400)
-
-
 # Create your views here.
 class UserView(APIView):
     permission_classes = [permissions.AllowAny]
