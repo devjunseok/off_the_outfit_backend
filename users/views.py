@@ -60,7 +60,6 @@ class CustomTokenObtainPairView(TokenObtainPairView): # jwt payload 커스텀
 
 class FollowView(APIView): # follow View
 
-
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
