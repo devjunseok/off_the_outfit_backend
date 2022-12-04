@@ -22,7 +22,7 @@ class Product(models.Model):
     category = models.ManyToManyField("Category", through="ProductCategoryRelation", through_fields=("products", "category"))
     
     def __str__(self):
-        return str(self.products_name)
+        return str(self.product_name)
   
     
 class Category(models.Model):
