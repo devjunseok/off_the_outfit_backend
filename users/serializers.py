@@ -1,9 +1,10 @@
 import re
 
-from rest_framework import serializers
+from rest_framework import serializers, viewsets, status
 from users.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
+
 
 
 class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
@@ -174,6 +175,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payloa
         token['username'] = user.username
 
         return token
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+
+        # Add extra responses here
+        data['id'] = self.user.id
+        data['username'] = self.user.username
+        return data
 
 
 class UserProfileSerializer(serializers.ModelSerializer): # 회원정보 조회 serializer

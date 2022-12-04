@@ -7,12 +7,44 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from users import serializers
 from users.models import User
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+from django.http import JsonResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+
+
+class SignInView(APIView):
+    permission_classes = ()
+    authentication_classes = ()
+
+    def post(self, request):
+        received_json_data=request.data
+        serializer = CustomTokenObtainPairSerializer(data=received_json_data)
+        if serializer.is_valid():
+            user = authenticate(
+                request, 
+                username=received_json_data['username'], 
+                password=received_json_data['password'])
+            if user is not None:
+                refresh = RefreshToken.for_user(user)
+                return JsonResponse({
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                    # your other stuffs <- add here
+                }, status=200)
+            else:
+                return JsonResponse({
+                    'message': 'invalid username or password',
+                }, status=403)
+        else:
+            return JsonResponse({'message':serializer.errors}, status=400)
+
 
 # Create your views here.
 class UserView(APIView):
