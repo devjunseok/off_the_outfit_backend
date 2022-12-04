@@ -10,6 +10,73 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
     class Meta:
         model = User
         fields = ('username', 'term_agree', 'email', 'nickname', 'nickname', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'password', 'password2', 'profile_image',)
+        extra_kwargs = {
+            'username': {
+                'error_messages': {
+                    'required': '아이디를 입력해주세요.'
+                    },
+                    'required': True # default : True
+                    },
+            'email': {
+                'error_messages': {
+                    'required': '이메일을 입력해주세요.',
+                    'invalid': '알맞은 형식의 이메일을 입력해주세요.'
+                    },
+                    'required': True # default : True
+                    },
+            'nickname': {
+                'error_messages': {
+                    'required': '닉네임을 입력해주세요.'
+                    },
+                    'required': True # default : True
+                    },
+            'address': {
+                'error_messages': {
+                    'required': '주소를 입력해주세요.'
+                    },
+                    'required': True # default : True
+                    },
+            'gender': {
+                'error_messages': {
+                    'required': '성별을 선택해주세요.',
+                    'invalid': '알맞은 성별을 선택해주세요!'
+                    },
+                    'required': True # default : True
+                    },
+            'height': {
+                'error_messages': {
+                    'required': '키를 입력해주세요.'
+                    },
+                    'required': True # default : True
+                    },
+            'weight': {
+                'error_messages': {
+                    'required': '몸무게를 입력해주세요'
+                    },
+                    'required': True # default : True
+                    },
+            'date_of_birth': {
+                'error_messages': {
+                    'required': '생년월일을 입력해주세요.',
+                    'invalid': 'YYYY-MM-DD 형식으로 생년월일을 입력해주세요!'
+                    },
+                    'required': True # default : True
+                    },
+            'password': {
+                'error_messages': {
+                    'required': '비밀번호를 입력해주세요.'
+                    },
+                    'required': True,
+                    'write_only': True# default : True
+                    },
+            'term_agree': {
+                'error_messages': {
+                    'required': '개인정보 약관 동의를 해주세요!.',
+                    'invalid': '알맞은 형식으로 해주세요!'
+                    },
+                    'required': True # default : True
+                    },
+            }
         
     def validate(self, data):
         PASSWORD_VALIDATION = r"^(?=.*[a-z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,16}"
