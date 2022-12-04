@@ -54,8 +54,10 @@ class ProductInfoDetailView(APIView):
 
 class ProductPostView(APIView):
     
-    def get(self, request): # 상품 정보 게시글 전체 조회
-        pass
+    def get(self, request, product_number): # 상품 정보 게시글 전체 조회
+        articles = Post.objects.filter(product__product_number=product_number)
+        serializer = PostSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request, product_number): # 상품 정보 게시글 작성
         product = Product.objects.get(product_number=product_number)
