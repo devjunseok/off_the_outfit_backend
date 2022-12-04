@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
     password2= serializers.CharField(error_messages={'required':'비밀번호를 입력해주세요.', 'blank':'비밀번호를 입력해주세요.', 'write_only':True})
     class Meta:
         model = User
-        fields = ('username', 'email', 'nickname', 'nickname', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'password', 'password2', 'profile_image',)
+        fields = ('username', 'term_agree', 'email', 'nickname', 'nickname', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'password', 'password2', 'profile_image',)
         
     def validate(self, data):
         PASSWORD_VALIDATION = r"^(?=.*[a-z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,16}"
@@ -26,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
         address = data.get('address')
         height = data.get('height')
         weight = data.get('weight')
+        term_agree = data.get('term_agree')
         
         
         if re.search(NICKNAME_VALIDATION, str(nickname)): # 닉네임 유효성 검사
@@ -53,7 +54,10 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
             
             if re.search(PASSWORD_PATTERN, str(password)):
                 raise serializers.ValidationError(detail={"password":"너무 일상적인 숫자or단어 입니다!"})
-
+        
+        if term_agree == False:
+            raise serializers.ValidationError(detail={"term_agree":"개인정보 약관 동의를 확인해주세요!"})
+            
 
         return data    
     
@@ -66,6 +70,7 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
         weight = validated_data['weight']
         date_of_birth = validated_data['date_of_birth']
         gender = validated_data['gender']
+        term_agree = validated_data['term_agree']
 
         user = User(
             username=username,
@@ -76,6 +81,7 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
             weight=weight,
             date_of_birth=date_of_birth,
             gender=gender,
+            term_agree=term_agree
         )
         user.set_password(validated_data['password']) # 패스워드 해싱
         user.save()
