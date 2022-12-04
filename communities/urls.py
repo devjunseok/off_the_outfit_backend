@@ -13,7 +13,7 @@ urlpatterns = [
     path('<int:feed_id>/comment/<int:comment_id>/like/', views.CommentLike.as_view(), name = 'comment_like_view'),    # 댓글 좋아요 url
     path('<int:feed_id>/comment/<int:comment_id>/recomment/', views.ReCommentUpload.as_view(), name = 'recomment_upload'),   #대댓글 등록 url
     path('<int:feed_id>/comment/<int:comment_id>/recomment/<int:recomment_id>/', views.ReCommentDetailView.as_view(), name = 'recomment_view'),   #대댓글 삭제 url
-    
+    path('<int:feed_id>/comment/<int:comment_id>/recomment/<int:recomment_id>/like/', views.ReCommentLike.as_view(), name = 'recomment_like_view')   #대댓글 좋아요 url 
     
 
 ]
