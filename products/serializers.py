@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from products.models import Brand, Product, Category
+from products.models import Brand, Product, Category, Post, Reply
 
 
 # Products :: 상품 정보 관련 Serializer 
@@ -14,8 +14,19 @@ class ProductDetailSerializer(serializers.ModelSerializer): # 상품 정보 상�
     
     class Meta:
         model = Product
-        fields = '__all__'        
+        fields = '__all__'  
         
+
+class PostSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    
+    def get_user(self, obj):
+        return obj.user.email
+    
+    class Meta:
+        model = Post
+        fields = '__all__'
+
 
 # Brand :: 브랜드 정보 관련 Serializer
 class BrandSerializer(serializers.ModelSerializer): # 브랜드 정보 전체 조회,

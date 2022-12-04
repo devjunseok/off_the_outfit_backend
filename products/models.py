@@ -54,7 +54,7 @@ class Post(models.Model):
     )
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, related_name='products')
     post_type = models.CharField('종류', choices=POST_TYPE, max_length=20, default=POST_TYPE[0][0])
     post_status = models.CharField('상태', choices=POST_STATUS, max_length=20, default=POST_STATUS[0][0])
     image = models.ImageField('이미지', blank=True, upload_to="review_images/", null=True)
