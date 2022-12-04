@@ -1,8 +1,7 @@
-import math
-import sys, os
+import os
 from bs4 import BeautifulSoup
 import requests
-from products.models import Products, Brand, Category
+from products.models import Product, Brand, Category
 
 
 headers = os.environ.get("USER_AGENT")
@@ -39,7 +38,7 @@ def ProductsUpdate(Category_list, brand_list):
                 
                 item_number = item["data-no"]
                 try:
-                    product_double_check = Products.objects.get(product_number=item_number)
+                    product_double_check = Product.objects.get(product_number=item_number)
                     print(f"{item_number} = 중복 상품")
                     pass
                 except:
@@ -93,7 +92,7 @@ def ProductsUpdate(Category_list, brand_list):
                             brand_id = Brand.objects.get(id=br['id']) 
                             # print(f"{brand_id} / {product_name} / {discount_rate} / {category_id} / {original_price} / {review_count}")
                             
-                            instance = Products.objects.create(
+                            instance = Product.objects.create(
                                 brand = brand_id,
                                 product_number = product_number,
                                 product_name = product_name,

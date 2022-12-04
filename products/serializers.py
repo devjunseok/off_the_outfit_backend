@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from products.models import Brand, Products, Category
+from products.models import Brand, Product, Category
 
 
-class ProductsSerializer(serializers.ModelSerializer): # 상품 정보 전체 조회,
+class ProductSerializer(serializers.ModelSerializer): # 상품 정보 전체 조회,
     
     class Meta:
-        model = Products
+        model = Product
         fields = '__all__'
         
 

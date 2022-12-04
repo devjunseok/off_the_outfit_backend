@@ -2,9 +2,9 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import pandas as pd
-from products.serializers import ProductsSerializer, BrandSerializer, CategorySerializer
+from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer
 from rest_framework import status, permissions
-from products.models import Brand, Category, Products
+from products.models import Brand, Category, Product
 from products.crawling import ProductsUpdate
 
 
@@ -21,8 +21,8 @@ class ProductInfoUdateView(APIView):
 class ProductInfoView(APIView):
     
     def get(self, request): # 상품 정보 전체 조회
-        articles = Products.objects.all()
-        serializer = ProductsSerializer(articles, many=True)
+        articles = Product.objects.all()
+        serializer = ProductSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request): # 상품 정보 개별 등록
