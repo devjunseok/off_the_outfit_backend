@@ -217,11 +217,3 @@ class UserProfileSerializer(serializers.ModelSerializer): # 회원정보 조회 
     class Meta:
         model = User
         fields = ('username', 'nickname', 'email', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'profile_image', 'point')
-
-
-
-class UserPointSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('point')
