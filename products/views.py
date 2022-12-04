@@ -2,10 +2,11 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import pandas as pd
-from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer
+from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, ProductDetailSerializer
 from rest_framework import status, permissions
 from products.models import Brand, Category, Product, Post, Reply
 from products.crawling import ProductsUpdate, MusinsaNumberProductsCreate
+from rest_framework.generics import get_object_or_404
 
 
 # Products :: 상품 정보 관련 View 
@@ -40,8 +41,10 @@ class ProductInfoView(APIView):
 
 class ProductInfoDetailView(APIView):
     
-    def get(self, request): # 상품 정보 상세 조회
-        pass
+    def get(self, request, product_number): # 상품 정보 상세 조회
+        product = get_object_or_404(Product, product_number=product_number)
+        serializer = ProductDetailSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def put(self, request): # 상품 정보 수정
         pass
