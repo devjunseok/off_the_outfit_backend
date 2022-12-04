@@ -4,9 +4,9 @@ import requests
 from products.models import Product, Brand, Category
 
 
-headers = os.environ.get("USER_AGENT")
+headers = {"User-Agent":os.environ.get("USER_AGENT")}
 
-
+# 상품 정보 업데이트 무신사 크롤링
 def ProductsUpdate(Category_list, brand_list):
     for cate in Category_list[0:1]:
         urls = cate['category_link']
@@ -105,6 +105,64 @@ def ProductsUpdate(Category_list, brand_list):
                         else:
                             pass
 
+# 무신사 상품 번호로 상품 등록
+def MusinsaNumberProductsCreate(request):
 
-def MusinsaNumberProductsCreate():
-    pass
+    product_number = request['product_number'] # 등록할 상품 번호
+
+    try: # 중복 체크
+        product_double_check = Product.objects.get(product_number=product_number)
+        result = "ERROR_01"
+        return result
+    except: # 신규 상품
+        product_double_check = None
+        print(f"{product_number} = 신규 상품")
+        
+    if product_double_check == None: # 신규 상품 처리
+    
+        product_url = f"https://www.musinsa.com/app/goods/{product_number}"
+
+        res = requests.get(product_url, headers=headers)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, 'lxml')
+        product_info = soup.find('div', attrs={'class':'right_contents'})
+
+        # 상품 카테고리
+        categories = product_info.find('p', attrs={'class':'item_categories'})
+        a_tag = categories.find_all('a')
+        sub = a_tag[1]['href']
+        
+        # 브랜드명
+        brand = a_tag[2].get_text().replace('(', '').replace(')', '').strip()
+        
+        # 상품 이미지
+        product_image = product_info.find('div', attrs={'class':'product-img'}).img['src']
+        
+        # 상품명
+        product_name = product_info.find('span', attrs={'class':'product_title'}).em.get_text()
+        
+        # 상품 가격
+        original_price = product_info.find('li', attrs={'id':'normal_price'}).get_text() # 정상가
+        discount_price = product_info.find('span', attrs={'class':'txt_price_member'}).get_text().replace('원', '').replace(',', '') # 할인가
+        
+        # 상품 리뷰
+        review_count = product_info.find('span', attrs={'class':'prd-score__review-count'}).get_text().replace('후기 ', '').replace('개 보기', '')
+
+        brand_id = Brand.objects.get(brand_name_kr=brand) # 브랜드 DB 연결 준비
+        category_id = Category.objects.filter(category_link=sub) # 카테고리 DB 연결 준비
+        
+        # 상품 등록
+        instance = Product.objects.create(
+            brand = brand_id,
+            product_number = product_number,
+            product_name = product_name,
+            product_image = f"https:{product_image}",
+            original_price = int(original_price),
+            discount_price = int(discount_price),
+            review_count = int(review_count)
+        )
+        # 카테고리 DB 연결
+        instance.category.set(category_id)
+    else:
+        result = "ERROR_02"
+        return result

@@ -5,7 +5,7 @@ import pandas as pd
 from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer
 from rest_framework import status, permissions
 from products.models import Brand, Category, Product, Post, Reply
-from products.crawling import ProductsUpdate
+from products.crawling import ProductsUpdate, MusinsaNumberProductsCreate
 
 
 # Products :: 상품 정보 관련 View 
@@ -15,7 +15,7 @@ class ProductInfoUdateView(APIView):
         category_list = Category.objects.all().values()
         brand_list = Brand.objects.all().values()
         ProductsUpdate(category_list, brand_list)
-        return Response({"message":"상품 정보가 등록 되었습니다!"}, status=status.HTTP_200_OK)
+        return Response({"message":"상품 정보가 업데이트 되었습니다!"}, status=status.HTTP_200_OK)
     
             
 class ProductInfoView(APIView):
@@ -25,8 +25,17 @@ class ProductInfoView(APIView):
         serializer = ProductSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request): # 상품 정보 개별 등록
-        pass
+    def post(self, request): # 상품 정보 개별 등록        
+        result = MusinsaNumberProductsCreate(request.data)
+        
+        if result == None:
+            return Response({"message":"상품이 등록되었습니다!"}, status=status.HTTP_200_OK)
+        
+        elif result == "ERROR_01":
+            return Response({"message":"이미 등록된 상품입니다.!"}, status=status.HTTP_200_OK)
+        
+        else:
+            return Response({"message":"상품 등록에 실패했습니다."}, status=status.HTTP_200_OK)
 
 
 class ProductInfoDetailView(APIView):
@@ -97,7 +106,7 @@ class BrandInfoUpdateView(APIView):
                 brand.brand_link = br_link
                 brand.save()
         
-        return Response({"message":"브랜드 정보가 등록 되었습니다!"}, status=status.HTTP_200_OK)
+        return Response({"message":"브랜드 정보가 업데이트 되었습니다!"}, status=status.HTTP_200_OK)
     
 
 class BrandInfoView(APIView):
@@ -135,7 +144,7 @@ class CategoryInfoUpdateView(APIView):
                 category.category_link = link
                 category.save()
         
-        return Response({"message":"카테고리 정보가 등록 되었습니다!"}, status=status.HTTP_200_OK)
+        return Response({"message":"카테고리 정보가 업데이트 되었습니다!"}, status=status.HTTP_200_OK)
 
 
 class CategoryInfoView(APIView):
