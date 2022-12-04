@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer,UserPointSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -106,4 +106,16 @@ class UserSearchView(generics.ListAPIView): # 유저 검색 View
     # 검색 키워드를 지정했을 때, 매칭을 시도할 필드
 
     search_fields = ["username"]
+
+class GetPointView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request, user_id):
+        user= get_object_or_404(User, id=user_id)
+        if user==request.user:
+            user.point += 1
+            user.save()
+            return Response({"message":"출석 점수 1점을 획득했습니다."}, status=status.HTTP_200_OK)
+        return Response({"message":"출석을 실패했습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
