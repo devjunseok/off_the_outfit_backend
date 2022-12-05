@@ -8,11 +8,12 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from users import serializers
 from users.models import User
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer,UserPointSerializer
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from datetime import datetime
 
 # Create your views here.
 class UserView(APIView):
@@ -107,6 +108,8 @@ class GetPointView(APIView):
     authentication_classes = [JWTAuthentication]
 
     def post(self, request, user_id):
+        now_time = datetime.now()
+        print(now_time)
         user= get_object_or_404(User, id=user_id)
         if user==request.user:
             user.point += 1
