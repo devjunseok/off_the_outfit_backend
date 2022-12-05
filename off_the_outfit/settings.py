@@ -36,7 +36,10 @@ INSTALLED_APPS = [
     
     'taggit.apps.TaggitAppConfig', # 태그
     'taggit_templatetags2', # 태그
+    'taggit_serializer', #태그
 ]
+
+
 
 
 TAGGIT_CASE_INSENSITIVE = True
@@ -130,7 +133,7 @@ AUTH_USER_MODEL = 'users.User'
 
 
 SIMPLE_JWT = {  ##jwt 설정
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20000),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
@@ -169,15 +172,5 @@ MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
 CORS_ALLOW_ALL_ORIGINS = True
-# email
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_PORT = '587'
-EMAIL_HOST = 'smtp.naver.com'
-EMAIL_HOST_USER = 'spartajunseok@naver.com'
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-EMAIL_USER_TLS = True
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SECRET_SSL_REDIRECT = True
 
 

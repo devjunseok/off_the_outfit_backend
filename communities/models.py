@@ -37,6 +37,7 @@ class ReComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recomment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    recomment_like = models.ManyToManyField(User, related_name='like_recomments', blank=True)
 
 
 class FeedProductRelation(models.Model):

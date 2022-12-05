@@ -1,19 +1,23 @@
-from django.shortcuts import render
+from .models import User
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework import permissions
+from rest_framework import status, permissions, filters, generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from users import serializers
 from users.models import User
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+from django.http import JsonResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+
 
 # Create your views here.
 class UserView(APIView):
@@ -60,9 +64,6 @@ class CustomTokenObtainPairView(TokenObtainPairView): # jwt payload 커스텀
 
 class FollowView(APIView): # follow View
 
-    
-
-
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
@@ -92,4 +93,29 @@ class ProfileView(APIView):  # 회원정보 조회
         serializer = UserProfileSerializer(user)  
         return Response(serializer.data)
     
+
+
+class UserSearchView(generics.ListAPIView): # 유저 검색 View
+        
+    permission_classes = [permissions.AllowAny]    
+    
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer # 유저 시리얼라이즈
+
+    filter_backends = [filters.SearchFilter]
+    # 검색 키워드를 지정했을 때, 매칭을 시도할 필드
+
+    search_fields = ["username"]
+
+class GetPointView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request, user_id):
+        user= get_object_or_404(User, id=user_id)
+        if user==request.user:
+            user.point += 1
+            user.save()
+            return Response({"message":"출석 점수 1점을 획득했습니다."}, status=status.HTTP_200_OK)
+        return Response({"message":"출석을 실패했습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
