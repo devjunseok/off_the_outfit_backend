@@ -117,9 +117,12 @@ class GetPointView(APIView):
     def post(self, request, user_id):
         now = datetime.today().strftime("%Y-%m-%d")
         user= get_object_or_404(User, id=user_id)
-        if user==request.user:
-            user.point += 1
-            user.click_time = now
-            user.save()
-            return Response({"message":"출석 점수 1점을 획득했습니다."}, status=status.HTTP_200_OK)
-        return Response({"message":"출석을 실패했습니다."}, status=status.HTTP_400_BAD_REQUEST)
+        if user == request.user:
+            if user.click_time == now:   
+                return Response({"message":"이미 출석을 하셨습니다."}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                user.click_time = now
+                user.point += 1
+                user.save()
+            return Response({"message":"출석점수 1점을 획득하셨습니다."}, status=status.HTTP_200_OK)
+        return Response({"message":"권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
