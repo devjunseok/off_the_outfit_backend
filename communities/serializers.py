@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from communities.models import Feed
-from products.models import Products
+from products.models import Product
 from taggit.serializers import (TagListSerializerField,
                                 TaggitSerializer)        #태그
 from communities.models import Feed,Comment,ReComment
@@ -80,6 +80,6 @@ class SearchProductSerializer(serializers.ModelSerializer): # 상품 검색
     
 
     class Meta:
-        model = Products
+        model = Product
         fields = '__all__'
 
