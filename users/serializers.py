@@ -1,9 +1,21 @@
 import re
 
-from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, PasswordField
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
+from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
+
+
+
+
+
+from rest_framework import serializers, viewsets, status
 from users.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
+
 
 
 class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
@@ -168,6 +180,26 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payload 커스텀
+    username_field = get_user_model().USERNAME_FIELD
+    token_class = RefreshToken
+
+    default_error_messages = {"no_active_account": _("아이디 or 비밀번호를 확인해주세요. ")}
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields[self.username_field] = serializers.CharField()
+        self.fields["password"] = PasswordField()
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+
+        # Add extra responses here
+        data['id'] = self.user.id
+        data['username'] = self.user.username
+        return data
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
@@ -180,17 +212,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payloa
 
         return token
 
-
 class UserProfileSerializer(serializers.ModelSerializer): # 회원정보 조회 serializer
 
     class Meta:
         model = User
         fields = ('username', 'nickname', 'email', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'profile_image', 'point')
-
-
-
-class UserPointSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('point')
