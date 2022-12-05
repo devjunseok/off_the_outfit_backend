@@ -2,7 +2,7 @@ from django.db import models
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase
 from users.models import User
-from products.models import Products
+from products.models import Product
 
 # Create your models here.
 class TaggedFeed(TaggedItemBase): # 태그추가 부분
@@ -41,6 +41,6 @@ class ReComment(models.Model):
 
 
 class FeedProductRelation(models.Model):
-    products = models.ForeignKey(Products, on_delete=models.CASCADE)
+    products = models.ForeignKey(Product, on_delete=models.CASCADE)
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
     

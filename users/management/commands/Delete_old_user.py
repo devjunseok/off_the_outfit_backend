@@ -1,4 +1,3 @@
-
 from django.core.management.base import BaseCommand, CommandError
 from users.models import User
 from datetime import datetime, timedelta
