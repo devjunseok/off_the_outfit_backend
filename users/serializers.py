@@ -211,6 +211,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payloa
 
         return token
 
+
 class UserProfileSerializer(serializers.ModelSerializer): # 회원정보 조회 serializer
 
     class Meta:
