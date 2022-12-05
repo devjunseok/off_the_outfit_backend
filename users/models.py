@@ -64,7 +64,7 @@ class User(AbstractBaseUser):
     address = models.CharField("주소", max_length=100)
     gender = models.CharField("성별", choices=GENDERS, max_length=1)
     status = models.CharField("상태", choices=USER_STATUS, max_length=10, default=USER_STATUS[0][0])
-    rolse = models.CharField("권한",  choices=ROLES, max_length=20, default=ROLES[0][0])
+    roles = models.CharField("권한",  choices=ROLES, max_length=20, default=ROLES[0][0])
     date_of_birth = models.DateField("생년월일", null=True)
     height = models.CharField("키", max_length=20)
     weight = models.CharField("몸무게", max_length=16)
