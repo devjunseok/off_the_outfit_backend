@@ -18,6 +18,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from datetime import datetime
+from django.utils.dateformat import DateFormat
+from django.utils import timezone
 
 
 # Create your views here.
@@ -113,12 +115,11 @@ class GetPointView(APIView):
     authentication_classes = [JWTAuthentication]
 
     def post(self, request, user_id):
-        now_time = datetime.now()
-        print(now_time)
+        now = datetime.today().strftime("%Y-%m-%d")
         user= get_object_or_404(User, id=user_id)
         if user==request.user:
             user.point += 1
+            user.click_time = now
             user.save()
             return Response({"message":"출석 점수 1점을 획득했습니다."}, status=status.HTTP_200_OK)
         return Response({"message":"출석을 실패했습니다."}, status=status.HTTP_400_BAD_REQUEST)
-

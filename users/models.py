@@ -66,13 +66,14 @@ class User(AbstractBaseUser):
     status = models.CharField("상태", choices=USER_STATUS, max_length=10, default=USER_STATUS[0][0])
     rolse = models.CharField("권한",  choices=ROLES, max_length=20, default=ROLES[0][0])
     date_of_birth = models.DateField("생년월일", null=True)
-    point = models.PositiveIntegerField("포인트", default=0)
     height = models.CharField("키", max_length=20)
     weight = models.CharField("몸무게", max_length=16)
     followings = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
     is_active = models.BooleanField("계정 활성화 여부", default=True)
     is_admin = models.BooleanField("관리자 권한", default=False)
     term_agree = models.BooleanField("약관동의", default=False)
+    click_time = models.DateField("출석클릭시간", null=True)
+    point = models.PositiveIntegerField("포인트", default=0)
 
     objects = UserManager()
 
@@ -102,3 +103,4 @@ class User(AbstractBaseUser):
         return self.is_admin
     
 
+    
