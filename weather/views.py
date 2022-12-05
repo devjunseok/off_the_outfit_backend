@@ -1,10 +1,10 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from weather.models import Weather
 from weather.serializers import WeatherSerializer
-from rest_framework import status, permissions
 from weather.crawling import forecast
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 # Create your views here.
 class WeatherInfoView(APIView):
