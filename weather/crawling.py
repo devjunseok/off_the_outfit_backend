@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-from pprint import pprint
-import sqlite3
 from weather.models import Weather
+
+
 def forecast():
 
     cities = ['서울특별시',
@@ -43,11 +43,6 @@ def forecast():
             day_temperature_highest = day.find("span", attrs={"class":"highest"}).get_text() # 최고기온
             day_blind = day.find("span", attrs={"class":"blind"}).get_text() # 날씨 상태
 
-            #출력
-            print(day_date) #날짜
-            print(day_temperature_lowest) # 최저기온
-            print(day_temperature_highest) # 최고기온
-            print(day_blind) # 날씨 상태
 
             weather = Weather()
             weather.city = city
@@ -56,13 +51,3 @@ def forecast():
             weather.day_temperature_highest = day_temperature_highest
             weather.day_blind = day_blind
             weather.save()
-            print(weather)
-
-
-            # instance = Weather.objects.create(
-            #     city = city,
-            #     day_date = day_date,
-            #     day_temperature_lowest = day_temperature_lowest,
-            #     day_temperature_highest = day_temperature_highest,
-            #     day_blind = day_blind
-            # )

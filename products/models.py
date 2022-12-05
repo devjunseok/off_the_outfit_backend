@@ -76,3 +76,20 @@ class Reply(models.Model):
     
     def __str__(self):
         return str(self.reply)
+    
+    
+class NameTag(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    tag_name = models.CharField('태그명', max_length=20)
+    like = models.ManyToManyField(User, related_name='like_closets', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Closet(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, related_name='closet_products')
+    name_tag = models.ForeignKey(NameTag, on_delete=models.CASCADE, verbose_name='옷장 태그', blank=True, null=True, related_name='nametags')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
