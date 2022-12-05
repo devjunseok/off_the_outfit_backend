@@ -1,17 +1,13 @@
 import re
 
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, PasswordField
-from rest_framework_simplejwt.tokens import RefreshToken
-from pytz import timezone
+from users.models import User
 
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-from datetime import datetime
 
-from rest_framework import serializers, viewsets, status
-from users.models import User
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.auth.hashers import check_password
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, PasswordField
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import serializers
 
 
 
