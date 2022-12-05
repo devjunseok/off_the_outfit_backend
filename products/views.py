@@ -1,13 +1,15 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
 import pandas as pd
-from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, ProductDetailSerializer, PostSerializer, ReplySerializer, ClosetSerializer, NameTagSerializer
-from rest_framework import status, permissions
+
+from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, ProductDetailSerializer, PostSerializer, ReplySerializer, ClosetSerializer, NameTagSerializer, NameTagViewSerializer
 from products.models import Brand, Category, Product, Post, Reply, Closet, NameTag
 from products.crawling import ProductsUpdate, MusinsaNumberProductsCreate
+
+from rest_framework import status, permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import status, permissions
 
 
 # Products :: 상품 정보 관련 View 
@@ -80,9 +82,14 @@ class ProductPostDetailView(APIView):
     def put(self, request): # 상품 정보 게시글 수정
         pass
     
-    def delete(self, request): # 상품 정보 게시글 삭제
-        pass
-    
+    def delete(self, request, product_number, post_id): # 상품 정보 게시글 삭제
+        post = get_object_or_404(Post, id= post_id)
+        if request.user == post.user:
+            post.delete()
+            return Response({"message":"게시글을 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN) 
+
 
 class ProductPostReplyView(APIView):
     
@@ -101,8 +108,14 @@ class ProductPostReplyView(APIView):
 
 class ProductPostReplyDetailView(APIView):
 
-    def delete(self, request): # 상품 정보 게시글 댓글 삭제
-        pass
+    def delete(self, request, product_number, post_id, reply_id): # 상품 정보 게시글 댓글 삭제
+        reply = get_object_or_404(Reply, id= reply_id)
+        if request.user == reply.user:
+            reply.delete()
+            return Response({"message":"댓글을 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)         
+
 
 
 # Brand :: 브랜드 정보 관련 View 
@@ -215,10 +228,35 @@ class ClosetView(APIView):
             
     
 
-class ClosetDetailView(APIView):
+class ClosetDetailView(APIView): #옷장 상세보기 수정, 삭제
     
     def put(self, request, product_number, closet_id):
-        pass
+        try:
+            name_tag = request.data['name_tag']
+        except:
+            name_tag = None
+        if name_tag == None:
+            data = {
+                'name_tag': None
+            }
+        else:
+            nametag = request.data['name_tag']
+            name_tag = NameTag.objects.filter(tag_name = nametag)
+            name_tag_id = name_tag.values()[0]['id']
+            data = {
+                'name_tag': name_tag_id
+            }
+        closet = get_object_or_404(Closet, id= closet_id)
+        if request.user == closet.user:
+            serializer = ClosetSerializer(closet, data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message":"수정되었습니다!"}, status=status.HTTP_200_OK)
+
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
     
     def delete(self, request, product_number, closet_id):
         pass
@@ -243,7 +281,7 @@ class NameTagView(APIView):
     
     def get(self, request):
         articles = NameTag.objects.filter(user_id=request.user.id)
-        serializer = NameTagSerializer(articles, many=True)
+        serializer = NameTagViewSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
@@ -259,6 +297,6 @@ class NameTagDetailView(APIView):
     
     def get(self, request, nametag_id):
         articles = NameTag.objects.filter(user_id=request.user.id)
-        serializer = NameTagSerializer(articles, many=True)
+        serializer = NameTagViewSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     

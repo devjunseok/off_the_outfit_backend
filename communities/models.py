@@ -17,6 +17,7 @@ class Feed(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     like = models.ManyToManyField(User, related_name='like_posts', blank=True)
     unlike = models.ManyToManyField(User, related_name='unlike_posts', blank=True)
+    report_point = models.PositiveIntegerField("신고 포인트", default=0)
     tags = TaggableManager(through=TaggedFeed, blank=True)
     
     def __str__(self):
