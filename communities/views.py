@@ -217,3 +217,13 @@ class ReportView(APIView): # 신고버튼 API
         #         user.save()
         #     return Response({"message":"출석점수 1점을 획득하셨습니다."}, status=status.HTTP_200_OK)
         # return Response({"message":"권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReportFeedView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request): 
+        feeds = Feed.objects.filter(report_point__gt=1)
+        serializer = FeedListSerializer(feeds, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
