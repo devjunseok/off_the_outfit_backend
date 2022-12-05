@@ -72,7 +72,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField("계정 활성화 여부", default=True)
     is_admin = models.BooleanField("관리자 권한", default=False)
     term_agree = models.BooleanField("약관동의", default=False)
-    click_time = models.DateField("출석클릭시간", null=True)
+    click_time = models.CharField("출석클릭시간", max_length=255, null=True)
     point = models.PositiveIntegerField("포인트", default=0)
 
     objects = UserManager()
