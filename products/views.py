@@ -1,13 +1,15 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
 import pandas as pd
+
 from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, ProductDetailSerializer, PostSerializer, ReplySerializer, ClosetSerializer, NameTagSerializer, NameTagViewSerializer
-from rest_framework import status, permissions
 from products.models import Brand, Category, Product, Post, Reply, Closet, NameTag
 from products.crawling import ProductsUpdate, MusinsaNumberProductsCreate
+
+from rest_framework import status, permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import status, permissions
 
 
 # Products :: 상품 정보 관련 View 
@@ -226,10 +228,35 @@ class ClosetView(APIView):
             
     
 
-class ClosetDetailView(APIView):
+class ClosetDetailView(APIView): #옷장 상세보기 수정, 삭제
     
     def put(self, request, product_number, closet_id):
-        pass
+        try:
+            name_tag = request.data['name_tag']
+        except:
+            name_tag = None
+        if name_tag == None:
+            data = {
+                'name_tag': None
+            }
+        else:
+            nametag = request.data['name_tag']
+            name_tag = NameTag.objects.filter(tag_name = nametag)
+            name_tag_id = name_tag.values()[0]['id']
+            data = {
+                'name_tag': name_tag_id
+            }
+        closet = get_object_or_404(Closet, id= closet_id)
+        if request.user == closet.user:
+            serializer = ClosetSerializer(closet, data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message":"수정되었습니다!"}, status=status.HTTP_200_OK)
+
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
     
     def delete(self, request, product_number, closet_id):
         pass

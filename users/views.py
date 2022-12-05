@@ -1,25 +1,17 @@
-from .models import User
+from datetime import datetime
+
+from users.models import User
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
+
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status, permissions, filters, generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from users import serializers
-from users.models import User
-from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.views import APIView
-from django.http import JsonResponse
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from datetime import datetime
-from django.utils.dateformat import DateFormat
-from django.utils import timezone
 
 
 # Create your views here.
@@ -62,9 +54,6 @@ class UserView(APIView):
 class CustomTokenObtainPairView(TokenObtainPairView): # jwt payload 커스텀
     serializer_class = CustomTokenObtainPairSerializer
 
-
-
-
 class FollowView(APIView): # follow View
 
     permission_classes = [permissions.IsAuthenticated]
@@ -96,8 +85,6 @@ class ProfileView(APIView):  # 회원정보 조회
         serializer = UserProfileSerializer(user)  
         return Response(serializer.data)
     
-
-
 class UserSearchView(generics.ListAPIView): # 유저 검색 View
         
     permission_classes = [permissions.AllowAny]    
