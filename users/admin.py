@@ -38,17 +38,17 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'roles', 'email', 'nickname', 'profile_image', 'is_active', 'is_admin', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'term_agree')
+        fields = ('username', 'password', 'roles', 'email', 'nickname', 'status', 'profile_image', 'is_active', 'is_admin', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'term_agree')
 
 
 class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('id', 'email', 'username', 'roles', 'nickname', 'profile_image', 'is_admin', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'term_agree')
+    list_display = ('id', 'email', 'username', 'roles', 'nickname', 'status', 'profile_image', 'is_admin', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'term_agree')
     list_filter = ('is_admin',)
     fieldsets = (
-        (None, {'fields': ('username','email','roles', 'password','nickname', 'profile_image', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'term_agree')}),
+        (None, {'fields': ('username','email','roles', 'password','nickname', 'status', 'profile_image', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'term_agree')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     add_fieldsets = (

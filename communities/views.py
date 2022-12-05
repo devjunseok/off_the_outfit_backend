@@ -1,10 +1,11 @@
+from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer
+from communities.models import Feed ,Comment,ReComment
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions, filters, generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
-from communities.models import Feed ,Comment,ReComment
-from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer
 
 
 
@@ -179,9 +180,6 @@ class ReCommentLike(APIView): # 대댓글 좋아요 View
             return Response({"message":"대댓글 좋아요 했습니다!"}, status=status.HTTP_200_OK)
     
     
-
-
-
 class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
         
     permission_classes = [permissions.AllowAny]    
@@ -196,3 +194,34 @@ class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
     search_fields = ["user__username"]
 
 
+class ReportView(APIView): # 신고버튼 API
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request, feed_id):
+        # now = datetime.today().strftime("%Y-%m-%d")
+        feed= get_object_or_404(Feed, id=feed_id)
+        feed.report_point += 1
+        feed.save()
+        return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
+        
+        
+        # if user == request.user:
+        #     if user.click_time == now:   
+        #         return Response({"message":"이미 출석을 하셨습니다."}, status=status.HTTP_400_BAD_REQUEST)
+        #     else:
+        #         user.click_time = now
+        #         user.point += 1
+        #         user.save()
+        #     return Response({"message":"출석점수 1점을 획득하셨습니다."}, status=status.HTTP_200_OK)
+        # return Response({"message":"권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReportFeedView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request): 
+        feeds = Feed.objects.filter(report_point__gt=1)
+        serializer = FeedListSerializer(feeds, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
