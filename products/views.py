@@ -82,9 +82,14 @@ class ProductPostDetailView(APIView):
     def put(self, request): # 상품 정보 게시글 수정
         pass
     
-    def delete(self, request): # 상품 정보 게시글 삭제
-        pass
-    
+    def delete(self, request, product_number, post_id): # 상품 정보 게시글 삭제
+        post = get_object_or_404(Post, id= post_id)
+        if request.user == post.user:
+            post.delete()
+            return Response({"message":"게시글을 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN) 
+
 
 class ProductPostReplyView(APIView):
     
@@ -103,8 +108,14 @@ class ProductPostReplyView(APIView):
 
 class ProductPostReplyDetailView(APIView):
 
-    def delete(self, request): # 상품 정보 게시글 댓글 삭제
-        pass
+    def delete(self, request, product_number, post_id, reply_id): # 상품 정보 게시글 댓글 삭제
+        reply = get_object_or_404(Reply, id= reply_id)
+        if request.user == reply.user:
+            reply.delete()
+            return Response({"message":"댓글을 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)         
+
 
 
 # Brand :: 브랜드 정보 관련 View 
