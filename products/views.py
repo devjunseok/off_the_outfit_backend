@@ -2,11 +2,12 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import pandas as pd
-from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, ProductDetailSerializer, PostSerializer
+from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, ProductDetailSerializer, PostSerializer, ReplySerializer, ClosetSerializer, NameTagSerializer
 from rest_framework import status, permissions
-from products.models import Brand, Category, Product, Post, Reply
+from products.models import Brand, Category, Product, Post, Reply, Closet, NameTag
 from products.crawling import ProductsUpdate, MusinsaNumberProductsCreate
 from rest_framework.generics import get_object_or_404
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 # Products :: 상품 정보 관련 View 
@@ -88,8 +89,15 @@ class ProductPostReplyView(APIView):
     def get(self, request): # 상품 정보 게시글 댓글 전체 조회
         pass
     
-    def post(self, request): # 상품 정보 게시글 댓글 등록
-        pass
+    def post(self, request, product_number, post_id): # 상품 정보 게시글 댓글 등록
+        product = Product.objects.get(product_number=product_number)
+        serializer = ReplySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user, post_id=post_id)
+            return Response({"message":"댓글이 등록되었습니다!"}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 class ProductPostReplyDetailView(APIView):
 
@@ -166,3 +174,91 @@ class CategoryInfoView(APIView):
         articles = Category.objects.all()
         serializer = CategorySerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+# Closet :: 옷장 관련 View
+class ClosetView(APIView): 
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request, product_number): # 상품 기준 옷장 조회
+        articles = Closet.objects.all().order_by('-created_at')
+        serializer = ClosetSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, product_number): # 옷장 상품 등록 (name_tag 유무에 따라 등록)
+        product = Product.objects.get(product_number=product_number)
+        try:
+            name_tag = request.data['name_tag']
+        except:
+            name_tag = None
+        
+        if name_tag == None:
+            serializer = ClosetSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(user=request.user, product_id=product.id)
+                return Response({"message":"옷장에 상품이 등록되었습니다!"}, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            nametag = NameTag.objects.filter(tag_name=name_tag)
+            name_tag_id = nametag.values()[0]['id']
+            data = {
+                "name_tag":name_tag_id
+            }
+            serializer = ClosetSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save(user=request.user, product_id=product.id, name_tag_id=name_tag_id)
+                return Response({"message":f"{name_tag} 옷장에 상품이 등록되었습니다!"}, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+    
+
+class ClosetDetailView(APIView):
+    
+    def put(self, request, product_number, closet_id):
+        pass
+    
+    def delete(self, request, product_number, closet_id):
+        pass
+    
+    
+class NameTagLikeView(APIView):
+    
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def post(self, request,nametag_id,feed_id ): # 댓글 좋아요
+        nametag = get_object_or_404(NameTag, id=nametag_id)
+        if request.user in nametag.nametag_like.all():
+            nametag.nametag_like.remove(request.user)
+            return Response({"message":"좋아요 했습니다!"}, status=status.HTTP_200_OK)
+        else:
+            nametag.nametag_like.add(request.user)
+            return Response({"message":"좋아요 했습니다!"}, status=status.HTTP_200_OK)
+    
+
+class NameTagView(APIView):
+    
+    def get(self, request):
+        articles = NameTag.objects.filter(user_id=request.user.id)
+        serializer = NameTagSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = NameTagSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response({"message":"옷장 태그가 등록되었습니다!"}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NameTagDetailView(APIView):
+    
+    def get(self, request, nametag_id):
+        articles = NameTag.objects.filter(user_id=request.user.id)
+        serializer = NameTagSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
