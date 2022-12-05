@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "users",
     "communities",
     "products",
+    "weather",
     
     'taggit.apps.TaggitAppConfig', # 태그
     'taggit_templatetags2', # 태그
@@ -137,7 +138,7 @@ SIMPLE_JWT = {  ##jwt 설정
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
-    'UPDATE_LAST_LOGIN': False,
+    'UPDATE_LAST_LOGIN': True,
 
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,

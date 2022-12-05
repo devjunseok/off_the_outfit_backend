@@ -2,14 +2,11 @@ import re
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, PasswordField
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from pytz import timezone
 
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-
-
-
-
+from datetime import datetime
 
 from rest_framework import serializers, viewsets, status
 from users.models import User
@@ -194,16 +191,18 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payloa
     def validate(self, attrs):
         data = super().validate(attrs)
         refresh = self.get_token(self.user)
-
+        # self.user.last_login = timezone.now()
+        # self.user.save()
         # Add extra responses here
         data['id'] = self.user.id
         data['username'] = self.user.username
+        
         return data
 
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        
+
         # if token['username'] == user.username:
         #     login_point = User.objects.get(User.point)
         #     login_point =+10
@@ -211,6 +210,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payloa
         token['username'] = user.username
 
         return token
+
 
 class UserProfileSerializer(serializers.ModelSerializer): # 회원정보 조회 serializer
 
