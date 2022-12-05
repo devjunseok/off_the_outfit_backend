@@ -38,6 +38,7 @@ class ReComment(models.Model):
     recomment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     recomment_like = models.ManyToManyField(User, related_name='like_recomments', blank=True)
+    
 
 
 class FeedProductRelation(models.Model):

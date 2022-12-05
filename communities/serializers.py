@@ -31,22 +31,10 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # 게�
         fields = '__all__'
 
 
-
-
-class CommentListSerializer(serializers.ModelSerializer): # 게시글 댓글을 보기위한 Serializer
-    
-    user = serializers.SerializerMethodField()
-
-    def get_user(self, obj):
-        return obj.user.nickname
-
-    class Meta:
-        model = Comment
-        fields='__all__'
-        
 class ReCommentListSerializer(serializers.ModelSerializer): #  대댓글을 보기위한 Serializer
     
     user = serializers.SerializerMethodField()
+    
 
 
     def get_user(self, obj):
@@ -56,12 +44,28 @@ class ReCommentListSerializer(serializers.ModelSerializer): #  대댓글을 보�
         model = ReComment
         fields='__all__'
         
+
+
+class CommentListSerializer(serializers.ModelSerializer): # 게시글 댓글을 보기위한 Serializer
+    
+    user = serializers.SerializerMethodField()
+    recomment = ReCommentListSerializer(source = "comments", many=True)
+
+    def get_user(self, obj):
+        return obj.user.nickname
+
+    class Meta:
+        model = Comment
+        fields='__all__'
+        
+
 class FeedDetailSerializer(TaggitSerializer, serializers.ModelSerializer): #게시글 상세보기serializer
     
     user = serializers.SerializerMethodField()
     comments = CommentListSerializer(source = "feeds", many=True) # 게시글관련 댓글 보기위한 Serializer 설정
     tags = TagListSerializerField()
     like_count = serializers.SerializerMethodField()
+    
     
 
     def get_user(self, obj):
