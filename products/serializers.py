@@ -26,6 +26,17 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = '__all__'
+        
+  
+class ReplySerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    
+    def get_user(self, obj):
+        return obj.user.email
+    
+    class Meta:
+        model = Reply
+        fields = '__all__'        
 
 
 # Brand :: 브랜드 정보 관련 Serializer

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import pandas as pd
-from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, ProductDetailSerializer, PostSerializer
+from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, ProductDetailSerializer, PostSerializer, ReplySerializer
 from rest_framework import status, permissions
 from products.models import Brand, Category, Product, Post, Reply
 from products.crawling import ProductsUpdate, MusinsaNumberProductsCreate
@@ -88,8 +88,15 @@ class ProductPostReplyView(APIView):
     def get(self, request): # 상품 정보 게시글 댓글 전체 조회
         pass
     
-    def post(self, request): # 상품 정보 게시글 댓글 등록
-        pass
+    def post(self, request, product_number, post_id): # 상품 정보 게시글 댓글 등록
+        product = Product.objects.get(product_number=product_number)
+        serializer = ReplySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user, post_id=post_id)
+            return Response({"message":"댓글이 등록되었습니다!"}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 class ProductPostReplyDetailView(APIView):
 
