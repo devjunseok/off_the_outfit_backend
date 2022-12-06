@@ -370,3 +370,13 @@ class UserRegistrationTest(APITestCase): # 회원가입 테스트
             }
         response = self.client.post(url, user_data)  # APITestCase의 기본적인 세팅
         self.assertEqual(response.status_code, 400)
+
+class LoginUserTest(APITestCase): # 로그인 테스트 코드 작성
+    def setUp(self):  # DB 셋업
+        
+        self.data = {'username': 'testuser', 'password': 'password123@'}
+        self.user = User.objects.create_user("test@test.com", "testuser", "tester", "password123@")
+    
+    def test_login(self):   # 로그인 테스트
+        response = self.client.post(reverse('token_obtain_pair'), self.data)
+        self.assertEqual(response.status_code, 200)
