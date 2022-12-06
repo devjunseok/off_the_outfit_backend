@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from users.models import User
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer, UserUpdateSerializer
 
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -35,7 +35,7 @@ class UserView(APIView): # 회원정보 전체 보기, 회원가입, 회원정�
     def put(self, request): # 회원정보 수정
         user = get_object_or_404(User, id=request.user.id)
         if user == request.user:
-            serializer = UserSerializer(user, data=request.data, partial=True, context={"request": request})
+            serializer = UserUpdateSerializer(user, data=request.data, partial=True, context={"request": request})
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message":"변경되었습니다!"}, status=status.HTTP_200_OK)
