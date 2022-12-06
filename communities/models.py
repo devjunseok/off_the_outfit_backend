@@ -36,7 +36,7 @@ class Comment(models.Model):
 class ReComment(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, related_name="comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recomment = models.TextField('대댓글 본문')
+    recomment = models.TextField('대댓글 본문', blank=True ,null=True)
     created_at = models.DateTimeField('대댓글 생성 일자', auto_now_add=True)
     recomment_like = models.ManyToManyField(User, related_name='like_recomments', blank=True)
     
