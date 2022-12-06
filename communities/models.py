@@ -48,6 +48,7 @@ class FeedProductRelation(models.Model):
 
 class ReportFeed(models.Model): # 신고 내용 저장 테이블
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE, blank=True, related_name="reports")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     report = models.TextField('신고내용')
     created_at = models.DateTimeField('신고일자', auto_now_add=True)
     
