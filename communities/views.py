@@ -40,8 +40,12 @@ class FeedCommentView(APIView): # 댓글 등록 View
 
     def post(self, request, feed_id): # 댓글 등록
         serializer = CommentListSerializer(data=request.data)
+        me= User.objects.get(id=request.user.id)
         if serializer.is_valid():
-            serializer.save(user=request.user, feed_id=feed_id)
+            if me == request.user:
+                me.point += 1
+                me.save()
+                serializer.save(user=request.user, feed_id=feed_id)
             return Response({"message":"댓글 등록했습니다!"}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
