@@ -34,7 +34,26 @@ class UserRegistrationTest(APITestCase):
                 "gender":"M",
                 "height":"1",
                 "weight":"2",
-                "date_of_birth":"0000-00-00",
+                "date_of_birth":"1998-06-16",
+                "password":"password123@",
+                "password2":"password123@",
+                "term_agree":"True"
+            }
+        response = self.client.post(url, user_data)  # APITestCase의 기본적인 세팅
+        self.assertEqual(response.status_code, 400)
+        
+    
+    def test_registration_blank_username_invalid_case(self):  #회원가입 실패 테스트(username 유효성 검사 통과 X, username에 특수문자 들어가 있을 때)
+        url = reverse("user_view")   # url name
+        user_data = {
+                "username":"testuser@",
+                "email":"test@test.com",
+                "nickname":"tester",
+                "address":"seoul",
+                "gender":"M",
+                "height":"1",
+                "weight":"2",
+                "date_of_birth":"1998-06-16",
                 "password":"password123@",
                 "password2":"password123@",
                 "term_agree":"True"
