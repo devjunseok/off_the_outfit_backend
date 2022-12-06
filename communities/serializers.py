@@ -3,6 +3,8 @@ from products.models import Product
 from taggit.serializers import (TagListSerializerField,
                                 TaggitSerializer)        #태그
 from communities.models import Feed,Comment,ReComment
+
+
 class FeedSerializer(TaggitSerializer, serializers.ModelSerializer): #게시글 작성, 수정 시리얼라이즈
     user = serializers.SerializerMethodField()
     tags = TagListSerializerField()
@@ -29,6 +31,19 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # 게�
         fields = '__all__'
 
 
+class ReCommentListSerializer(serializers.ModelSerializer): #  대댓글을 작성을 위한 Serializer
+    
+    user = serializers.SerializerMethodField()
+    
+
+
+    def get_user(self, obj):
+        return obj.user.nickname
+
+    class Meta:
+        model = ReComment
+        fields='__all__'
+        
 class ReCommentListSerializer(serializers.ModelSerializer): #  대댓글을 보기위한 Serializer
     
     user = serializers.SerializerMethodField()
@@ -42,12 +57,23 @@ class ReCommentListSerializer(serializers.ModelSerializer): #  대댓글을 보�
         model = ReComment
         fields='__all__'
         
-
-
-class CommentListSerializer(serializers.ModelSerializer): # 게시글 댓글을 보기위한 Serializer
+class CommentListViewSerializer(serializers.ModelSerializer): # 게시글 댓글을 보기 작성 Serializer
     
     user = serializers.SerializerMethodField()
-    recomment = ReCommentListSerializer(source = "comments", many=True,)
+    recomment = ReCommentListSerializer(source = "comments", many=True)
+
+    
+    def get_user(self, obj):
+        return obj.user.nickname
+    
+    class Meta:
+        model = Comment
+        fields = '__all__'
+
+class CommentListSerializer(serializers.ModelSerializer): # 게시글 댓글을 작성을 위한 Serializer
+    
+    user = serializers.SerializerMethodField()
+    
 
     def get_user(self, obj):
         return obj.user.nickname
@@ -60,7 +86,7 @@ class CommentListSerializer(serializers.ModelSerializer): # 게시글 댓글을 
 class FeedDetailSerializer(TaggitSerializer, serializers.ModelSerializer): #게시글 상세보기serializer
     
     user = serializers.SerializerMethodField()
-    comments = CommentListSerializer(source = "feeds", many=True) # 게시글관련 댓글 보기위한 Serializer 설정
+    comments = CommentListViewSerializer(source = "feeds", many=True) # 게시글관련 댓글 보기위한 Serializer 설정
     tags = TagListSerializerField()
     like_count = serializers.SerializerMethodField()
     
@@ -84,4 +110,4 @@ class SearchProductSerializer(serializers.ModelSerializer): # 상품 검색
     class Meta:
         model = Product
         fields = '__all__'
-
+        
