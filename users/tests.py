@@ -368,6 +368,22 @@ class UserRegistrationTest(APITestCase): # 회원가입 테스트
             }
         response = self.client.post(url, user_data)  # APITestCase의 기본적인 세팅
         self.assertEqual(response.status_code, 400)
+        
+class UserProfileViewTestCase(APITestCase):
+    def setUp(self):
+        self.data = {'username': 'testuser', 'password': 'password123@'}
+        self.user_case_1 = User.objects.create_user("test@test.com", "testuser", "tester", "password123@")
+        self.user_case_2 = User.objects.create_user("test1@test.com", "testuser1", "tester1", "password123@")
+    
+    def test_user_update_success(self): # 회원정보 수정 성공
+        access_token = self.client.post(reverse('token_obtain_pair'), self.data).data['access']
+        response = self.client.put(
+            path=reverse("user_view"),
+            HTTP_AUTHORIZATION=f"Bearer {access_token}",
+            data={"nickname":"changenickname"} 
+        )
+        self.assertEqual(response.status_code, 200)
+
 
 class LoginUserTest(APITestCase): # 로그인 테스트 코드 작성
     def setUp(self):  # DB 셋업
