@@ -259,7 +259,13 @@ class ClosetDetailView(APIView): #옷장 상세보기 수정, 삭제
             return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
     
     def delete(self, request, product_number, closet_id):
-        pass
+        closet = get_object_or_404(Closet, id= closet_id)
+        if request.user == closet.user:
+            closet.delete()
+            return Response({"message":"삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)         
+
     
     
 class NameTagLikeView(APIView): # 옷장 태그 좋아요
