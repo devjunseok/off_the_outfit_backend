@@ -53,7 +53,7 @@ class User(AbstractBaseUser):
         ('ROLE_NORMAL', 'NORMAL'), # 일반 사용자
         ('ROLE_MANAGER', 'MANAGER'), # 일반 관리자
         ('ROLE_SUPER', 'SUPER'), # 슈퍼 관리자
-        )
+    )
 
     username = models.CharField("아이디", max_length=20, unique=True, error_messages={'unique':"이미 존재하는 아이디입니다."})
     nickname = models.CharField("닉네임", max_length=16, unique=True, error_messages={'unique':"이미 존재하는 닉네임입니다."})
@@ -71,7 +71,7 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField("관리자 권한", default=False)
     term_agree = models.BooleanField("약관동의", default=False)
     click_time = models.CharField("출석클릭시간", max_length=255, null=True)
-    point = models.PositiveIntegerField("포인트", default=0)
+    point = models.IntegerField("포인트", default=0)
 
     objects = UserManager()
 
