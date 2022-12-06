@@ -36,7 +36,7 @@ class Comment(models.Model):
 class ReComment(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, related_name="comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recomment = models.TextField()
+    recomment = models.TextField(blank=True ,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     recomment_like = models.ManyToManyField(User, related_name='like_recomments', blank=True)
     
