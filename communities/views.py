@@ -170,7 +170,7 @@ class ReCommentDetailView(APIView):  #대댓글(수정,삭제) View
     
 
     
-    def delete(self, request,feed_id, comment_id, recomment_id): # 댓글 삭제
+    def delete(self, request,feed_id, comment_id, recomment_id): # 대댓글 삭제
             recomment = get_object_or_404(ReComment, id= recomment_id)
             if request.user == recomment.user:
                 recomment.delete()
@@ -223,3 +223,5 @@ class ReportView(APIView): # 게시글 신고 View
         feed.report_point += 1
         feed.save()
         return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
+    
+
