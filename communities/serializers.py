@@ -2,7 +2,7 @@ from rest_framework import serializers
 from products.models import Product
 from taggit.serializers import (TagListSerializerField,
                                 TaggitSerializer)        #태그
-from communities.models import Feed,Comment,ReComment,ReportFeed
+from communities.models import Feed,Comment,ReComment
 
 
 class FeedSerializer(TaggitSerializer, serializers.ModelSerializer): #게시글 작성, 수정 시리얼라이즈
@@ -111,12 +111,3 @@ class SearchProductSerializer(serializers.ModelSerializer): # 상품 검색
         model = Product
         fields = '__all__'
         
-class ReportSerializer(serializers.ModelSerializer): #신고 시리얼라이즈
-    user = serializers.SerializerMethodField()
-    
-    def get_user(self, obj):
-        return obj.user.email
-    
-    class Meta:
-        model = ReportFeed
-        fields = '__all__'

@@ -1,5 +1,5 @@
 from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer
-from communities.models import Feed ,Comment,ReComment, SearchWord,ReportFeed
+from communities.models import Feed ,Comment,ReComment, SearchWord
 
 from users.models import User
 
@@ -218,22 +218,10 @@ class ReportView(APIView): # 게시글 신고 View
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def post(self, request, feed_id ,reportfeed_id):
+    def post(self, request, feed_id):
         feed= get_object_or_404(Feed, id=feed_id)
-
-        serializer = ReportSerializer(data=request.data)
-        if  serializer.is_valid():
-            serializer.save()
-            feed.report_point += 1
-            feed.save()
-            return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
+        feed.report_point += 1
+        feed.save()
+        return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
     
 
-class ReportFeedView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
-    
-    def get(self, request): 
-        feeds = Feed.objects.filter(report_point__gt=1)
-        serializer = FeedListSerializer(feeds, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
