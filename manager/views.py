@@ -62,7 +62,6 @@ class UserManageDetailView(APIView): # 관리자 권한 유저 목록 열람 Vie
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
         
-
     def delete(self, request, user_id): # 신고당한 게시글 삭제
         user = get_object_or_404(User, id=request.user.id)
         all_user = get_object_or_404(User, id=user_id)
