@@ -199,24 +199,11 @@ class ReportView(APIView): # 신고버튼 API
     authentication_classes = [JWTAuthentication]
 
     def post(self, request, feed_id):
-        # now = datetime.today().strftime("%Y-%m-%d")
         feed= get_object_or_404(Feed, id=feed_id)
         feed.report_point += 1
         feed.save()
         return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
-        
-        
-        # if user == request.user:
-        #     if user.click_time == now:   
-        #         return Response({"message":"이미 출석을 하셨습니다."}, status=status.HTTP_400_BAD_REQUEST)
-        #     else:
-        #         user.click_time = now
-        #         user.point += 1
-        #         user.save()
-        #     return Response({"message":"출석점수 1점을 획득하셨습니다."}, status=status.HTTP_200_OK)
-        # return Response({"message":"권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
-
-
+    
 class ReportFeedView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
