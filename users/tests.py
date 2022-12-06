@@ -375,8 +375,13 @@ class LoginUserTest(APITestCase): # 로그인 테스트 코드 작성
     def setUp(self):  # DB 셋업
         
         self.data = {'username': 'testuser', 'password': 'password123@'}
+        self.failed_data = {'username': 'testuser', 'password': 'password1234@'} # 로그인 실패용 setup 데이터 (다른 비밀번호 입력)
         self.user = User.objects.create_user("test@test.com", "testuser", "tester", "password123@")
     
     def test_login(self):   # 로그인 테스트
         response = self.client.post(reverse('token_obtain_pair'), self.data)
         self.assertEqual(response.status_code, 200)
+        
+    def test_login_failed(self):   # 로그인 실패 테스트
+        response = self.client.post(reverse('token_obtain_pair'), self.failed_data)
+        self.assertEqual(response.status_code, 401)
