@@ -4,7 +4,8 @@ from communities import views
 urlpatterns = [
 
     path('', views.ArticlesFeedView.as_view(), name ='feed_list' ), # 게시글 전체보기
-    path('reportfeed/', views.ReportFeedView.as_view(), name ='report_feed_list' ), # 신고게시글 관리
+    path('reportfeed/', views.ReportFeedView.as_view(), name ='report_feed_list' ), # 신고게시글 열람
+    path('reportfeed/<int:feed_id>/', views.ReportFeedDetailView.as_view(), name ='report_feed_detail'), # 관리자 페이지 기능
     path('report/<int:feed_id>/', views.ReportView.as_view(), name='report_view'), # 버튼 클릭 포인트 획득   
     path('search/', views.CommunitySearchView.as_view(), name = 'communities_search_view'),  # 게시글 검색   
     path('<int:feed_id>/', views.ArticlesFeedDetailView.as_view(), name ='feed_detail_view' ),  # 게시글 상세조회, 수정, 삭제 
