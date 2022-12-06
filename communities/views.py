@@ -1,6 +1,8 @@
 from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer
-from communities.models import Feed ,Comment,ReComment
+from communities.models import Feed ,Comment,ReComment, SearchWord
+
 from users.models import User
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions, filters, generics
@@ -193,8 +195,8 @@ class ReCommentLike(APIView): # 대댓글 좋아요 View
     
     
 class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
-        
-    permission_classes = [permissions.AllowAny]    
+    
+    permission_classes = [permissions.AllowAny]
     
     queryset = Feed.objects.all()
     serializer_class = FeedListSerializer # 게시글 전체 보기
@@ -204,9 +206,15 @@ class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
     # 검색 키워드를 지정했을 때, 매칭을 시도할 필드
     # search_fields = ["user","products_name"]
     search_fields = ["user__username"]
+    
+    def get(self, request, *args, **kwargs): # 검색어 저장 추가
+        search = SearchWord()
+        word = request.GET.get('search')
+        search.word = word
+        search.save()
+        return self.list(request, *args, **kwargs)
 
-
-class ReportView(APIView): # 신고버튼 API
+class ReportView(APIView): # 게시글 신고 View
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -215,12 +223,3 @@ class ReportView(APIView): # 신고버튼 API
         feed.report_point += 1
         feed.save()
         return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
-    
-class ReportFeedView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
-    
-    def get(self, request): 
-        feeds = Feed.objects.filter(report_point__gt=1)
-        serializer = FeedListSerializer(feeds, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
