@@ -1,5 +1,5 @@
 from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer
-from communities.models import Feed ,Comment,ReComment
+from communities.models import Feed ,Comment,ReComment, SearchWord
 
 from users.models import User
 
@@ -183,8 +183,8 @@ class ReCommentLike(APIView): # 대댓글 좋아요 View
     
     
 class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
-        
-    permission_classes = [permissions.AllowAny]    
+    
+    permission_classes = [permissions.AllowAny]
     
     queryset = Feed.objects.all()
     serializer_class = FeedListSerializer # 게시글 전체 보기
@@ -194,6 +194,13 @@ class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
     # 검색 키워드를 지정했을 때, 매칭을 시도할 필드
     # search_fields = ["user","products_name"]
     search_fields = ["user__username"]
+    
+    def get(self, request, *args, **kwargs): # 검색어 저장 추가
+        search = SearchWord()
+        word = request.GET.get('search')
+        search.word = word
+        search.save()
+        return self.list(request, *args, **kwargs)
 
 
 class ReportView(APIView): # 신고버튼 API
