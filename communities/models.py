@@ -23,6 +23,8 @@ class Feed(models.Model):
     def __str__(self):
         return str(self.content)
     
+    class Meta:
+        db_table = "feeds"
 
 class Comment(models.Model):
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE, blank=True, related_name="feeds")
@@ -32,7 +34,8 @@ class Comment(models.Model):
     created_at = models.DateTimeField('댓글 생성 일자', auto_now_add=True)
     updated_at = models.DateTimeField('댓글 수정 일자', auto_now=True)
 
-
+    class Meta:
+        db_table = "comments"
 class ReComment(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, related_name="comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -40,19 +43,28 @@ class ReComment(models.Model):
     created_at = models.DateTimeField('대댓글 생성 일자', auto_now_add=True)
     recomment_like = models.ManyToManyField(User, related_name='like_recomments', blank=True)
     
+    class Meta:
+        db_table = "recomments"
 
 class FeedProductRelation(models.Model):
     products = models.ForeignKey(Product, on_delete=models.CASCADE)
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
     
-
+    class Meta:
+        db_table = "feed_product_relation"
+    
 class ReportFeed(models.Model): # 신고 내용 저장 테이블
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE, blank=True, related_name="reports")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     report = models.TextField('신고내용')
     created_at = models.DateTimeField('신고일자', auto_now_add=True)
     
+    class Meta:
+        db_table = "report_feeds"
 
 class SearchWord(models.Model): # 검색어 저장 테이블
     word = models.CharField('검색어', max_length=30)
     created_at = models.DateTimeField('검색일자', auto_now_add=True)
+    
+    class Meta:
+        db_table = "search_words"

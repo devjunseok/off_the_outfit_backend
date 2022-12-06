@@ -10,6 +10,8 @@ class Brand(models.Model):
     def __str__(self):
         return str(self.brand_name_kr)
 
+    class Meta:
+        db_table = "brands"
 
 class Product(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
@@ -24,6 +26,8 @@ class Product(models.Model):
     def __str__(self):
         return str(self.product_name)
   
+    class Meta:
+        db_table = "products"
     
 class Category(models.Model):
     main_category_name = models.CharField('메인 카테고리명', max_length=50)
@@ -35,12 +39,15 @@ class Category(models.Model):
     def __str__(self):
         return str(self.sub_category_name)
 
-
+    class Meta:
+        db_table = "products_category"
 class ProductCategoryRelation(models.Model):
     products = models.ForeignKey(Product, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
+    class Meta:
+        db_table = "produce_category_relation"
 class Post(models.Model):
     POST_TYPE = (
         ('REVIEW', '후기(review)'),
@@ -67,6 +74,9 @@ class Post(models.Model):
     def __str__(self):
         return str(self.content)
     
+    class Meta:
+        db_table = "products_post"
+    
 class Reply(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, related_name="posts")
@@ -77,7 +87,8 @@ class Reply(models.Model):
     def __str__(self):
         return str(self.reply)
     
-    
+    class Meta:
+        db_table = "products_reply"
 class NameTag(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tag_name = models.CharField('태그명', max_length=20)
@@ -85,7 +96,8 @@ class NameTag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
+    class Meta:
+        db_table = "products_nametag"
 class Closet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, related_name='closet_products')
@@ -93,3 +105,5 @@ class Closet(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        db_table = "closet"
