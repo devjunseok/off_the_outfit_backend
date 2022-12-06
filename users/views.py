@@ -15,7 +15,7 @@ from rest_framework_simplejwt.views import (
 
 
 # Create your views here.
-class UserView(APIView):
+class UserView(APIView): # 회원정보 전체 보기, 회원가입, 회원정보 수정, 회원탈퇴 View
     permission_classes = [permissions.AllowAny]
     
     def get(self, request): # 회원정보 전체 보기
@@ -74,7 +74,7 @@ class FollowView(APIView): # follow View
                 you.followings.add(me)
                 return Response({"message":"follow했습니다."}, status=status.HTTP_200_OK)
                 
-class ProfileView(APIView):  # 회원정보 조회
+class ProfileView(APIView):  # 회원정보 조회 View
 
     
     permission_classes = [permissions.IsAuthenticated]
@@ -97,7 +97,7 @@ class UserSearchView(generics.ListAPIView): # 유저 검색 View
 
     search_fields = ["username"]
 
-class GetPointView(APIView):
+class GetPointView(APIView): # 출석 포인트 View (하루에 한번 가능)
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
