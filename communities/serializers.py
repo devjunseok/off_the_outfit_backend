@@ -47,7 +47,7 @@ class ReCommentListSerializer(serializers.ModelSerializer): #  대댓글을 보�
 class CommentListSerializer(serializers.ModelSerializer): # 게시글 댓글을 보기위한 Serializer
     
     user = serializers.SerializerMethodField()
-    recomment = ReCommentListSerializer(source = "comments", many=True)
+    recomment = ReCommentListSerializer(source = "comments", many=True,)
 
     def get_user(self, obj):
         return obj.user.nickname
