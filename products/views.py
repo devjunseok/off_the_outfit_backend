@@ -262,19 +262,19 @@ class ClosetDetailView(APIView): #옷장 상세보기 수정, 삭제
         pass
     
     
-class NameTagLikeView(APIView):
+class NameTagLikeView(APIView): # 옷장 태그 좋아요
     
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def post(self, request,nametag_id,feed_id ): # 댓글 좋아요
+    def post(self, request, nametag_id ): 
         nametag = get_object_or_404(NameTag, id=nametag_id)
-        if request.user in nametag.nametag_like.all():
-            nametag.nametag_like.remove(request.user)
-            return Response({"message":"좋아요 했습니다!"}, status=status.HTTP_200_OK)
+        if request.user in nametag.like.all():
+            nametag.like.remove(request.user)
+            return Response({"message":" 옷장 좋아요 취소 했습니다!"}, status=status.HTTP_200_OK)
         else:
-            nametag.nametag_like.add(request.user)
-            return Response({"message":"좋아요 했습니다!"}, status=status.HTTP_200_OK)
+            nametag.like.add(request.user)
+            return Response({"message":"옷장 좋아요 했습니다!"}, status=status.HTTP_200_OK)
     
 
 class NameTagView(APIView):
