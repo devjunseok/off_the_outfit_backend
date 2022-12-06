@@ -210,7 +210,7 @@ class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
         return self.list(request, *args, **kwargs)
 
 
-class ReportView(APIView): # 신고버튼 API
+class ReportView(APIView): # 게시글 신고 View
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -220,7 +220,7 @@ class ReportView(APIView): # 신고버튼 API
         feed.save()
         return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
     
-class ReportFeedView(APIView):
+class ReportFeedView(APIView): # 일정횟수 신고당한 게시글 열람 View
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
@@ -232,7 +232,7 @@ class ReportFeedView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"message":"권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
-class ReportFeedDetailView(APIView):
+class ReportFeedDetailView(APIView): # 신고당한 게시글 관리 View(관리자 권한)
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
