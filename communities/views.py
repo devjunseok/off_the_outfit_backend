@@ -1,5 +1,5 @@
 from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer
-from communities.models import Feed ,Comment,ReComment
+from communities.models import Feed ,Comment,ReComment,User
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -21,6 +21,7 @@ class ArticlesFeedView(APIView):  # 게시글 전체보기, 등록 View
 
         
     def post(self, request): # 게시글 등록
+        
         serializer = FeedSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
