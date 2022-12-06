@@ -1,8 +1,6 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
-from rest_framework import status
 from users.models import User
-import re
 
 class UserRegistrationTest(APITestCase): # 회원가입 테스트
     def test_registration(self):  #회원가입 성공 테스트
