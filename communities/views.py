@@ -1,5 +1,5 @@
-from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer
-from communities.models import Feed ,Comment,ReComment
+from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer, ReportSerializer
+from communities.models import Feed ,Comment,ReComment,ReportFeed
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -156,7 +156,7 @@ class ReCommentDetailView(APIView):  #대댓글(수정,삭제) View
     
 
     
-    def delete(self, request,feed_id, comment_id, recomment_id): # 댓글 삭제
+    def delete(self, request,feed_id, comment_id, recomment_id): # 대댓글 삭제
             recomment = get_object_or_404(ReComment, id= recomment_id)
             if request.user == recomment.user:
                 recomment.delete()
@@ -198,12 +198,16 @@ class ReportView(APIView): # 신고버튼 API
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def post(self, request, feed_id):
+    def post(self, request, feed_id ,reportfeed_id):
         feed= get_object_or_404(Feed, id=feed_id)
-        feed.report_point += 1
-        feed.save()
-        return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
+        serializer = ReportSerializer(data=request.data)
+        if  serializer.is_valid():
+            serializer.save()
+            feed.report_point += 1
+            feed.save()
+            return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
     
+
 class ReportFeedView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
@@ -212,3 +216,5 @@ class ReportFeedView(APIView):
         feeds = Feed.objects.filter(report_point__gt=1)
         serializer = FeedListSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
