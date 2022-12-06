@@ -1,5 +1,5 @@
-from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer
-from communities.models import Feed ,Comment,ReComment, SearchWord
+from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer,ReportSerializer
+from communities.models import Feed ,Comment,ReComment, SearchWord,ReportFeed
 
 from users.models import User
 
@@ -214,14 +214,23 @@ class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
         search.save()
         return self.list(request, *args, **kwargs)
 
+
 class ReportView(APIView): # 게시글 신고 View
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
+    
     def post(self, request, feed_id):
+        serializer = ReportSerializer(data=request.data)
         feed= get_object_or_404(Feed, id=feed_id)
-        feed.report_point += 1
-        feed.save()
+
+        if serializer.is_valid():
+            feed.report_point += 1
+            feed.save()
+            serializer.save(user=request.user, feed_id=feed_id)
+            
         return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
+    
+    
     
 
