@@ -1,6 +1,8 @@
 from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer
 from communities.models import Feed ,Comment,ReComment
 
+from users.models import User
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions, filters, generics
@@ -208,7 +210,18 @@ class ReportFeedView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def get(self, request): 
+    def get(self, request):  # 신고당한 게시글 열람
+        user = get_object_or_404(User, id= request.user.id)
         feeds = Feed.objects.filter(report_point__gt=1)
-        serializer = FeedListSerializer(feeds, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if user.roles == 'ROLE_SUPER':
+            serializer = FeedListSerializer(feeds, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"message":"권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request): # 신고당한 게시글 삭제
+        user = get_object_or_404(User, id= request.user.id)
+        feeds = Feed.objects.filter(report_point__gt=1)
+        if user.roles == 'ROLE_SUPER':
+            feeds.delete()
+            return Response({"message":"게시글 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message":"권한이 없습니다!"}, status=status.HTTP_400_BAD_REQUEST) 
