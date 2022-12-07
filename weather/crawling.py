@@ -46,7 +46,6 @@ def forecast():
             day_blind = day.find("span", attrs={"class":"blind"}).get_text() # 날씨 상태
             day_temperature = int(int(day_temperature_highest) + int(day_temperature_lowest)) / 2 # 평균 기온
 
-
             weather = Weather()
             weather.city = city
             weather.day_date = day_date
