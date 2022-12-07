@@ -8,13 +8,13 @@ headers = {"User-Agent":os.environ.get("USER_AGENT")}
 
 # 상품 정보 업데이트 무신사 크롤링
 def ProductsUpdate(Category_list, brand_list):
-    for cate in Category_list[0:1]:
+    for cate in Category_list[0:48]:
         urls = cate['category_link']
         category_id = Category.objects.filter(id=cate['id']) 
         sub_category_name = cate['sub_category_name']
         print(sub_category_name)
         
-        # 브랜드 페이지_페이지네이션 최대 페이지 확인
+        # 카테고리 페이지_페이지네이션 최대 페이지 확인
         page_res = requests.get(urls, headers)
         page_res.raise_for_status()
         page_soup = BeautifulSoup(page_res.text, 'lxml')
@@ -22,10 +22,10 @@ def ProductsUpdate(Category_list, brand_list):
         # print(page_result)
 
         category_number = urls[len(urls)-6:]      # 카테고리 번호
-        page_number = 5                           # 페이지 수 선택
+        page_number = 3                           # 페이지 수 선택
         if int(page_result) < int(page_number):
             page_number = page_result
-        for page in range(1, page_number):        # 1 ~ 최대 페이지까지 상품 정보 가져오기
+        for page in range(1, page_number):        # 1 ~ page_number or 최대 페이지까지 상품 정보 가져오기
             url = f"{urls}?d_cat_cd={category_number}&brand=&list_kind=small&sort=pop_category&sub_sort=&page={page}&display_cnt=90&group_sale=&exclusive_yn=&sale_goods=&timesale_yn=&ex_soldout=&kids=&color=&price1=&price2=&shoeSizeOption=&tags=&campaign_id=&includeKeywords=&measure="
             res = requests.get(url, headers)
             res.raise_for_status()
@@ -52,6 +52,7 @@ def ProductsUpdate(Category_list, brand_list):
                     if brand_name != None:
                         brand_name = brand_name.get_text()
                     else:
+                        print(f"{brand_name} 정보가 없습니다.")
                         pass
                     # print(brand_name)
                     for br in brand_list:
@@ -87,23 +88,27 @@ def ProductsUpdate(Category_list, brand_list):
                                 review_count = int(review_count.get_text().replace(",", ""))
                             else:
                                 review_count = 0
-                                
-                            # 브랜드 정보
-                            brand_id = Brand.objects.get(id=br['id']) 
-                            # print(f"{brand_id} / {product_name} / {discount_rate} / {category_id} / {original_price} / {review_count}")
                             
-                            instance = Product.objects.create(
-                                brand = brand_id,
-                                product_number = product_number,
-                                product_name = product_name,
-                                product_image = f"https:{product_image}",
-                                original_price = int(original_price),
-                                discount_price = int(discount_price),
-                                review_count = int(review_count)
-                            )
-                            instance.category.set(category_id)
+                            try:    
+                                # 브랜드 정보
+                                brand_id = Brand.objects.get(id=br['id']) 
+                                # print(f"{brand_id} / {product_name} / {discount_rate} / {category_id} / {original_price} / {review_count}")
+                                
+                                instance = Product.objects.create(
+                                    brand = brand_id,
+                                    product_number = product_number,
+                                    product_name = product_name,
+                                    product_image = f"https:{product_image}",
+                                    original_price = int(original_price),
+                                    discount_price = int(discount_price),
+                                    review_count = int(review_count)
+                                )
+                                instance.category.set(category_id)
+                            except:
+                                print(f"{brand_name} 정보가 없습니다.")
                         else:
                             pass
+
 
 # 무신사 상품 번호로 상품 등록
 def MusinsaNumberProductsCreate(request):
@@ -147,22 +152,24 @@ def MusinsaNumberProductsCreate(request):
         
         # 상품 리뷰
         review_count = product_info.find('span', attrs={'class':'prd-score__review-count'}).get_text().replace('후기 ', '').replace('개 보기', '')
-
-        brand_id = Brand.objects.get(brand_name_kr=brand) # 브랜드 DB 연결 준비
-        category_id = Category.objects.filter(category_link=sub) # 카테고리 DB 연결 준비
-        
-        # 상품 등록
-        instance = Product.objects.create(
-            brand = brand_id,
-            product_number = product_number,
-            product_name = product_name,
-            product_image = f"https:{product_image}",
-            original_price = int(original_price),
-            discount_price = int(discount_price),
-            review_count = int(review_count)
-        )
-        # 카테고리 DB 연결
-        instance.category.set(category_id)
+        try:
+            brand_id = Brand.objects.get(brand_name_kr=brand) # 브랜드 DB 연결 준비
+            category_id = Category.objects.filter(category_link=sub) # 카테고리 DB 연결 준비
+            
+            # 상품 등록
+            instance = Product.objects.create(
+                brand = brand_id,
+                product_number = product_number,
+                product_name = product_name,
+                product_image = f"https:{product_image}",
+                original_price = int(original_price),
+                discount_price = int(discount_price),
+                review_count = int(review_count)
+            )
+            # 카테고리 DB 연결
+            instance.category.set(category_id)
+        except:
+            print(f"{brand} 정보가 없습니다.")
     else:
         result = "ERROR_02"
         return result
