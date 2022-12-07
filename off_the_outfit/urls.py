@@ -8,6 +8,7 @@ urlpatterns = [
     path('communities/', include('communities.urls')),
     path('users/', include('users.urls')),
     path('products/', include('products.urls')),
+    path('recommend/', include('recommend.urls')),
     path('weather/', include('weather.urls')),
     path('manager/', include('manager.urls')),
 ]
