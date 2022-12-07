@@ -4,13 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 import sqlite3
-from pprint import pprint
 from users.serializers import UserProfileSerializer
 from users.models import User
 from products.serializers import ProductSerializer
 from products.models import Product
-from recommend.serializers import ProductSerializer,RegionSerializer
-from weather.serializers import WeatherSerializer
 from weather.models import Weather
 from django.db.models import Q
 from datetime import datetime
