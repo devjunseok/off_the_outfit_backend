@@ -43,13 +43,7 @@ def forecast():
             day_temperature_highest = day.find("span", attrs={"class":"highest"}).get_text() # 최고기온
             day_blind = day.find("span", attrs={"class":"blind"}).get_text() # 날씨 상태
 
-            day_date = day.find("span", attrs={"class":"date"}).get_text() #날짜
-            day_temperature_lowest = day.find("span", attrs={"class":"lowest"})
-            day_temperature_highest = day.find("span", attrs={"class":"highest"})
-            day_blind = day.find("span", attrs={"class":"blind"}).get_text() # 날씨 상태
-
-
-
+            
             weather = Weather()
             weather.city = city
             weather.day_date = day_date
