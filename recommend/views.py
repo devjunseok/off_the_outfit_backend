@@ -11,7 +11,7 @@ from products.models import Product
 from weather.models import Weather
 from django.db.models import Q
 from datetime import datetime
-
+from recommend.serializers import RegionSerializer
 
 
 class ClosetUserRecommend(APIView):
