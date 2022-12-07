@@ -8,7 +8,7 @@ headers = {"User-Agent":os.environ.get("USER_AGENT")}
 
 # 상품 정보 업데이트 무신사 크롤링
 def ProductsUpdate(Category_list, brand_list):
-    for cate in Category_list[0:1]:
+    for cate in Category_list[0:48]:
         urls = cate['category_link']
         category_id = Category.objects.filter(id=cate['id']) 
         sub_category_name = cate['sub_category_name']
