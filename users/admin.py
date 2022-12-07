@@ -14,7 +14,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username',) #하나만 있어도 콤마 붙혀야함.
+        fields = ('username',)
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -25,7 +25,6 @@ class UserCreationForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
-        # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:

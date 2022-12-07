@@ -13,11 +13,11 @@ from django.db.models import Q
 from datetime import datetime
 from recommend.serializers import RegionSerializer
 
-
+# 유저 기반 옷장 상품 추천 View
 class ClosetUserRecommend(APIView):
-    
+    #유저 기반 추천
     def get(self, request): 
-        #유저 기반 추천
+
         me_id = request.user.id
         closet = sqlite3.connect('./db.sqlite3')
         my_connection = pd.read_sql(f"SELECT id, user_id, product_id FROM closet WHERE user_id = {me_id};", closet, index_col='id')
@@ -37,7 +37,7 @@ class ClosetUserRecommend(APIView):
         serializer = UserProfileSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-
+# 상품 기반 추천 View
 class ClosetProductRecommend(APIView):
     
     def get(self, request):
@@ -61,7 +61,7 @@ class ClosetProductRecommend(APIView):
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
-
+# 날씨 기반 상품 추천 View
 class ProductRecommendView(APIView): 
     
     def post(self, request):
