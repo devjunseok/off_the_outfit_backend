@@ -171,6 +171,22 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
         
         return instance
 
+class UserUpdateSerializer(serializers.ModelSerializer):  # 회원정보 변경 serializer
+    class Meta:
+        model = User
+        fields=("nickname", "email", "address", "height", "weight", "date_of_birth", "profile_image")
+    
+    def update(self, instance, validated_data): # 비밀번호 수정 
+        for key, value in validated_data.items():
+            if key == "password":
+                instance.set_password(value)
+                continue
+            setattr(instance, key, value)
+            
+        instance.save()
+        
+        return instance
+
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payload 커스텀
     username_field = get_user_model().USERNAME_FIELD

@@ -11,3 +11,6 @@ class Weather(models.Model):
 
     def __str__(self):
         return str(self.city)
+    
+    class Meta:
+        db_table = "weather"

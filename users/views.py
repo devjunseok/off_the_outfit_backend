@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from users.models import User
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer, UserUpdateSerializer
 
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -15,7 +15,7 @@ from rest_framework_simplejwt.views import (
 
 
 # Create your views here.
-class UserView(APIView):
+class UserView(APIView): # 회원정보 전체 보기, 회원가입, 회원정보 수정, 회원탈퇴 View
     permission_classes = [permissions.AllowAny]
     
     def get(self, request): # 회원정보 전체 보기
@@ -35,7 +35,7 @@ class UserView(APIView):
     def put(self, request): # 회원정보 수정
         user = get_object_or_404(User, id=request.user.id)
         if user == request.user:
-            serializer = UserSerializer(user, data=request.data, partial=True, context={"request": request})
+            serializer = UserUpdateSerializer(user, data=request.data, partial=True, context={"request": request})
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message":"변경되었습니다!"}, status=status.HTTP_200_OK)
@@ -74,7 +74,7 @@ class FollowView(APIView): # follow View
                 you.followings.add(me)
                 return Response({"message":"follow했습니다."}, status=status.HTTP_200_OK)
                 
-class ProfileView(APIView):  # 회원정보 조회
+class ProfileView(APIView):  # 회원정보 조회 View
 
     
     permission_classes = [permissions.IsAuthenticated]
@@ -97,7 +97,7 @@ class UserSearchView(generics.ListAPIView): # 유저 검색 View
 
     search_fields = ["username"]
 
-class GetPointView(APIView):
+class GetPointView(APIView): # 출석 포인트 View (하루에 한번 가능)
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
