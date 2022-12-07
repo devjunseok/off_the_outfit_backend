@@ -40,14 +40,17 @@ def forecast():
             
             day_date = day.find("span", attrs={"class":"date"}).get_text() #날짜
             day_temperature_lowest = day.find("span", attrs={"class":"lowest"}).get_text() # 최저기온
+            day_temperature_lowest = day_temperature_lowest.replace("최저기온", "").replace("°", "")
             day_temperature_highest = day.find("span", attrs={"class":"highest"}).get_text() # 최고기온
+            day_temperature_highest = day_temperature_highest.replace("최고기온", "").replace("°", "")
             day_blind = day.find("span", attrs={"class":"blind"}).get_text() # 날씨 상태
-
+            day_temperature = int(int(day_temperature_highest) + int(day_temperature_lowest)) / 2 # 평균 기온
 
             weather = Weather()
             weather.city = city
             weather.day_date = day_date
             weather.day_temperature_lowest = day_temperature_lowest
             weather.day_temperature_highest = day_temperature_highest
+            weather.day_temperature = day_temperature
             weather.day_blind = day_blind
             weather.save()
