@@ -31,7 +31,6 @@ class ClosetUserRecommend(APIView):
         user_collab = pd.DataFrame(user_collab, index=product_user.index, columns=product_user.index)
 
         recommend_list = user_collab[me_id].sort_values(ascending=False)[:10]
-        print(recommend_list)
         recommend_list = [x for x in recommend_list.keys()]
         
         users = User.objects.filter(id__in=recommend_list)
@@ -70,16 +69,13 @@ class ProductRecommendView(APIView):
         serializer = RegionSerializer(data=request.data)
     
         user_region =  Weather.objects.filter(city=request.data["city"]).values()[1]
-        print(user_region)
         user_region=user_region["city"]
         user_day_region = Weather.objects.filter(Q(city=user_region) & Q(day_date = now_date)).values()[0]
         user_temperature = user_day_region["day_temperature"]
         
         if user_temperature < 30:
             if serializer.is_valid():
-                print("hi")
                 product = Product.objects.filter(Q(category__gte=19) & Q(category__lte=36))
                 serializer = ProductSerializer(product, many=True)
-                print(serializer)
             return Response(serializer.data)
         return Response("틀렸음")
