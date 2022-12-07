@@ -78,4 +78,4 @@ class ProductRecommendView(APIView):
                 product = Product.objects.filter(Q(category__gte=19) & Q(category__lte=36))
                 serializer = ProductSerializer(product, many=True)
             return Response(serializer.data)
-        return Response("틀렸음")
+        return Response({"message":"데이터를 불러올 수 없습니다!"}, status=status.HTTP_400_BAD_REQUEST)
