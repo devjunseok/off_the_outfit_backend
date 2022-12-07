@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('', views.UserView.as_view(), name='user_view'), # 회원가입, 회원정보 수정, 회원정보 삭제 url
     path('api/token/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'), # 로그인 url
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # 리프레쉬 토근 url
     path('follow/<int:user_id>/', views.FollowView.as_view(),name='follow_view'), # follow url
     path('<int:user_id>/', views.ProfileView.as_view(), name='profile_view'), # 회원 정보 상세 조회, 수정 url
     path('search/', views.UserSearchView.as_view(), name = 'articles_search_view'),  # 유저 검색 url
