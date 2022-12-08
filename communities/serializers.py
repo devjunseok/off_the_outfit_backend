@@ -23,12 +23,16 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # ê²Œì‹
     user = serializers.SerializerMethodField()
     tags = TagListSerializerField()
     like_count = serializers.SerializerMethodField()
+    unlike_count = serializers.SerializerMethodField()
     
     def get_user(self, obj):
         return obj.user.nickname
     
     def get_like_count(self, obj):  
         return obj.like.count()
+    
+    def get_unlike_count(self, obj):  
+        return obj.unlike.count()
 
     class Meta:
         model = Feed
