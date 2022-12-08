@@ -19,32 +19,37 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'username': {
                 'error_messages': {
-                    'required': '아이디를 입력해주세요.'
+                    'required': '아이디를 입력해주세요.',
+                    'blank':'아이디를 입력해주세요.',
                     },
                     'required': True # default : True
                     },
             'email': {
                 'error_messages': {
                     'required': '이메일을 입력해주세요.',
+                    'blank':'이메일을 입력해주세요.',
                     'invalid': '알맞은 형식의 이메일을 입력해주세요.'
                     },
                     'required': True # default : True
                     },
             'nickname': {
                 'error_messages': {
-                    'required': '닉네임을 입력해주세요.'
+                    'required': '닉네임을 입력해주세요.',
+                    'blank':'닉네임을 입력해주세요.',
                     },
                     'required': True # default : True
                     },
             'address': {
                 'error_messages': {
-                    'required': '주소를 입력해주세요.'
+                    'required': '주소를 입력해주세요.',
+                    'blank':'주소를 입력해주세요.',
                     },
                     'required': True # default : True
                     },
             'gender': {
                 'error_messages': {
                     'required': '성별을 선택해주세요.',
+                    'blank':'성별을 선택해주세요.',
                     'invalid': '알맞은 성별을 선택해주세요!'
                     },
                     'required': True # default : True
@@ -64,20 +69,23 @@ class UserSerializer(serializers.ModelSerializer):
             'date_of_birth': {
                 'error_messages': {
                     'required': '생년월일을 입력해주세요.',
+                    'blank':'생년월일을 입력해주세요.',
                     'invalid': 'YYYY-MM-DD 형식으로 생년월일을 입력해주세요!'
                     },
                     'required': True # default : True
                     },
             'password': {
                 'error_messages': {
-                    'required': '비밀번호를 입력해주세요.'
+                    'required': '비밀번호를 입력해주세요.',
+                    'blank':'비밀번호를 입력해주세요.',
                     },
                     'required': True,
                     'write_only': True# default : True
                     },
             'term_agree': {
                 'error_messages': {
-                    'required': '개인정보 약관 동의를 해주세요!.',
+                    'required': '개인정보 약관 동의를 해주세요!',
+                    'blank':'개인정보 약관 동의를 해주세요!',
                     'invalid': '알맞은 형식으로 해주세요!'
                     },
                     'required': True # default : True
