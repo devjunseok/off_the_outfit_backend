@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from users.models import User
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer, PasswordChangeSerializer
 
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -54,6 +54,24 @@ class UserView(APIView):
 # jwt payload 커스텀
 class CustomTokenObtainPairView(TokenObtainPairView): 
     serializer_class = CustomTokenObtainPairSerializer
+
+# 비밀번호 변경 View
+class PasswordChangeView(APIView): 
+    
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    # 비밀번호 수정
+    def put(self, request): 
+        user = get_object_or_404(User, id=request.user.id)
+        if request.user == user:
+            serializer = PasswordChangeSerializer(user, data=request.data, context={"request": request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message":"비밀번호가 변경되었습니다!"}, status=status.HTTP_200_OK)
+        
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
     
 # follow View
 class FollowView(APIView): 
