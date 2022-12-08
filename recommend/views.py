@@ -10,6 +10,8 @@ from products.serializers import ProductSerializer
 from products.models import Product
 from weather.models import Weather
 from django.db.models import Q
+from datetime import date
+import random
 from datetime import datetime
 from recommend.serializers import RegionSerializer
 
@@ -65,17 +67,41 @@ class ClosetProductRecommend(APIView):
 class ProductRecommendView(APIView): 
     
     def post(self, request):
-        now_date = datetime.today().strftime("%m.%d.")
-        serializer = RegionSerializer(data=request.data)
-    
-        user_region =  Weather.objects.filter(city=request.data["city"]).values()[1]
-        user_region=user_region["city"]
-        user_day_region = Weather.objects.filter(Q(city=user_region) & Q(day_date = now_date)).values()[0]
-        user_temperature = user_day_region["day_temperature"]
+
+        # 일자 설정하기
+        today = date.today()
+        date_year, date_month, date_day= today.year, today.month, today.day
+        user_date = date(date_year, date_month, date_day).strftime('%m.%d.')
+
+        # 설정한 일자 + 입력한 지역 정보로 DB에서 온도 출력
+        user_day_region = Weather.objects.filter(Q(city=request.data['city']) & Q(day_date = user_date)).values()[0]
+        user_temperature = user_day_region['day_temperature']
         
-        if user_temperature < 30:
-            if serializer.is_valid():
-                product = Product.objects.filter(Q(category__gte=19) & Q(category__lte=36))
-                serializer = ProductSerializer(product, many=True)
-            return Response(serializer.data)
-        return Response({"message":"데이터를 불러올 수 없습니다!"}, status=status.HTTP_400_BAD_REQUEST)
+        # 출력한 온도를 기준으로 csv에서 추천 카테고리 출력
+        temps_data = pd.read_csv('recommend/csv/temperature.csv')
+        find_temps = temps_data.loc[(temps_data['temperature'] == user_temperature)]
+        
+        # 출력된 카테고리 랜덤으로 아우터, 상의, 하의 각 1개씩 랜덤으로 출력
+        r_outer = random.choice(find_temps['outer'].values[0].split(','))
+        r_top = random.choice(find_temps['top'].values[0].split(','))
+        r_bottom = random.choice(find_temps['bottom'].values[0].split(','))
+
+        # 시연을 위한 프린트문(삭제 예정)
+        print(find_temps.iloc[:,1:3])
+        print(f"아우터 : {r_outer}")
+        print(f"상의 : {r_top}")
+        print(f"하의 : {r_bottom}")
+
+        # 온도에 맞는 카테고리 출력 후 해당 카테고리와 일치한 상품 정보에서 '?' 랜덤한 상품 출력
+        outer = list(Product.objects.filter(Q(category__sub_category_name=r_outer)).order_by('?'))[0:1]
+        top = list(Product.objects.filter(Q(category__sub_category_name=r_top)).order_by('?'))[0:1]
+        bottom = list(Product.objects.filter(Q(category__sub_category_name=r_bottom)).order_by('?'))[0:1]
+        outer = ProductSerializer(outer, many=True)
+        top = ProductSerializer(top, many=True)
+        bottom = ProductSerializer(bottom, many=True)
+        
+        # 출력 양식에 맞춰서 데이터 변환
+        serializer = [outer.data[0], top.data[0], bottom.data[0]]
+        return Response(serializer, status=status.HTTP_200_OK)
+
+        
