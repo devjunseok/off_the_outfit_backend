@@ -20,8 +20,12 @@ class FeedSerializer(TaggitSerializer, serializers.ModelSerializer): #게시글 
         
 
 class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # 게시글 전체 보기 serializer
+    user = serializers.SerializerMethodField()
     tags = TagListSerializerField()
     like_count = serializers.SerializerMethodField()
+    
+    def get_user(self, obj):
+        return obj.user.nickname
     
     def get_like_count(self, obj):  
         return obj.like.count()
