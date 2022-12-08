@@ -4,24 +4,22 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 import sqlite3
-from pprint import pprint
 from users.serializers import UserProfileSerializer
 from users.models import User
 from products.serializers import ProductSerializer
 from products.models import Product
-from recommend.serializers import ProductSerializer,RegionSerializer
-from weather.serializers import WeatherSerializer
 from weather.models import Weather
 from django.db.models import Q
 from datetime import date
 import random
+from datetime import datetime
+from recommend.serializers import RegionSerializer
 
-
-
+# 유저 기반 옷장 상품 추천 View
 class ClosetUserRecommend(APIView):
-    
+    #유저 기반 추천
     def get(self, request): 
-        #유저 기반 추천
+
         me_id = request.user.id
         closet = sqlite3.connect('./db.sqlite3')
         my_connection = pd.read_sql(f"SELECT id, user_id, product_id FROM closet WHERE user_id = {me_id};", closet, index_col='id')
@@ -35,14 +33,13 @@ class ClosetUserRecommend(APIView):
         user_collab = pd.DataFrame(user_collab, index=product_user.index, columns=product_user.index)
 
         recommend_list = user_collab[me_id].sort_values(ascending=False)[:10]
-        print(recommend_list)
         recommend_list = [x for x in recommend_list.keys()]
         
         users = User.objects.filter(id__in=recommend_list)
         serializer = UserProfileSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-
+# 상품 기반 추천 View
 class ClosetProductRecommend(APIView):
     
     def get(self, request):
@@ -66,10 +63,11 @@ class ClosetProductRecommend(APIView):
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
-
+# 날씨 기반 상품 추천 View
 class ProductRecommendView(APIView): 
     
     def post(self, request):
+
         # 일자 설정하기
         today = date.today()
         date_year, date_month, date_day= today.year, today.month, today.day
@@ -105,3 +103,5 @@ class ProductRecommendView(APIView):
         # 출력 양식에 맞춰서 데이터 변환
         serializer = [outer.data[0], top.data[0], bottom.data[0]]
         return Response(serializer, status=status.HTTP_200_OK)
+
+        
