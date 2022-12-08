@@ -19,65 +19,77 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'username': {
                 'error_messages': {
-                    'required': '아이디를 입력해주세요.'
+                    'required': '아이디를 입력해주세요.',
+                    'blank':'아이디를 입력해주세요.',
                     },
                     'required': True # default : True
                     },
             'email': {
                 'error_messages': {
                     'required': '이메일을 입력해주세요.',
+                    'blank':'이메일을 입력해주세요.',
                     'invalid': '알맞은 형식의 이메일을 입력해주세요.'
                     },
                     'required': True # default : True
                     },
             'nickname': {
                 'error_messages': {
-                    'required': '닉네임을 입력해주세요.'
+                    'required': '닉네임을 입력해주세요.',
+                    'blank':'닉네임을 입력해주세요.',
                     },
                     'required': True # default : True
                     },
             'address': {
                 'error_messages': {
-                    'required': '주소를 입력해주세요.'
+                    'required': '주소를 입력해주세요.',
+                    'blank':'주소를 입력해주세요.',
                     },
                     'required': True # default : True
                     },
             'gender': {
                 'error_messages': {
                     'required': '성별을 선택해주세요.',
+                    'blank':'성별을 선택해주세요.',
                     'invalid': '알맞은 성별을 선택해주세요!'
                     },
                     'required': True # default : True
                     },
             'height': {
                 'error_messages': {
-                    'required': '키를 입력해주세요.'
+                    'required': '키를 입력해주세요.',
+                    'blank':'키를 입력해주세요.',
+                    'invalid': '숫자만 입력 가능합니다.'
                     },
                     'required': True # default : True
                     },
             'weight': {
                 'error_messages': {
-                    'required': '몸무게를 입력해주세요'
+                    'required': '몸무게를 입력해주세요',
+                    'blank':'몸무게를 입력해주세요.',
+                    'invalid': '숫자만 입력 가능합니다'
                     },
                     'required': True # default : True
                     },
             'date_of_birth': {
                 'error_messages': {
                     'required': '생년월일을 입력해주세요.',
+                    'blank':'생년월일을 입력해주세요.',
                     'invalid': 'YYYY-MM-DD 형식으로 생년월일을 입력해주세요!'
                     },
                     'required': True # default : True
                     },
             'password': {
                 'error_messages': {
-                    'required': '비밀번호를 입력해주세요.'
+                    'required': '비밀번호를 입력해주세요.',
+                    'blank':'비밀번호를 입력해주세요.',
                     },
                     'required': True,
                     'write_only': True# default : True
                     },
             'term_agree': {
                 'error_messages': {
-                    'required': '개인정보 약관 동의를 해주세요!.',
+                    'required': '개인정보 약관 동의를 해주세요!',
+                    'blank':'개인정보 약관 동의를 해주세요!',
                     'invalid': '알맞은 형식으로 해주세요!'
                     },
                     'required': True # default : True
@@ -90,15 +102,12 @@ class UserSerializer(serializers.ModelSerializer):
         USERNAME_VALIDATION = r"^(?=.*[$@$!%*?&]){1,2}"
         NICKNAME_VALIDATION = r"^(?=.*[$@$!%*?&])"
         ADDRESS_VALIDATION = r"^(?=.*[$@$!%*?&])"
-        HEIGHT_VALIDATION = r"^(?=.*[A-Za-z])"
         
         username = data.get('username')
         nickname = data.get('nickname')
         password = data.get('password')
         password2 = data.get('password2')
         address = data.get('address')
-        height = data.get('height')
-        weight = data.get('weight')
         term_agree = data.get('term_agree')
         
         
@@ -110,13 +119,7 @@ class UserSerializer(serializers.ModelSerializer):
         
         if re.search(ADDRESS_VALIDATION, str(address)): # 주소 유효성 검사
             raise serializers.ValidationError(detail={"address":"주소에는 특수문자가 포함될 수 없습니다!"})
-        
-        if re.search(HEIGHT_VALIDATION, str(height)): # 키 유효성 검사
-            raise serializers.ValidationError(detail={"height":"숫자만 입력 가능합니다!"})
-        
-        if re.search(HEIGHT_VALIDATION, str(weight)): # 몸무게 유효성 검사
-            raise serializers.ValidationError(detail={"weight": "숫자만 입력 가능합니다!"})
-        
+    
         
         if password: # 비밀번호 유효성 검사
             if password != password2:
@@ -160,33 +163,20 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
-    def update(self, instance, validated_data): # 비밀번호 수정 
-        for key, value in validated_data.items():
-            if key == "password":
-                instance.set_password(value)
-                continue
-            setattr(instance, key, value)
-            
+    def update(self, instance, validated_data): # 회원정보 수정
+        instance.nickname = validated_data.get('nickname', instance.nickname)
+        instance.email = validated_data.get('email', instance.email)
+        instance.address = validated_data.get('address', instance.address)
+        instance.height = validated_data.get('height', instance.height)
+        instance.weight = validated_data.get('weight', instance.weight)
+        instance.date_of_birth = validated_data.get('date_of_birth', instance.date_of_birth)
+        instance.profile_image = validated_data.get('profile_image', instance.profile_image)
         instance.save()
         
         return instance
     
-# 회원정보 변경 serializer
-class UserUpdateSerializer(serializers.ModelSerializer):  
-    class Meta:
-        model = User
-        fields=("nickname", "email", "address", "height", "weight", "date_of_birth", "profile_image")
-    
-    def update(self, instance, validated_data): # 비밀번호 수정 
-        for key, value in validated_data.items():
-            if key == "password":
-                instance.set_password(value)
-                continue
-            setattr(instance, key, value)
-            
-        instance.save()
-        
-        return instance
+
+
 
 # jwt payload 커스텀 serializer
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   

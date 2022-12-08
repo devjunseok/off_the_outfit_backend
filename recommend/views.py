@@ -12,8 +12,6 @@ from weather.models import Weather
 from django.db.models import Q
 from datetime import date
 import random
-from datetime import datetime
-from recommend.serializers import RegionSerializer
 
 # 유저 기반 옷장 상품 추천 View
 class ClosetUserRecommend(APIView):
