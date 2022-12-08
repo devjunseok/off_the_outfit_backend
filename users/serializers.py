@@ -10,8 +10,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import serializers
 
 
-
-class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
+# 회원기능 serializer
+class UserSerializer(serializers.ModelSerializer): 
     password2= serializers.CharField(error_messages={'required':'비밀번호를 입력해주세요.', 'blank':'비밀번호를 입력해주세요.', 'write_only':True})
     class Meta:
         model = User
@@ -170,8 +170,9 @@ class UserSerializer(serializers.ModelSerializer): # 회원기능 serializer
         instance.save()
         
         return instance
-
-class UserUpdateSerializer(serializers.ModelSerializer):  # 회원정보 변경 serializer
+    
+# 회원정보 변경 serializer
+class UserUpdateSerializer(serializers.ModelSerializer):  
     class Meta:
         model = User
         fields=("nickname", "email", "address", "height", "weight", "date_of_birth", "profile_image")
@@ -187,8 +188,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):  # 회원정보 변경 
         
         return instance
 
-
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payload 커스텀
+# jwt payload 커스텀 serializer
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   
     username_field = get_user_model().USERNAME_FIELD
     token_class = RefreshToken
 
@@ -223,8 +224,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   # jwt payloa
 
         return token
 
-
-class UserProfileSerializer(serializers.ModelSerializer): # 회원정보 조회 serializer
+# 회원정보 조회 serializer
+class UserProfileSerializer(serializers.ModelSerializer): 
 
     class Meta:
         model = User

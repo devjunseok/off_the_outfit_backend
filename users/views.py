@@ -14,8 +14,8 @@ from rest_framework_simplejwt.views import (
 )
 
 
-# Create your views here.
-class UserView(APIView): # 회원정보 전체 보기, 회원가입, 회원정보 수정, 회원탈퇴 View
+# 회원정보 전체 보기, 회원가입, 회원정보 수정, 회원탈퇴 View
+class UserView(APIView): 
     permission_classes = [permissions.AllowAny]
     
     def get(self, request): # 회원정보 전체 보기
@@ -23,16 +23,16 @@ class UserView(APIView): # 회원정보 전체 보기, 회원가입, 회원정�
         serializer = UserProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    
-    def post(self, request):  # 회원가입
+    # 회원가입
+    def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({"message":"가입완료!"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
-    def put(self, request): # 회원정보 수정
+    # 회원정보 수정
+    def put(self, request): 
         user = get_object_or_404(User, id=request.user.id)
         if user == request.user:
             serializer = UserUpdateSerializer(user, data=request.data, partial=True, context={"request": request})
@@ -43,23 +43,25 @@ class UserView(APIView): # 회원정보 전체 보기, 회원가입, 회원정�
         else:
             return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
 
-
-    def delete(self, request): # 회원탈퇴
+    # 회원탈퇴
+    def delete(self, request):
         if request.user.is_authenticated:
             request.user.delete()
             return Response({"message":"탈퇴되었습니다!"}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
-
-class CustomTokenObtainPairView(TokenObtainPairView): # jwt payload 커스텀
+        
+# jwt payload 커스텀
+class CustomTokenObtainPairView(TokenObtainPairView): 
     serializer_class = CustomTokenObtainPairSerializer
-
-class FollowView(APIView): # follow View
+    
+# follow View
+class FollowView(APIView): 
 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-
+    # follow
     def post (self, request, user_id):
         you = get_object_or_404(User, id=user_id)
         me = request.user
@@ -73,8 +75,9 @@ class FollowView(APIView): # follow View
             else:
                 you.followings.add(me)
                 return Response({"message":"follow했습니다."}, status=status.HTTP_200_OK)
-                
-class ProfileView(APIView):  # 회원정보 조회 View
+            
+# 회원정보 상세 조회 View                
+class ProfileView(APIView):
 
     
     permission_classes = [permissions.IsAuthenticated]
@@ -85,7 +88,8 @@ class ProfileView(APIView):  # 회원정보 조회 View
         serializer = UserProfileSerializer(user)  
         return Response(serializer.data)
     
-class UserSearchView(generics.ListAPIView): # 유저 검색 View
+# 유저 검색 View    
+class UserSearchView(generics.ListAPIView): 
         
     permission_classes = [permissions.AllowAny]    
     
@@ -97,7 +101,8 @@ class UserSearchView(generics.ListAPIView): # 유저 검색 View
 
     search_fields = ["username"]
 
-class GetPointView(APIView): # 출석 포인트 View (하루에 한번 가능)
+# 출석 포인트 View (하루에 한번 가능)
+class GetPointView(APIView): 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
