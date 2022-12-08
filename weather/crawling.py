@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from weather.models import Weather
 
-
+# 네이버 날씨 크롤링
 def forecast():
 
     cities = ['서울특별시',
