@@ -120,7 +120,7 @@ class CommunitiesFeedLikeView(APIView): # 게시글 좋아요 View
     
     def post(self, request,feed_id ): # 게시글 좋아요
         feed = get_object_or_404(Feed, id=feed_id)
-        feed_user = User.objects.get(id=feed_id)
+        feed_user = User.objects.get(id=feed.user.pk)
         
         if request.user in feed.like.all():
             feed_user.point -=1
@@ -129,7 +129,6 @@ class CommunitiesFeedLikeView(APIView): # 게시글 좋아요 View
             return Response({"message":"좋아요 취소했습니다!"}, status=status.HTTP_200_OK)
         else:
             feed_user.point +=1
-            print(feed_user.point)
             feed_user.save()
             feed.like.add(request.user)
             return Response({"message":"좋아요 했습니다!"}, status=status.HTTP_200_OK)
