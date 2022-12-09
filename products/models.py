@@ -47,7 +47,7 @@ class ProductCategoryRelation(models.Model):
 
 
     class Meta:
-        db_table = "produce_category_relation"
+        db_table = "products_category_relation"
 class Post(models.Model):
     POST_TYPE = (
         ('REVIEW', '후기(review)'),
