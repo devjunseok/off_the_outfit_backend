@@ -21,7 +21,7 @@ class ArticlesFeedView(APIView):  # 게시글 전체보기, 등록 View
         serializer = FeedListSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-        
+    
     def post(self, request): # 게시글 등록
 
         serializer = FeedSerializer(data=request.data)
@@ -62,9 +62,14 @@ class FeedCommentDetailView(APIView):  #댓글(수정,삭제) View
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message":"댓글 수정했습니다!"}, status=status.HTTP_200_OK)
+            
     def delete(self, request, feed_id, comment_id): # 댓글 삭제
             comment = get_object_or_404(Comment, id= comment_id)
+            feed_user = get_object_or_404(User, id=request.user.id)
+    
             if request.user == comment.user:
+                feed_user.point -=1
+                feed_user.save()
                 comment.delete()
                 return Response({"message":"댓글 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
             else:
@@ -94,11 +99,14 @@ class ArticlesFeedDetailView(APIView): #게시글 상세조회, 수정, 삭제 V
         else:
             return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
             
-    
 
     def delete(self, request, feed_id): # 게시글 삭제
         feed = get_object_or_404(Feed, id= feed_id)
+        feed_user = get_object_or_404(User, id=request.user.id)
+        
         if request.user == feed.user:
+            feed_user.point -=1
+            feed_user.save()
             feed.delete()
             return Response({"message":"게시글이 삭제되었습니다!"},status=status.HTTP_204_NO_CONTENT)
         else:
