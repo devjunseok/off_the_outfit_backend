@@ -1,5 +1,5 @@
-from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer,ReportSerializer
-from communities.models import Feed ,Comment,ReComment, SearchWord,ReportFeed
+from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer, ReportSerializer, SearchWordSerializer
+from communities.models import Feed ,Comment,ReComment, SearchWord, ReportFeed
 
 from users.models import User
 
@@ -241,6 +241,44 @@ class ReportView(APIView): # 게시글 신고 View
             serializer.save(user=request.user, feed_id=feed_id)
             
         return Response({"message":"신고가 완료되었습니다."}, status=status.HTTP_200_OK)
+    
+
+# 검색어 전체 조회 View
+class CommunitySearchWordListView(APIView):
+    
+    def get(self, request):
+        words = SearchWord.objects.all().order_by('-created_at')
+        serializer = SearchWordSerializer(words, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+
+# 검색어 랭킹 View
+class SearchWordRankingView(APIView):
+    
+    def get(self, requset):
+        words = SearchWord.objects.all().order_by('word')
+        serializer = SearchWordSerializer(words, many=True)
+        
+        result_set = set()
+        word_list = []
+        
+        for word in serializer.data:
+            result_set.add(word['word'])
+            
+        result_set = list(result_set)
+        
+        for result in result_set:
+            count = 0
+            for i in serializer.data:
+                i = i['word']
+                if result == i:
+                    count += 1
+            word_list.append({
+                "word" : result,
+                "count" : count
+            })
+        
+        return Response(word_list, status=status.HTTP_200_OK)
     
     
     
