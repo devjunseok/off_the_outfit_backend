@@ -13,6 +13,8 @@ urlpatterns = [
     path('follow/<int:user_id>/', views.FollowView.as_view(),name='follow_view'), # follow url
     path('passwordchange/', views.PasswordChangeView.as_view(), name='passwordchange_view'), # 비밀번호 변경 url
     path('<int:user_id>/', views.ProfileView.as_view(), name='profile_view'), # 회원 정보 상세 조회, 수정 url
+    path('<int:user_id>/followings/', views.GetFollowingsView.as_view(), name='followings_view'), # 팔로잉 유저 조회
+    path('<int:user_id>/followers/', views.GetFollowersView.as_view(), name='followers_view'), # 팔로워 유저 조회
     path('search/', views.UserSearchView.as_view(), name = 'articles_search_view'),  # 유저 검색 url
     path('point/<int:user_id>/', views.GetPointView.as_view(), name='get_point_view'), # 버튼 클릭 포인트 획득 url
 ]

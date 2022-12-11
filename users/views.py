@@ -138,3 +138,20 @@ class GetPointView(APIView):
                 user.save()
             return Response({"message":"출석점수 1점을 획득하셨습니다."}, status=status.HTTP_200_OK)
         return Response({"message":"권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+    
+# 팔로잉 유저 조회
+class GetFollowingsView(APIView):
+    
+    def get(self, request, user_id):
+        users = User.objects.filter(followers = user_id)
+        serializer = UserProfileSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+# 팔로워 유저 조회
+class GetFollowersView(APIView):
+    
+    def get(self, request, user_id):
+        users = User.objects.filter(followings = user_id)
+        serializer = UserProfileSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
