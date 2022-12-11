@@ -215,6 +215,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
+
+class UserProfileTestSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        field = "__all__"
 # 회원정보 조회 serializer
 class UserProfileSerializer(serializers.ModelSerializer): 
     followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)

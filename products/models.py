@@ -45,7 +45,6 @@ class ProductCategoryRelation(models.Model):
     products = models.ForeignKey(Product, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
-
     class Meta:
         db_table = "products_category_relation"
 class Post(models.Model):
