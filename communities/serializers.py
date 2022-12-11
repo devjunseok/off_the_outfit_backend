@@ -139,7 +139,6 @@ class SearchProductSerializer(serializers.ModelSerializer): # 상품 검색
         fields = '__all__'
         
 class ReportSerializer(serializers.ModelSerializer): #신고 시리얼라이즈
-    
 
     user = serializers.SerializerMethodField()
     

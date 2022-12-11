@@ -215,6 +215,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
+
+class UserProfileTestSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        field = "__all__"
 # 회원정보 조회 serializer
 class UserProfileSerializer(serializers.ModelSerializer): 
     followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
@@ -237,7 +243,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('username', 'closet_set_count', 'feeds_count', 'nickname', 'email', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'profile_image', 'point', 'followings_count', 'followers_count', 'followings', 'followers')
+        fields = ('pk', 'username', 'closet_set_count', 'feeds_count', 'nickname', 'email', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'profile_image', 'point', 'followings_count', 'followers_count', 'followings', 'followers')
 
 class PasswordChangeSerializer(serializers.ModelSerializer): # 비밀번호 변경 serializer
     password2 = serializers.CharField(error_messages={'required':'비밀번호를 입력해주세요.', 'blank':'비밀번호를 입력해주세요.', 'write_only':True})
