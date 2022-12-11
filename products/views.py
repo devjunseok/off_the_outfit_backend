@@ -41,6 +41,27 @@ class ProductInfoView(APIView):
         else:
             return Response({"message":"상품 등록에 실패했습니다."}, status=status.HTTP_200_OK)
 
+class ProductInfoCategoryView(APIView):
+    
+    def get(self, request, category_id): # 상품정보 카테고리 별 조회
+        articles = Product.objects.filter(category=category_id)
+        serializer = ProductSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ProductInfoBrandView(APIView):
+    
+    def get(self, request, brand_id): # 상품정보 브랜드 별 조회
+        articles = Product.objects.filter(brand=brand_id)
+        serializer = ProductSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ProductInfoBrandiew(APIView):
+    
+    def get(self, request, category_id): # 상품정보 카테고리 별 조회회
+        articles = Product.objects.filter(category=category_id)
+        serializer = ProductSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ProductInfoDetailView(APIView):
     
