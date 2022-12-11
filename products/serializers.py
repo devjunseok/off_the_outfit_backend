@@ -1,22 +1,31 @@
 from rest_framework import serializers
-from products.models import Brand, Product, Category, Post, Reply, Closet, NameTag
+from products.models import Brand, Product, Category, Post, Reply, Closet, NameTag, ProductCategoryRelation
+
+# Category :: 카테고리 정보 관련 Serializer
+class CategorySerializer(serializers.ModelSerializer): # 카테고리 정보 전체 조회,
+    
+    class Meta:
+        model = Category
+        fields = '__all__'
 
 
 # Products :: 상품 정보 관련 Serializer 
 class ProductSerializer(serializers.ModelSerializer): # 상품 정보 전체 조회,
+    brand_name_kr = serializers.SerializerMethodField()
+    brand_name_en = serializers.SerializerMethodField()
+    category = CategorySerializer(many=True)
+
+    def get_brand_name_kr(self, obj):
+        return obj.brand.brand_name_kr
+    
+    def get_brand_name_en(self, obj):
+        return obj.brand.brand_name_en
     
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ("pk", "category", "brand_name_kr", "brand_name_en", "product_number", "product_name", "product_image", "original_price", "discount_price", "review_count", "brand")
         
-
-class ProductDetailSerializer(serializers.ModelSerializer): # 상품 정보 상세 조회,
-    
-    class Meta:
-        model = Product
-        fields = '__all__'  
         
-
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     
@@ -47,12 +56,6 @@ class BrandSerializer(serializers.ModelSerializer): # 브랜드 정보 전체 �
         fields = '__all__'
         
         
-# Category :: 카테고리 정보 관련 Serializer
-class CategorySerializer(serializers.ModelSerializer): # 카테고리 정보 전체 조회,
-    
-    class Meta:
-        model = Category
-        fields = '__all__'
         
         
 # Closet :: 옷장 관련 Serializer
