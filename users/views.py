@@ -89,11 +89,11 @@ class FollowView(APIView):
 
             return Response({"message":"스스로를 follow 할 수 없습니다"})
         else:
-            if me in you.followings.all():
-                you.followings.remove(me)
+            if me in you.followers.all():
+                you.followers.remove(me)
                 return Response({"message":"unfollow했습니다."}, status=status.HTTP_200_OK)
             else:
-                you.followings.add(me)
+                you.followers.add(me)
                 return Response({"message":"follow했습니다."}, status=status.HTTP_200_OK)
             
 # 회원정보 상세 조회 View                
