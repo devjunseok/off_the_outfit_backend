@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from users.models import User
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer, PasswordChangeSerializer
 
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -13,14 +13,16 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+from django.db.models import Q
+
 
 # 회원정보 전체 보기, 회원가입, 회원정보 수정, 회원탈퇴 View
 class UserView(APIView): 
     permission_classes = [permissions.AllowAny]
     
     def get(self, request): # 회원정보 전체 보기
-        user = get_object_or_404(User, id=request.user.id)
-        serializer = UserProfileSerializer(user)
+        user = User.objects.filter(~Q(id=request.user.id))
+        serializer = UserProfileSerializer(user, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     # 회원가입
@@ -54,6 +56,24 @@ class UserView(APIView):
 # jwt payload 커스텀
 class CustomTokenObtainPairView(TokenObtainPairView): 
     serializer_class = CustomTokenObtainPairSerializer
+
+# 비밀번호 변경 View
+class PasswordChangeView(APIView): 
+    
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    # 비밀번호 수정
+    def put(self, request): 
+        user = get_object_or_404(User, id=request.user.id)
+        if request.user == user:
+            serializer = PasswordChangeSerializer(user, data=request.data, context={"request": request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message":"비밀번호가 변경되었습니다!"}, status=status.HTTP_200_OK)
+        
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
     
 # follow View
 class FollowView(APIView): 
@@ -69,11 +89,11 @@ class FollowView(APIView):
 
             return Response({"message":"스스로를 follow 할 수 없습니다"})
         else:
-            if me in you.followings.all():
-                you.followings.remove(me)
+            if me in you.followers.all():
+                you.followers.remove(me)
                 return Response({"message":"unfollow했습니다."}, status=status.HTTP_200_OK)
             else:
-                you.followings.add(me)
+                you.followers.add(me)
                 return Response({"message":"follow했습니다."}, status=status.HTTP_200_OK)
             
 # 회원정보 상세 조회 View                
