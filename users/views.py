@@ -13,14 +13,16 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+from django.db.models import Q
+
 
 # 회원정보 전체 보기, 회원가입, 회원정보 수정, 회원탈퇴 View
 class UserView(APIView): 
     permission_classes = [permissions.AllowAny]
     
     def get(self, request): # 회원정보 전체 보기
-        user = get_object_or_404(User, id=request.user.id)
-        serializer = UserProfileSerializer(user)
+        user = User.objects.filter(~Q(id=request.user.id))
+        serializer = UserProfileSerializer(user, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     # 회원가입

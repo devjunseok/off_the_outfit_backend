@@ -2,7 +2,7 @@ from rest_framework import serializers
 from products.models import Product
 from taggit.serializers import (TagListSerializerField,
                                 TaggitSerializer)        #태그
-from communities.models import Feed,Comment,ReComment,ReportFeed
+from communities.models import Feed,Comment,ReComment,ReportFeed, SearchWord
 
 
 class FeedSerializer(TaggitSerializer, serializers.ModelSerializer): #게시글 작성, 수정 시리얼라이즈
@@ -150,4 +150,12 @@ class ReportSerializer(serializers.ModelSerializer): #신고 시리얼라이즈
     class Meta:
         model = ReportFeed
         fields='__all__'
+        
+
+# SearchWord :: 검색어 관련 Serializer
+class SearchWordSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = SearchWord
+        fields = '__all__'
         
