@@ -1,6 +1,6 @@
 import pandas as pd
 
-from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, ProductDetailSerializer, PostSerializer, ReplySerializer, ClosetSerializer, NameTagSerializer, NameTagViewSerializer
+from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, PostSerializer, ReplySerializer, ClosetSerializer, NameTagSerializer, NameTagViewSerializer
 from products.models import Brand, Category, Product, Post, Reply, Closet, NameTag
 from products.crawling import ProductsUpdate, MusinsaNumberProductsCreate
 
@@ -67,7 +67,7 @@ class ProductInfoDetailView(APIView):
     
     def get(self, request, product_number): # 상품 정보 상세 조회
         product = get_object_or_404(Product, product_number=product_number)
-        serializer = ProductDetailSerializer(product)
+        serializer = ProductSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def put(self, request, product_number): # 상품 정보 수정
