@@ -1,20 +1,31 @@
 import pandas as pd
+import random
+import sqlite3
+
 from sklearn.metrics.pairwise import cosine_similarity
+from datetime import date
+
+from users.serializers import UserProfileSerializer
+from users.models import User
+
+from products.serializers import ProductSerializer
+from products.models import Product
+
+
+from weather.models import Weather
+from django.db.models import Q
+
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-import sqlite3
-from users.serializers import UserProfileSerializer
-from users.models import User
-from products.serializers import ProductSerializer
-from products.models import Product
-from weather.models import Weather
-from django.db.models import Q
-from datetime import date
-import random
+from rest_framework import status, permissions
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # 유저 기반 옷장 상품 추천 View
 class ClosetUserRecommend(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
     #유저 기반 추천
     def get(self, request): 
 
@@ -39,6 +50,8 @@ class ClosetUserRecommend(APIView):
     
 # 상품 기반 추천 View
 class ClosetProductRecommend(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
     def get(self, request):
         me_id = request.user.id
@@ -62,7 +75,9 @@ class ClosetProductRecommend(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
         
 # 날씨 기반 상품 추천 View
-class ProductRecommendView(APIView): 
+class ProductRecommendView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
     def post(self, request):
 

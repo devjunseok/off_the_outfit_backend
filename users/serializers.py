@@ -11,7 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import serializers
 
 
-# 회원기능 serializer
+# 회원가입 serializer
 class UserSerializer(serializers.ModelSerializer): 
     password2= serializers.CharField(error_messages={'required':'비밀번호를 입력해주세요.', 'blank':'비밀번호를 입력해주세요.', 'write_only':True})
     class Meta:
@@ -179,7 +179,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-# jwt payload 커스텀 serializer
+# TokenObtainPairSerializer 커스텀 serializer
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):   
     username_field = get_user_model().USERNAME_FIELD
     token_class = RefreshToken
@@ -215,12 +215,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
-
-class UserProfileTestSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = User
-        field = "__all__"
 # 회원정보 조회 serializer
 class UserProfileSerializer(serializers.ModelSerializer): 
     followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
@@ -245,7 +239,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ('pk', 'username', 'closet_set_count', 'feeds_count', 'nickname', 'email', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'profile_image', 'point', 'followings_count', 'followers_count', 'followings', 'followers')
 
-class PasswordChangeSerializer(serializers.ModelSerializer): # 비밀번호 변경 serializer
+# 패스워드 변경 serializer
+class PasswordChangeSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(error_messages={'required':'비밀번호를 입력해주세요.', 'blank':'비밀번호를 입력해주세요.', 'write_only':True})
     
     class Meta:
