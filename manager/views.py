@@ -28,6 +28,7 @@ class FeedManageView(APIView): # 관리자 권한 게시글 관리 View
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
+    
     def post(self, request, feed_id): # 신고 횟수 초기화
         user = get_object_or_404(User, id=request.user.id)
         feed = get_object_or_404(Feed, id=feed_id)

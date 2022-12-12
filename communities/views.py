@@ -229,7 +229,7 @@ class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
 class ReportView(APIView): # 게시글 신고 View
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-
+    
     
     def post(self, request, feed_id):
         serializer = ReportSerializer(data=request.data)

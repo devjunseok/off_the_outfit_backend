@@ -24,6 +24,11 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # ê²Œì‹
     tags = TagListSerializerField()
     like_count = serializers.SerializerMethodField()
     unlike_count = serializers.SerializerMethodField()
+    reports = serializers.SerializerMethodField()
+    
+    def get_reports(self, instance):
+        reports = instance.reports.all()
+        return ReportSerializer(reports, many=True).data
     
     def get_user(self, obj):
         return obj.user.nickname
