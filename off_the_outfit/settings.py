@@ -192,7 +192,7 @@ MEDIA_URL = "/media/"
 
 CORS_ALLOW_ALL_ORIGINS = True
 # CORS 허용 목록에 ec2 ip를 추가합니다.
-CORS_ORIGIN_WHITELIST = ['https://www.offtheoutfit.com',]
+CORS_ORIGIN_WHITELIST = ['https://api.offtheoutfit.com',]
 # ex) CORS_ORIGIN_WHITELIST = ['http://43.201.72.190']
 
 # CSRF 허용 목록을 CORS와 동일하게 설정합니다.
