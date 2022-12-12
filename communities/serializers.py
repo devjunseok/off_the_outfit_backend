@@ -12,7 +12,10 @@ class FeedSerializer(TaggitSerializer, serializers.ModelSerializer): #게시글 
     
     def get_user(self, obj):
         return obj.user.email
-    
+
+    # def get_tags(self, obj):
+    #     print(obj.tags)
+    #     return 1    
     
     class Meta:
         model = Feed
@@ -37,6 +40,8 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # 게�
     class Meta:
         model = Feed
         fields = '__all__'
+
+
 
 
 class ReCommentListSerializer(serializers.ModelSerializer): #  대댓글을 작성을 위한 Serializer

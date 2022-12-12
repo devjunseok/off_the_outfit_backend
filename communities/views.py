@@ -18,19 +18,32 @@ class ArticlesFeedView(APIView):  # 게시글 전체보기, 등록 View
 
     def get(self, request): # 게시글 전체 보기
         articles = Feed.objects.all().order_by('-created_at')
-        serializer = FeedListSerializer(articles, many=True)
+        serializer = FeedListSerializer(articles, many=True)        
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     
     def post(self, request): # 게시글 등록
 
+        tags = request.data.tags
+        for tag in tags:
+            tag = tag.strip()
+            if tag != '':
+                Feed.tags.add(tag)
+
         serializer = FeedSerializer(data=request.data)
+
+
+
         me= User.objects.get(id=request.user.id)
         if serializer.is_valid():
             if me == request.user:
                 me.point += 1
                 me.save()
                 serializer.save(user=request.user)
+            # print(request.data)
+            # print(tags)
+            # print(tag)
+            # print(request.user)     
             return Response({"message":"게시글이 등록되었습니다!"}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
