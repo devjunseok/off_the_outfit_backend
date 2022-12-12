@@ -40,7 +40,7 @@ class UserView(APIView):
             serializer = UserSerializer(user, data=request.data, partial=True, context={"request": request})
             if serializer.is_valid():
                 serializer.save()
-                return Response({"message":"변경되었습니다!"}, status=status.HTTP_200_OK)
+                return Response({"message":"변경되었습니다!","nickname":user.nickname}, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)

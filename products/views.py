@@ -1,6 +1,6 @@
 import pandas as pd
 
-from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, PostSerializer, ReplySerializer, ClosetSerializer, NameTagSerializer, NameTagViewSerializer
+from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, PostSerializer, ReplySerializer, ClosetSerializer, NameTagSerializer, NameTagViewSerializer, ClosetUserSerializer
 from products.models import Brand, Category, Product, Post, Reply, Closet, NameTag
 from products.crawling import ProductsUpdate, MusinsaNumberProductsCreate
 
@@ -326,4 +326,13 @@ class NameTagDetailView(APIView):
         articles = NameTag.objects.filter(user_id=request.user.id)
         serializer = NameTagViewSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class UserClosetView(APIView):
+    
+    def get(self, request, user_id):
+        articles = Closet.objects.filter(user_id=user_id)
+        serializer = ClosetUserSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
     
