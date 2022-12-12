@@ -64,7 +64,7 @@ class ClosetProductRecommend(APIView):
 # 날씨 기반 상품 추천 View
 class ProductRecommendView(APIView): 
     
-    def post(self, request):
+    def get(self, request, city):
 
         # 일자 설정하기
         today = date.today()
@@ -72,7 +72,7 @@ class ProductRecommendView(APIView):
         user_date = date(date_year, date_month, date_day).strftime('%m.%d.')
 
         # 설정한 일자 + 입력한 지역 정보로 DB에서 온도 출력
-        user_day_region = Weather.objects.filter(Q(city=request.data['city']) & Q(day_date = user_date)).values()[0]
+        user_day_region = Weather.objects.filter(Q(city=city) & Q(day_date = user_date)).values()[0]
         user_temperature = user_day_region['day_temperature']
         
         # 출력한 온도를 기준으로 csv에서 추천 카테고리 출력
@@ -91,15 +91,23 @@ class ProductRecommendView(APIView):
         print(f"하의 : {r_bottom}")
 
         # 온도에 맞는 카테고리 출력 후 해당 카테고리와 일치한 상품 정보에서 '?' 랜덤한 상품 출력
-        outer = list(Product.objects.filter(Q(category__sub_category_name=r_outer)).order_by('?'))[0:1]
-        top = list(Product.objects.filter(Q(category__sub_category_name=r_top)).order_by('?'))[0:1]
-        bottom = list(Product.objects.filter(Q(category__sub_category_name=r_bottom)).order_by('?'))[0:1]
+        outer = list(Product.objects.filter(Q(category__sub_category_name=r_outer)).order_by('?'))[0:5]
+        top = list(Product.objects.filter(Q(category__sub_category_name=r_top)).order_by('?'))[0:5]
+        bottom = list(Product.objects.filter(Q(category__sub_category_name=r_bottom)).order_by('?'))[0:5]
         outer = ProductSerializer(outer, many=True)
         top = ProductSerializer(top, many=True)
         bottom = ProductSerializer(bottom, many=True)
         
+        outer = outer.data
+        top = top.data
+        bottom = bottom.data
+        
         # 출력 양식에 맞춰서 데이터 변환
-        serializer = [outer.data[0], top.data[0], bottom.data[0]]
+        serializer = {
+            "outer":outer, 
+            "top":top, 
+            "bottom":bottom
+            }
         return Response(serializer, status=status.HTTP_200_OK)
 
         
