@@ -8,16 +8,33 @@ from communities.models import Feed,Comment,ReComment,ReportFeed, SearchWord
 class FeedSerializer(TaggitSerializer, serializers.ModelSerializer): #게시글 작성, 수정 시리얼라이즈
     user = serializers.SerializerMethodField()
     tags = TagListSerializerField()
-
     
     def get_user(self, obj):
-        return obj.user.email
-    
-    
+        return obj.user.email    
     class Meta:
         model = Feed
         fields = '__all__'
-        
+
+    def validate(self, data): # case2
+
+        tags = data['tags']
+        # my code
+        return data
+
+
+    def create(self, validated_data):
+
+        tags = validated_data.pop('tags')
+        validated_data.pop('like')
+        validated_data.pop('unlike')
+        instance = Feed.objects.create(**validated_data)
+        for tag in tags:
+            tag = tag.strip().split('#')
+            for feed_tag in tag:                
+                if feed_tag != '':
+                    instance.tags.add(feed_tag.strip())
+        return instance
+                
 
 class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # 게시글 전체 보기 serializer
     user = serializers.SerializerMethodField()
@@ -37,6 +54,8 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # 게�
     class Meta:
         model = Feed
         fields = '__all__'
+
+
 
 
 class ReCommentListSerializer(serializers.ModelSerializer): #  대댓글을 작성을 위한 Serializer
