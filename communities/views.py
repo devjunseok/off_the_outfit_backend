@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status, permissions, filters, generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 # 게시글 전체보기, 등록 View
@@ -18,13 +20,13 @@ class ArticlesFeedView(APIView):
     # 게시글 전체 보기
     def get(self, request): 
         articles = Feed.objects.all().order_by('-created_at')
-        serializer = FeedListSerializer(articles, many=True)
+        serializer = FeedListSerializer(articles, many=True)        
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     # 게시글 등록
     def post(self, request):
-
-        serializer = FeedSerializer(data=request.data)
+        serializer = FeedSerializer(data=request.data,)
         me= User.objects.get(id=request.user.id)
         if serializer.is_valid():
             if me == request.user:
@@ -295,6 +297,18 @@ class SearchWordRankingView(APIView):
         
         return Response(word_list, status=status.HTTP_200_OK)
     
-    
-    
+class FeedViewSet(ModelViewSet):
+    queryset = Feed.objects.none()
+    serializer_class = FeedSerializer
+    permission_classes = (IsAuthenticated,)
+    http_method_names = ['post', ]
 
+    def create(self, request, *args, **kwargs):
+        print(viewers_id_list)
+        viewers_id_list = [1, 2]
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid():
+            _serializer.save(viewers=viewers_id_list)
+            return Response(data=_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data=_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
