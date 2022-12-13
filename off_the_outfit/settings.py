@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "weather",
     "manager",
     "recommend",
+    'drf_yasg',
     
     'taggit.apps.TaggitAppConfig', # 태그
     'taggit_templatetags2', # 태그
