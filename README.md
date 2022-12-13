@@ -86,4 +86,4 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ## 6. DB 설계 ERD
 
-[https://www.erdcloud.com/d/6sxmes7iRCsjCDZRX](https://www.erdcloud.com/d/6sxmes7iRCsjCDZRX)
+![off_the_outfit](https://user-images.githubusercontent.com/111295065/207309475-759e6e8d-8265-4c49-8c8f-9f83478c329d.png)
