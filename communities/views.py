@@ -23,7 +23,6 @@ class ArticlesFeedView(APIView):
         serializer = FeedListSerializer(articles, many=True)        
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
     # 게시글 등록
     def post(self, request):
         serializer = FeedSerializer(data=request.data,)

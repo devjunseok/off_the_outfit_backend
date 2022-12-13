@@ -9,15 +9,11 @@ from communities.models import Feed,Comment,ReComment,ReportFeed, SearchWord
 class FeedSerializer(TaggitSerializer, serializers.ModelSerializer): 
     user = serializers.SerializerMethodField()
     tags = TagListSerializerField()
-     
-    class Meta:
-        model = Feed
-        fields = '__all__'
         
     def get_user(self, obj):
         return obj.user.email    
 
-    def validate(self, data): # case2
+    def validate(self, data):
         tags = data['tags']
         return data
 
@@ -33,6 +29,9 @@ class FeedSerializer(TaggitSerializer, serializers.ModelSerializer):
                     instance.tags.add(feed_tag.strip())
         return instance
                 
+    class Meta:
+        model = Feed
+        fields = '__all__'
 
 class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # 게시글 전체 보기 serializer
 
