@@ -4,32 +4,40 @@ from products.serializers import ProductSerializer, BrandSerializer, CategorySer
 from products.models import Brand, Category, Product, Post, Reply, Closet, NameTag
 from products.crawling import ProductsUpdate, MusinsaNumberProductsCreate
 
-from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status, permissions
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 
 # Products :: 상품 정보 관련 View 
 class ProductInfoUdateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def post(self, request): # 무신사 상품 정보 업데이트 (Crawling)
+    # 무신사 상품 정보 업데이트 (Crawling)
+    def post(self, request): 
         category_list = Category.objects.all().values()
         brand_list = Brand.objects.all().values()
         ProductsUpdate(category_list, brand_list)
         return Response({"message":"상품 정보가 업데이트 되었습니다!"}, status=status.HTTP_200_OK)
     
-            
+
+# 상품 정보 CRUD View          
 class ProductInfoView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def get(self, request): # 상품 정보 전체 조회
+    # 상품 정보 전체 조회
+    def get(self, request): 
         articles = Product.objects.all()
         serializer = ProductSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request): # 상품 정보 개별 등록        
+    # 상품 정보 개별 등록
+    def post(self, request):         
         result = MusinsaNumberProductsCreate(request.data)
         
         if result == None:
@@ -41,49 +49,60 @@ class ProductInfoView(APIView):
         else:
             return Response({"message":"상품 등록에 실패했습니다."}, status=status.HTTP_200_OK)
 
+# 상품정보 카테고리 별 조회 View
 class ProductInfoCategoryView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def get(self, request, category_id): # 상품정보 카테고리 별 조회
+    def get(self, request, category_id):
         articles = Product.objects.filter(category=category_id)
         serializer = ProductSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# 상품정보 브랜드 별 조회 View
 class ProductInfoBrandView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def get(self, request, brand_id): # 상품정보 브랜드 별 조회
+    def get(self, request, brand_id): 
         articles = Product.objects.filter(brand=brand_id)
         serializer = ProductSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# 상품정보 카테고리 별 조회 View
 class ProductInfoBrandiew(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def get(self, request, category_id): # 상품정보 카테고리 별 조회회
+    def get(self, request, category_id):
         articles = Product.objects.filter(category=category_id)
         serializer = ProductSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# 상품 정보 상세 조회 View
 class ProductInfoDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def get(self, request, product_number): # 상품 정보 상세 조회
+    def get(self, request, product_number): 
         product = get_object_or_404(Product, product_number=product_number)
         serializer = ProductSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    def put(self, request, product_number): # 상품 정보 수정
-        pass
-    
-    def delete(self, request): # 상품 정보 삭제
-        pass
 
+# 상품정보 게시글 View
 class ProductPostView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def get(self, request, product_number): # 상품 정보 게시글 전체 조회
+    # 상품 정보 게시글 전체 조회
+    def get(self, request, product_number): 
         articles = Post.objects.filter(product__product_number=product_number)
         serializer = PostSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request, product_number): # 상품 정보 게시글 작성
+    # 상품 정보 게시글 작성
+    def post(self, request, product_number): 
         product = Product.objects.get(product_number=product_number)
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid():
@@ -92,18 +111,23 @@ class ProductPostView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
+# 상품정보 게시글 상세 View
 class ProductPostDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def get(self, request, product_number, post_id): # 상품 정보 게시글 상세 조회
+     # 상품 정보 게시글 상세 조회
+    def get(self, request, product_number, post_id):
         articles = Post.objects.filter(id=post_id, product__product_number=product_number)
         serializer = PostSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def put(self, request): # 상품 정보 게시글 수정
+    # 상품 정보 게시글 수정
+    def put(self, request):
         pass
     
-    def delete(self, request, product_number, post_id): # 상품 정보 게시글 삭제
+    # 상품 정보 게시글 삭제
+    def delete(self, request, product_number, post_id): 
         post = get_object_or_404(Post, id= post_id)
         if request.user == post.user:
             post.delete()
@@ -112,12 +136,17 @@ class ProductPostDetailView(APIView):
             return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN) 
 
 
+# 상품 정보 게시글 댓글 View
 class ProductPostReplyView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def get(self, request): # 상품 정보 게시글 댓글 전체 조회
+    # 상품 정보 게시글 댓글 전체 조회
+    def get(self, request): 
         pass
     
-    def post(self, request, product_number, post_id): # 상품 정보 게시글 댓글 등록
+    # 상품 정보 게시글 댓글 등록
+    def post(self, request, product_number, post_id): 
         product = Product.objects.get(product_number=product_number)
         serializer = ReplySerializer(data=request.data)
         if serializer.is_valid():
@@ -126,10 +155,13 @@ class ProductPostReplyView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-
+# 상품 정보 게시글 댓글 상세 V
 class ProductPostReplyDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
-    def delete(self, request, product_number, post_id, reply_id): # 상품 정보 게시글 댓글 삭제
+    # 상품 정보 게시글 댓글 삭제
+    def delete(self, request, product_number, post_id, reply_id): 
         reply = get_object_or_404(Reply, id= reply_id)
         if request.user == reply.user:
             reply.delete()
@@ -141,8 +173,11 @@ class ProductPostReplyDetailView(APIView):
 
 # Brand :: 브랜드 정보 관련 View 
 class BrandInfoUpdateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def post(self, request): # 브랜드 정보 업데이트 (CSV)
+    # 브랜드 정보 업데이트 (CSV)
+    def post(self, request): 
         data = pd.read_csv('products/csv/brand_info.csv')
 
         for br in data['info']:
@@ -163,22 +198,29 @@ class BrandInfoUpdateView(APIView):
         
         return Response({"message":"브랜드 정보가 업데이트 되었습니다!"}, status=status.HTTP_200_OK)
     
-
+# 상품 브랜드 정보 View
 class BrandInfoView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def get(self, request): # 브랜드 정보 전체 조회
+    # 브랜드 정보 전체 조회
+    def get(self, request): 
         articles = Brand.objects.all()
         serializer = BrandSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request): # 브랜드 정보 개별 등록
+    # 브랜드 정보 개별 등록
+    def post(self, request): 
         pass
 
 
 # Category :: 카테고리 정보 관련 View     
 class CategoryInfoUpdateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def post(self, request): # 카테고리 정보 업데이트 (CSV)
+    # 카테고리 정보 업데이트 (CSV)
+    def post(self, request):
         data = pd.read_csv('products/csv/category_info.csv')
         
         for cate in data['info']:
@@ -201,10 +243,13 @@ class CategoryInfoUpdateView(APIView):
         
         return Response({"message":"카테고리 정보가 업데이트 되었습니다!"}, status=status.HTTP_200_OK)
 
-
+# 카테고리 정보 View
 class CategoryInfoView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
-    def get(self, request): # 카테고리 정보 전체 조회
+    # 카테고리 정보 전체 조회
+    def get(self, request): 
         articles = Category.objects.all()
         serializer = CategorySerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -215,12 +260,14 @@ class ClosetView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def get(self, request, product_number): # 상품 기준 옷장 조회
+    # 상품 기준 옷장 조회
+    def get(self, request, product_number): 
         articles = Closet.objects.all().order_by('-created_at')
         serializer = ClosetSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request, product_number): # 옷장 상품 등록 (name_tag 유무에 따라 등록)
+    # 옷장 상품 등록 (name_tag 유무에 따라 등록)
+    def post(self, request, product_number): 
         product = Product.objects.get(product_number=product_number)
         try:
             name_tag = request.data['name_tag']
@@ -248,9 +295,12 @@ class ClosetView(APIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
     
-
-class ClosetDetailView(APIView): #옷장 상세보기 수정, 삭제
+#옷장 상세보기 View
+class ClosetDetailView(APIView): 
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
+    # 옷장 수정
     def put(self, request, product_number, closet_id):
         try:
             name_tag = request.data['name_tag']
@@ -279,6 +329,7 @@ class ClosetDetailView(APIView): #옷장 상세보기 수정, 삭제
         else:
             return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
     
+    # 옷장 삭제
     def delete(self, request, product_number, closet_id):
         closet = get_object_or_404(Closet, id= closet_id)
         if request.user == closet.user:
@@ -288,12 +339,12 @@ class ClosetDetailView(APIView): #옷장 상세보기 수정, 삭제
             return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)         
 
     
-    
-class NameTagLikeView(APIView): # 옷장 태그 좋아요
-    
+# 옷장 삭제 View
+class NameTagLikeView(APIView): 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
+     # 옷장 태그 좋아요
     def post(self, request, nametag_id ): 
         nametag = get_object_or_404(NameTag, id=nametag_id)
         if request.user in nametag.like.all():
@@ -303,8 +354,10 @@ class NameTagLikeView(APIView): # 옷장 태그 좋아요
             nametag.like.add(request.user)
             return Response({"message":"옷장 좋아요 했습니다!"}, status=status.HTTP_200_OK)
     
-
+# 옷장 네임태그 View
 class NameTagView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
     def get(self, request):
         articles = NameTag.objects.filter(user_id=request.user.id)
@@ -319,16 +372,20 @@ class NameTagView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+# 옷장 네임태그 상세조회 View
 class NameTagDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
     def get(self, request, nametag_id):
         articles = NameTag.objects.filter(user_id=request.user.id)
         serializer = NameTagViewSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-
+# 옷장 View
 class UserClosetView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
     def get(self, request, user_id):
         articles = Closet.objects.filter(user_id=user_id)
