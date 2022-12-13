@@ -65,19 +65,27 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ### 이태겸 - [poro625 - Overview](https://github.com/poro625)
 
-## 4. 프로젝트 기능
+## 4. 프로젝트 개발 일정
 
-## 4-1. 트러블 슈팅
+[프로젝트 일정](https://www.notion.so/f51f73bbc4994210be44b2150300b96f)
 
-## 5. Architecture
+## 5. 프로젝트 기능
+
+## 5-1. 트러블 슈팅
+
+## 6. 와이어프레임
+
+[https://www.figma.com/file/hgtTToRaWbfP87GfNvHaMa/Off_the_Outfit?node-id=0%3A1&t=xw7FNe87Jr8IecaC-1](https://www.figma.com/file/hgtTToRaWbfP87GfNvHaMa/Off_the_Outfit?node-id=0%3A1&t=xw7FNe87Jr8IecaC-1)
+
+## 7. Architecture
 
 ![https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png](https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png)
 
-## 5. API 명세서
+## 8. API 명세서
 
 [off_the_outfit](https://documenter.getpostman.com/view/24729622/2s8YzUxMFF)
 
-## 6. DB 설계 ERD
+## 9. DB 설계 ERD
 
 ![https://user-images.githubusercontent.com/111295065/207309475-759e6e8d-8265-4c49-8c8f-9f83478c329d.png](https://user-images.githubusercontent.com/111295065/207309475-759e6e8d-8265-4c49-8c8f-9f83478c329d.png)
 
