@@ -1,7 +1,9 @@
 # off_the_outfit_backend
 ## 프로젝트
 
-### 오프더아웃핏 (off the outfit
+https://user-images.githubusercontent.com/111295065/207308458-f599cc0c-02fc-46ed-90c8-4a8b449348e0.png
+
+### 오프더아웃핏 (off the outfit)
 
 배포 사이트 :
 
@@ -9,7 +11,7 @@
 
 시연 영상 :
 
-youtube 링
+youtube 링크
 
 프로젝트 일정 : 2022.11.30 ~ 2022.12.29
 
@@ -21,7 +23,7 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ## 1. 프로젝트 주제
 
-### 당근마켓 모티브 개인 간 대여 서비스 플랫폼
+### 무신사 기반 패션 플랫폼
 
 사용자의 지역에 따라서 옷을 추천해주고, 자신의 스타일 정보를 공유하는 패션 플랫폼
 
@@ -72,9 +74,15 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ## 4. 프로젝트 기능
 
-## 4-2. 트러블 슈팅
+## 4-1. 트러블 슈팅
+
+## 5. Architecture
+
+!https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png
 
 ## 5. API 명세서
+
+[off_the_outfit](https://documenter.getpostman.com/view/24729622/2s8YzUxMFF)
 
 ## 6. DB 설계 ERD
 
