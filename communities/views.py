@@ -1,5 +1,5 @@
-from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer, ReportSerializer, SearchWordSerializer
-from communities.models import Feed ,Comment,ReComment, SearchWord, ReportFeed
+from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, ReportSerializer, SearchWordSerializer
+from communities.models import Feed ,Comment,ReComment, SearchWord
 
 from users.models import User
 
@@ -8,23 +8,24 @@ from rest_framework.response import Response
 from rest_framework import status, permissions, filters, generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
 
 
-
-class ArticlesFeedView(APIView):  # 게시글 전체보기, 등록 View
-    
+# 게시글 전체보기, 등록 View
+class ArticlesFeedView(APIView):  
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def get(self, request): # 게시글 전체 보기
+    # 게시글 전체 보기
+    def get(self, request): 
         articles = Feed.objects.all().order_by('-created_at')
-        serializer = FeedListSerializer(articles, many=True)
+        serializer = FeedListSerializer(articles, many=True)        
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    
-    def post(self, request): # 게시글 등록
-
-        serializer = FeedSerializer(data=request.data)
+    # 게시글 등록
+    def post(self, request):
+        serializer = FeedSerializer(data=request.data,)
         me= User.objects.get(id=request.user.id)
         if serializer.is_valid():
             if me == request.user:
@@ -35,10 +36,13 @@ class ArticlesFeedView(APIView):  # 게시글 전체보기, 등록 View
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class FeedCommentView(APIView): # 댓글 등록 View
-
-    def post(self, request, feed_id): # 댓글 등록
+# 댓글 등록 View
+class FeedCommentView(APIView): 
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    # 댓글 등록
+    def post(self, request, feed_id): 
         serializer = CommentListSerializer(data=request.data)
         me= User.objects.get(id=request.user.id)
         if serializer.is_valid():
@@ -50,20 +54,22 @@ class FeedCommentView(APIView): # 댓글 등록 View
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-            
-class FeedCommentDetailView(APIView):  #댓글(수정,삭제) View 
+#댓글(수정,삭제) View     
+class FeedCommentDetailView(APIView): 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    def put(self, request, feed_id, comment_id): # 댓글 수정
+    # 댓글 수정
+    def put(self, request, feed_id, comment_id):
         comment = get_object_or_404(Comment, id=comment_id)
         if request.user == comment.user:
             serializer = CommentListSerializer(comment, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message":"댓글 수정했습니다!"}, status=status.HTTP_200_OK)
-            
-    def delete(self, request, feed_id, comment_id): # 댓글 삭제
+    
+    # 댓글 삭제   
+    def delete(self, request, feed_id, comment_id): 
             comment = get_object_or_404(Comment, id= comment_id)
             feed_user = get_object_or_404(User, id=request.user.id)
     
@@ -75,18 +81,20 @@ class FeedCommentDetailView(APIView):  #댓글(수정,삭제) View
             else:
                 return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN) 
 
-        
-class ArticlesFeedDetailView(APIView): #게시글 상세조회, 수정, 삭제 View
     
+#게시글 상세조회, 수정, 삭제 View    
+class ArticlesFeedDetailView(APIView): 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def get(self, request, feed_id): # 게시글 상세 조회
+    # 게시글 상세 조회
+    def get(self, request, feed_id): 
         feed = get_object_or_404(Feed, id=feed_id)
         serializer = FeedDetailSerializer(feed)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request, feed_id): # 게시글 수정
+    # 게시글 수정
+    def put(self, request, feed_id): 
         feed = get_object_or_404(Feed, id= feed_id)
         if request.user == feed.user:
             serializer = FeedSerializer(feed, data=request.data)
@@ -99,8 +107,8 @@ class ArticlesFeedDetailView(APIView): #게시글 상세조회, 수정, 삭제 V
         else:
             return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
             
-
-    def delete(self, request, feed_id): # 게시글 삭제
+    # 게시글 삭제
+    def delete(self, request, feed_id):
         feed = get_object_or_404(Feed, id= feed_id)
         feed_user = get_object_or_404(User, id=request.user.id)
         
@@ -112,13 +120,13 @@ class ArticlesFeedDetailView(APIView): #게시글 상세조회, 수정, 삭제 V
         else:
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
 
-
-class CommunitiesFeedLikeView(APIView): # 게시글 좋아요 View
-    
+# 게시글 좋아요 View
+class CommunitiesFeedLikeView(APIView): 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def post(self, request,feed_id ): # 게시글 좋아요
+    # 게시글 좋아요
+    def post(self, request,feed_id ): 
         feed = get_object_or_404(Feed, id=feed_id)
         feed_user = User.objects.get(id=feed.user.pk)
         
@@ -133,13 +141,13 @@ class CommunitiesFeedLikeView(APIView): # 게시글 좋아요 View
             feed.like.add(request.user)
             return Response({"message":"좋아요 했습니다!"}, status=status.HTTP_200_OK)
         
-
-class CommunitiesFeedUnlikeView(APIView): # 게시글 싫어요 View
-    
+# 게시글 싫어요 View
+class CommunitiesFeedUnlikeView(APIView): 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def post(self, request,feed_id ): # 게시글 싫어요
+    # 게시글 싫어요
+    def post(self, request,feed_id ): 
         feed = get_object_or_404(Feed, id=feed_id)
         if request.user in feed.unlike.all():
             feed.unlike.remove(request.user)
@@ -148,13 +156,13 @@ class CommunitiesFeedUnlikeView(APIView): # 게시글 싫어요 View
             feed.unlike.add(request.user)
             return Response({"message":"싫어요 했습니다!"}, status=status.HTTP_200_OK)
         
-
-class CommentLike(APIView): # 댓글 좋아요 View
-    
+# 댓글 좋아요 View
+class CommentLike(APIView): 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def post(self, request,comment_id,feed_id ): # 댓글 좋아요
+    # 댓글 좋아요
+    def post(self, request,comment_id,feed_id ): 
         comment = get_object_or_404(Comment, id=comment_id)
         if request.user in comment.comment_like.all():
             comment.comment_like.remove(request.user)
@@ -163,10 +171,11 @@ class CommentLike(APIView): # 댓글 좋아요 View
             comment.comment_like.add(request.user)
             return Response({"message":"댓글 좋아요 했습니다!"}, status=status.HTTP_200_OK)
 
-
-class ReCommentUpload(APIView): # 대댓글 등록 View
+# 대댓글 등록 View
+class ReCommentUpload(APIView): 
     
-    def post(self, request, comment_id, feed_id): #대댓글 등록
+    #대댓글 등록
+    def post(self, request, comment_id, feed_id): 
         serializer = ReCommentListSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, comment_id=comment_id)
@@ -175,13 +184,13 @@ class ReCommentUpload(APIView): # 대댓글 등록 View
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-class ReCommentDetailView(APIView):  #대댓글(수정,삭제) View 
+#대댓글(수정,삭제) View 
+class ReCommentDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-    
 
-    
-    def delete(self, request,feed_id, comment_id, recomment_id): # 대댓글 삭제
+    # 대댓글 삭제
+    def delete(self, request,feed_id, comment_id, recomment_id): 
             recomment = get_object_or_404(ReComment, id= recomment_id)
             if request.user == recomment.user:
                 recomment.delete()
@@ -189,13 +198,13 @@ class ReCommentDetailView(APIView):  #대댓글(수정,삭제) View
             else:
                 return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN) 
 
-
-class ReCommentLike(APIView): # 대댓글 좋아요 View
-    
+# 대댓글 좋아요 View
+class ReCommentLike(APIView): 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def post(self, request,comment_id,feed_id,recomment_id ): # 댓글 좋아요
+    # 댓글 좋아요
+    def post(self, request,comment_id,feed_id,recomment_id ): 
         recomment = get_object_or_404(ReComment, id=recomment_id)
         if request.user in recomment.recomment_like.all():
             recomment.recomment_like.remove(request.user)
@@ -204,10 +213,10 @@ class ReCommentLike(APIView): # 대댓글 좋아요 View
             recomment.recomment_like.add(request.user)
             return Response({"message":"대댓글 좋아요 했습니다!"}, status=status.HTTP_200_OK)
     
-    
-class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
-    
-    permission_classes = [permissions.AllowAny]
+# 게시글 검색 View
+class CommunitySearchView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
     queryset = Feed.objects.all()
     serializer_class = FeedListSerializer # 게시글 전체 보기
@@ -218,18 +227,19 @@ class CommunitySearchView(generics.ListAPIView): # 게시글 검색 View
     # search_fields = ["user","products_name"]
     search_fields = ["user__nickname"]
     
-    def get(self, request, *args, **kwargs): # 검색어 저장 추가
+    # 검색어 저장 추가
+    def get(self, request, *args, **kwargs): 
         search = SearchWord()
         word = request.GET.get('search')
         search.word = word
         search.save()
         return self.list(request, *args, **kwargs)
 
-
-class ReportView(APIView): # 게시글 신고 View
+# 게시글 신고 View
+class ReportView(APIView): 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-
+    
     
     def post(self, request, feed_id):
         serializer = ReportSerializer(data=request.data)
@@ -245,7 +255,10 @@ class ReportView(APIView): # 게시글 신고 View
 
 # 검색어 전체 조회 View
 class CommunitySearchWordListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
+    # 검색어 조회
     def get(self, request):
         words = SearchWord.objects.all().order_by('-created_at')
         serializer = SearchWordSerializer(words, many=True)
@@ -254,7 +267,10 @@ class CommunitySearchWordListView(APIView):
 
 # 검색어 랭킹 View
 class SearchWordRankingView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
+    # 검색어 랭킹 조회
     def get(self, requset):
         words = SearchWord.objects.all().order_by('word')
         serializer = SearchWordSerializer(words, many=True)
@@ -280,6 +296,18 @@ class SearchWordRankingView(APIView):
         
         return Response(word_list, status=status.HTTP_200_OK)
     
-    
-    
+class FeedViewSet(ModelViewSet):
+    queryset = Feed.objects.none()
+    serializer_class = FeedSerializer
+    permission_classes = (IsAuthenticated,)
+    http_method_names = ['post', ]
 
+    def create(self, request, *args, **kwargs):
+        print(viewers_id_list)
+        viewers_id_list = [1, 2]
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid():
+            _serializer.save(viewers=viewers_id_list)
+            return Response(data=_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data=_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
