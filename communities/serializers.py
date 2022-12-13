@@ -59,7 +59,7 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer):
         return obj.user.user_id
     class Meta:
         model = Feed
-        fields = '__all__'
+        fields =("pk", "user", "user_id", "tags", "like_count", "unlike_count", "reports", "content", "image", "created_at", "updated_at", "report_point", "like", "unlike" )
 
 
 #  대댓글을 작성을 위한 Serializer

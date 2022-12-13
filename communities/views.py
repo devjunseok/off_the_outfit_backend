@@ -1,5 +1,5 @@
-from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, SearchProductSerializer, ReportSerializer, SearchWordSerializer
-from communities.models import Feed ,Comment,ReComment, SearchWord, ReportFeed
+from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, ReportSerializer, SearchWordSerializer
+from communities.models import Feed ,Comment,ReComment, SearchWord
 
 from users.models import User
 
@@ -9,7 +9,7 @@ from rest_framework import status, permissions, filters, generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 
 
 # 게시글 전체보기, 등록 View
