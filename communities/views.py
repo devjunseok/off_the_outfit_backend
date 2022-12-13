@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status, permissions, filters, generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 
@@ -21,29 +23,15 @@ class ArticlesFeedView(APIView):  # 게시글 전체보기, 등록 View
         serializer = FeedListSerializer(articles, many=True)        
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    
     def post(self, request): # 게시글 등록
 
-        tags = request.data.tags
-        for tag in tags:
-            tag = tag.strip()
-            if tag != '':
-                Feed.tags.add(tag)
-
-        serializer = FeedSerializer(data=request.data)
-
-
-
+        serializer = FeedSerializer(data=request.data,)
         me= User.objects.get(id=request.user.id)
         if serializer.is_valid():
             if me == request.user:
                 me.point += 1
                 me.save()
                 serializer.save(user=request.user)
-            # print(request.data)
-            # print(tags)
-            # print(tag)
-            # print(request.user)     
             return Response({"message":"게시글이 등록되었습니다!"}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -293,6 +281,18 @@ class SearchWordRankingView(APIView):
         
         return Response(word_list, status=status.HTTP_200_OK)
     
-    
-    
+class FeedViewSet(ModelViewSet):
+    queryset = Feed.objects.none()
+    serializer_class = FeedSerializer
+    permission_classes = (IsAuthenticated,)
+    http_method_names = ['post', ]
 
+    def create(self, request, *args, **kwargs):
+        print(viewers_id_list)
+        viewers_id_list = [1, 2]
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid():
+            _serializer.save(viewers=viewers_id_list)
+            return Response(data=_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data=_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
