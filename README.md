@@ -1,7 +1,8 @@
 # off_the_outfit_backend
+
 ## 프로젝트
 
-![제목 없음-2](https://user-images.githubusercontent.com/111295065/207308458-f599cc0c-02fc-46ed-90c8-4a8b449348e0.png)
+![https://user-images.githubusercontent.com/111295065/207308458-f599cc0c-02fc-46ed-90c8-4a8b449348e0.png](https://user-images.githubusercontent.com/111295065/207308458-f599cc0c-02fc-46ed-90c8-4a8b449348e0.png)
 
 ### 오프더아웃핏 (off the outfit)
 
@@ -15,11 +16,11 @@ youtube 링크
 
 프로젝트 일정 : 2022.11.30 ~ 2022.12.29
 
-프론트엔드 Repository : https://github.com/devjunseok/off_the_outfit_frontend
+프론트엔드 Repository : [https://github.com/devjunseok/off_the_outfit_frontend](https://github.com/devjunseok/off_the_outfit_frontend)
 
-백엔드  Repository :https://github.com/devjunseok/off_the_outfit_backend
+백엔드  Repository :[https://github.com/devjunseok/off_the_outfit_backend](https://github.com/devjunseok/off_the_outfit_backend)
 
-S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4308901a7ecdabade724) 
+S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4308901a7ecdabade724)
 
 ## 1. 프로젝트 주제
 
@@ -52,25 +53,17 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ## 3. 싸지방 팀 팀원 및 역할
 
-박준석 
+### 박준석 - [devjunseok - Overview](https://github.com/devjunseok)
 
-[devjunseok - Overview](https://github.com/devjunseok)
+팀장 / 프로젝트 기획 / user 기능/ DB 모델링 / EC2, CloudFront, S3를 이용한 프로젝트 배포 총괄
 
-노우석 
+### 노우석 - [WooSeok-Nho - Overview](https://github.com/WooSeok-Nho/)
 
-[WooSeok-Nho - Overview](https://github.com/WooSeok-Nho/)
+### 성창남 - [SungChangNam - Overview](https://github.com/SungChangNam)
 
-성창남 
+### 양기철 - [hanmariyang - Overview](https://github.com/hanmariyang)
 
-[SungChangNam - Overview](https://github.com/SungChangNam)
-
-양기철 
-
-[hanmariyang - Overview](https://github.com/hanmariyang)
-
-이태겸 
-
-[poro625 - Overview](https://github.com/poro625)
+### 이태겸 - [poro625 - Overview](https://github.com/poro625)
 
 ## 4. 프로젝트 기능
 
@@ -78,7 +71,7 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ## 5. Architecture
 
-!![Architecture](https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png)
+![https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png](https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png)
 
 ## 5. API 명세서
 
@@ -86,4 +79,6 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ## 6. DB 설계 ERD
 
-![off_the_outfit](https://user-images.githubusercontent.com/111295065/207309475-759e6e8d-8265-4c49-8c8f-9f83478c329d.png)
+![https://user-images.githubusercontent.com/111295065/207309475-759e6e8d-8265-4c49-8c8f-9f83478c329d.png](https://user-images.githubusercontent.com/111295065/207309475-759e6e8d-8265-4c49-8c8f-9f83478c329d.png)
+
+[https://www.erdcloud.com/d/6sxmes7iRCsjCDZRX](https://www.erdcloud.com/d/6sxmes7iRCsjCDZRX)
