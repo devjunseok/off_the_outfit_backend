@@ -62,6 +62,7 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 ### 노우석 - [WooSeok-Nho - Overview](https://github.com/WooSeok-Nho/)
 
 ### 성창남 - [SungChangNam - Overview](https://github.com/SungChangNam)
+팀원 / 프로젝트 기획 / communites 기능/ DB 모델링 / 댓글CRUD/좋아요/싫어요 
 
 ### 양기철 - [hanmariyang - Overview](https://github.com/hanmariyang)
 
