@@ -1,7 +1,7 @@
 # off_the_outfit_backend
 ## 프로젝트
 
-https://user-images.githubusercontent.com/111295065/207308458-f599cc0c-02fc-46ed-90c8-4a8b449348e0.png
+![제목 없음-2](https://user-images.githubusercontent.com/111295065/207308458-f599cc0c-02fc-46ed-90c8-4a8b449348e0.png)
 
 ### 오프더아웃핏 (off the outfit)
 
@@ -78,7 +78,7 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ## 5. Architecture
 
-!https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png
+!![Architecture](https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png)
 
 ## 5. API 명세서
 
