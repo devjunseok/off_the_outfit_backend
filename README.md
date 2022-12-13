@@ -2,7 +2,7 @@
 
 ## 프로젝트
 
-![https://user-images.githubusercontent.com/111295065/207308458-f599cc0c-02fc-46ed-90c8-4a8b449348e0.png](https://user-images.githubusercontent.com/111295065/207308458-f599cc0c-02fc-46ed-90c8-4a8b449348e0.png)
+![제목 없음-3](https://user-images.githubusercontent.com/111295065/207311764-a03c46e8-777b-4b5c-aeb0-94d58a8ebe19.png)
 
 ### 오프더아웃핏 (off the outfit)
 
@@ -15,6 +15,8 @@
 youtube 링크
 
 프로젝트 일정 : 2022.11.30 ~ 2022.12.29
+
+![calaender](https://user-images.githubusercontent.com/111295065/207312572-c009cd12-3a73-44f4-a5ed-4d89ff7ff246.png)
 
 프론트엔드 Repository : [https://github.com/devjunseok/off_the_outfit_frontend](https://github.com/devjunseok/off_the_outfit_frontend)
 
@@ -65,27 +67,24 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ### 이태겸 - [poro625 - Overview](https://github.com/poro625)
 
-## 4. 프로젝트 개발 일정
+## 4. 프로젝트 기능
 
-[프로젝트 일정](https://www.notion.so/f51f73bbc4994210be44b2150300b96f)
+## 4-1. 트러블 슈팅
 
-## 5. 프로젝트 기능
-
-## 5-1. 트러블 슈팅
-
-## 6. 와이어프레임
+## 5. 와이어프레임
 
 [https://www.figma.com/file/hgtTToRaWbfP87GfNvHaMa/Off_the_Outfit?node-id=0%3A1&t=xw7FNe87Jr8IecaC-1](https://www.figma.com/file/hgtTToRaWbfP87GfNvHaMa/Off_the_Outfit?node-id=0%3A1&t=xw7FNe87Jr8IecaC-1)
+![WIREFRAME](https://user-images.githubusercontent.com/111295065/207312359-91bb78a9-c108-4897-8cc3-e0cbb1f00cd0.png)
 
-## 7. Architecture
+## 6. Architecture
 
 ![https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png](https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png)
 
-## 8. API 명세서
+## 7. API 명세서
 
 [off_the_outfit](https://documenter.getpostman.com/view/24729622/2s8YzUxMFF)
 
-## 9. DB 설계 ERD
+## 8. DB 설계 ERD
 
 ![https://user-images.githubusercontent.com/111295065/207309475-759e6e8d-8265-4c49-8c8f-9f83478c329d.png](https://user-images.githubusercontent.com/111295065/207309475-759e6e8d-8265-4c49-8c8f-9f83478c329d.png)
 
