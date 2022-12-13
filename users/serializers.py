@@ -1,6 +1,7 @@
 import re
 
 from users.models import User
+
 from products.serializers import NameTagViewSerializer
 
 from django.contrib.auth import get_user_model
