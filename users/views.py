@@ -20,8 +20,9 @@ from django.db.models import Q
 class UserView(APIView): 
     permission_classes = [permissions.AllowAny]
     
-    def get(self, request): # 회원정보 전체 보기
-        user = User.objects.filter(~Q(id=request.user.id))
+    # 회원정보 전체 보기
+    def get(self, request):
+        user = User.objects.filter(~Q(id=request.user.id)) # request한 유저를 제외
         serializer = UserProfileSerializer(user, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -53,15 +54,15 @@ class UserView(APIView):
         else:
             return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN)
         
-# jwt payload 커스텀
+# TokenObtainPariView 커스텀 View
 class CustomTokenObtainPairView(TokenObtainPairView): 
     serializer_class = CustomTokenObtainPairSerializer
 
 # 비밀번호 변경 View
 class PasswordChangeView(APIView): 
-    
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+    
     # 비밀번호 수정
     def put(self, request): 
         user = get_object_or_404(User, id=request.user.id)
@@ -77,7 +78,6 @@ class PasswordChangeView(APIView):
     
 # follow View
 class FollowView(APIView): 
-
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
@@ -98,8 +98,6 @@ class FollowView(APIView):
             
 # 회원정보 상세 조회 View                
 class ProfileView(APIView):
-
-    
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -110,8 +108,8 @@ class ProfileView(APIView):
     
 # 유저 검색 View    
 class UserSearchView(generics.ListAPIView): 
-        
-    permission_classes = [permissions.AllowAny]    
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]    
     
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer # 유저 시리얼라이즈
@@ -139,8 +137,10 @@ class GetPointView(APIView):
             return Response({"message":"출석점수 1점을 획득하셨습니다."}, status=status.HTTP_200_OK)
         return Response({"message":"권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
     
-# 팔로잉 유저 조회
+# 팔로잉 유저 조회 View
 class GetFollowingsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
     def get(self, request, user_id):
         users = User.objects.filter(followers = user_id)
@@ -148,8 +148,10 @@ class GetFollowingsView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-# 팔로워 유저 조회
+# 팔로워 유저 조회 View
 class GetFollowersView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
     def get(self, request, user_id):
         users = User.objects.filter(followings = user_id)
