@@ -1,9 +1,8 @@
 from communities.serializers import FeedListSerializer
-
 from communities.models import Feed 
 
 from users.models import User
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer
+from users.serializers import UserProfileSerializer
 
 from rest_framework.views import APIView
 from rest_framework.response import Response

@@ -33,15 +33,6 @@ class FeedSerializer(TaggitSerializer, serializers.ModelSerializer):
         model = Feed
         fields = '__all__'
 
-class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): # 게시글 전체 보기 serializer
-
-    def get_user(self, obj):
-        return obj.user.email
-
-    class Meta:
-        model = Feed
-        fields = '__all__'
-        
         
 # 게시글 전체 보기 serializer
 class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer): 
@@ -64,9 +55,11 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer):
     def get_unlike_count(self, obj):  
         return obj.unlike.count()
 
+    def get_user_id(self, obj):
+        return obj.user.user_id
     class Meta:
         model = Feed
-        fields = '__all__'
+        fields =("pk", "user", "user_id", "tags", "like_count", "unlike_count", "reports", "content", "image", "created_at", "updated_at", "report_point", "like", "unlike" )
 
 
 #  대댓글을 작성을 위한 Serializer
