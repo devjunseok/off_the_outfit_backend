@@ -61,13 +61,15 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ### 노우석 - [WooSeok-Nho - Overview](https://github.com/WooSeok-Nho/)
 
-팀원 / user기능 / 날씨추천기능 / 포인트적립기능 / 프론트(비동기 식 정보수정,각종 CRUD API 연결 및 로직작성)
+팀원 / 프로젝트 기획 / user기능 / 날씨추천기능 / 포인트적립기능 / FrontEnd 제작,API연결
 
 ### 성창남 - [SungChangNam - Overview](https://github.com/SungChangNam)
 
 팀원 / 프로젝트 기획 / communities 기능/ DB 모델링 / FrontEnd 제작,API연결
 
 ### 양기철 - [hanmariyang - Overview](https://github.com/hanmariyang)
+
+팀원 / 프로젝트 기획 / products, recommend 기능 / 상품정보 크롤링 / DB모델링 / 추천 서비스 기능 / FrontEnd 템플릿 제작 및 API연결
 
 ### 이태겸 - [poro625 - Overview](https://github.com/poro625)
 
