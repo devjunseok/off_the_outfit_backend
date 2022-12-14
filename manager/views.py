@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
-
+from datetime import datetime, timedelta
 
 # 일정횟수 신고당한 게시글 열람 View
 class ReportFeedView(APIView): 
@@ -80,3 +80,12 @@ class UserManageDetailView(APIView):
                 all_user.delete()
                 return Response({"message":"회원을 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
         return Response({"message":"권한이 없습니다!"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserDeleteView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def delete(self, request):
+        User.objects.filter(last_login__lte=datetime.now()-timedelta(minutes=1)).delete()
+        return Response({"message":"회원을 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
