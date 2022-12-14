@@ -2,7 +2,7 @@
 
 ## 프로젝트
 
-![https://user-images.githubusercontent.com/111295065/207311764-a03c46e8-777b-4b5c-aeb0-94d58a8ebe19.png](https://user-images.githubusercontent.com/111295065/207311764-a03c46e8-777b-4b5c-aeb0-94d58a8ebe19.png)
+![title](https://user-images.githubusercontent.com/111295065/207591435-39d46ea9-f8df-4fd2-b8c9-2b1b1bbabe1e.png)
 
 ### 오프더아웃핏 (off the outfit)
 
