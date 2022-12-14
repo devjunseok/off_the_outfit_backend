@@ -87,5 +87,5 @@ class UserDeleteView(APIView):
     authentication_classes = [JWTAuthentication]
     
     def delete(self, request):
-        User.objects.filter(last_login__lte=datetime.now()-timedelta(minutes=1)).delete()
+        User.objects.filter(last_login__lte=datetime.now()-timedelta(days=365)).delete()
         return Response({"message":"회원을 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
