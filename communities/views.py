@@ -29,7 +29,7 @@ class ArticlesFeedView(APIView):
         me= User.objects.get(id=request.user.id)
         if serializer.is_valid():
             if me == request.user:
-                me.point += 1
+                me.point += 10
                 me.save()
                 serializer.save(user=request.user)
             return Response({"message":"게시글이 등록되었습니다!"}, status=status.HTTP_200_OK)
@@ -113,7 +113,7 @@ class ArticlesFeedDetailView(APIView):
         feed_user = get_object_or_404(User, id=request.user.id)
         
         if request.user == feed.user:
-            feed_user.point -=1
+            feed_user.point -=10
             feed_user.save()
             feed.delete()
             return Response({"message":"게시글이 삭제되었습니다!"},status=status.HTTP_204_NO_CONTENT)

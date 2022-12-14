@@ -3,9 +3,9 @@ from users.models import User
 
 
 class Brand(models.Model):
-    brand_name_kr = models.CharField('브랜드명_국문', max_length=50)
-    brand_name_en = models.CharField('브랜드명_영문', max_length=50)
-    brand_link = models.CharField('사이트 주소', max_length=50)
+    brand_name_kr = models.CharField('브랜드명_국문', max_length=500)
+    brand_name_en = models.CharField('브랜드명_영문', max_length=500)
+    brand_link = models.CharField('사이트 주소', max_length=500)
     
     def __str__(self):
         return str(self.brand_name_kr)
@@ -16,8 +16,8 @@ class Brand(models.Model):
 class Product(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     product_number = models.IntegerField('상품번호')
-    product_name = models.CharField('상품명', max_length=50)
-    product_image = models.CharField('이미지', max_length=100)
+    product_name = models.CharField('상품명', max_length=500)
+    product_image = models.CharField('이미지', max_length=500)
     original_price = models.IntegerField('정상가', null=True, blank=True)
     discount_price = models.IntegerField('할인가', null=True, blank=True)
     review_count = models.IntegerField('리뷰', null=True, blank=True)
@@ -30,11 +30,11 @@ class Product(models.Model):
         db_table = "products"
     
 class Category(models.Model):
-    main_category_name = models.CharField('메인 카테고리명', max_length=50)
+    main_category_name = models.CharField('메인 카테고리명', max_length=500)
     main_category_number = models.IntegerField('메인 카테고리 번호')
-    sub_category_name = models.CharField('서브 카테고리명', max_length=50)
+    sub_category_name = models.CharField('서브 카테고리명', max_length=500)
     sub_category_number = models.IntegerField('서브 카테고리 번호')
-    category_link = models.CharField('카테고리 링크', max_length=50)
+    category_link = models.CharField('카테고리 링크', max_length=500)
         
     def __str__(self):
         return str(self.sub_category_name)
