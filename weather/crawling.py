@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from weather.models import Weather
 
+from pprint import pprint
+
 # 네이버 날씨 크롤링
 def forecast():
 
@@ -22,10 +24,9 @@ def forecast():
             '전라남도',
             '경상북도',
             '경상남도',
-            '제주특별자치도']
+            '제주']
 
     for city in cities:
-
         url = f"https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query={city}날씨"
 
 
