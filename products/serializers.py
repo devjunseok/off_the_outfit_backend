@@ -69,20 +69,6 @@ class ClosetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Closet
         fields = '__all__'
-        
-# 유저 기준 옷장 조회 serializer     
-class ClosetUserSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
-    product = ProductSerializer()
-    
-    def get_user(self, obj):
-        return obj.user.nickname
-    
-    class Meta:
-        model = Closet
-        fields = ("pk", "user", "product", "name_tag", "created_at", "updated_at")
-        
-
 # 유저 옷장 태그 등록 serializer
 class NameTagSerializer(serializers.ModelSerializer): 
     user = serializers.SerializerMethodField()
@@ -94,6 +80,24 @@ class NameTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = NameTag
         fields = '__all__'
+        
+# 유저 기준 옷장 조회 serializer     
+class ClosetUserSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    product = ProductSerializer()
+    name_tag = NameTagSerializer()
+    
+    def get_user(self, obj):
+        return obj.user.nickname
+    
+    def get_name_tag(self, obj):
+        return obj.name_tag.tag_name
+    
+    class Meta:
+        model = Closet
+        fields = ("pk", "user", "product", "name_tag", "created_at", "updated_at")
+    
+
         
 
 # 유저 옷장 태그 조회 serializer
