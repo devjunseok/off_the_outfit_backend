@@ -57,7 +57,7 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ### 박준석 - [devjunseok - Overview](https://github.com/devjunseok)
 
-팀장 / 프로젝트 기획 / user 기능/ DB 모델링 / EC2, CloudFront, S3를 이용한 프로젝트 배포 총괄
+팀장 / 프로젝트 기획 / 테스트 코드 작성 / user 기능/ DB 모델링 / EC2, CloudFront, S3를 이용한 프로젝트 배포 총괄
 
 ### 노우석 - [WooSeok-Nho - Overview](https://github.com/WooSeok-Nho/)
 
