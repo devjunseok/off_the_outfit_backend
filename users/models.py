@@ -58,7 +58,7 @@ class User(AbstractBaseUser):
     username = models.CharField("아이디", max_length=20, unique=True, error_messages={'unique':"이미 존재하는 아이디입니다."})
     nickname = models.CharField("닉네임", max_length=16, unique=True, error_messages={'unique':"이미 존재하는 닉네임입니다."})
     email = models.EmailField("이메일", max_length=255,unique=True, error_messages={'unique':"이미 존재하는 이메일입니다."})
-    profile_image = models.ImageField(default="imgs/default.png", blank=True, upload_to="profile_images/", null=True)
+    profile_image = models.ImageField(default="default.png", blank=True, upload_to="profile_images/", null=True)
     address = models.CharField("주소", max_length=100)
     gender = models.CharField("성별", choices=GENDERS, max_length=1)
     status = models.CharField("상태", choices=USER_STATUS, max_length=10, default=USER_STATUS[0][0])
