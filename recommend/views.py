@@ -61,12 +61,10 @@ class ClosetProductRecommend(APIView):
         
         product_user = closet_merge.pivot_table('user_id_y', index='product_id', columns='user_id_y' )
         product_user = product_user.fillna(0)
-        print(product_user)
         user_collab = cosine_similarity(product_user, product_user)
         user_collab = pd.DataFrame(user_collab, index=product_user.index, columns=product_user.index)
 
-        recommend_list = user_collab[513].sort_values(ascending=False)[:10]
-        print(recommend_list)
+        recommend_list = user_collab[product_user.index[0]].sort_values(ascending=False)[:10]
         recommend_list = [x for x in recommend_list.keys()]
         
         products = Product.objects.filter(id__in=recommend_list)
@@ -82,7 +80,7 @@ class ProductRecommendView(APIView):
 
         # 일자 설정하기
         today = date.today()
-        date_year, date_month, date_day= today.year, today.month, today.day
+        date_year, date_month, date_day= today.year, today.month, today.day +1
         user_date = date(date_year, date_month, date_day).strftime('%m.%d.')
 
         # 설정한 일자 + 입력한 지역 정보로 DB에서 온도 출력
@@ -104,6 +102,16 @@ class ProductRecommendView(APIView):
         print(f"상의 : {r_top}")
         print(f"하의 : {r_bottom}")
 
+        # 지역 및 날씨 정보 + 카테고리 정보
+        info = {
+            "outer_name":r_outer, 
+            "top_name":r_top, 
+            "bottom_name":r_bottom,
+            "date":user_date,
+            "city":city,
+            "temps_data":find_temps
+        }
+        
         # 온도에 맞는 카테고리 출력 후 해당 카테고리와 일치한 상품 정보에서 '?' 랜덤한 상품 출력
         outer = list(Product.objects.filter(Q(category__sub_category_name=r_outer)).order_by('?'))[0:5]
         top = list(Product.objects.filter(Q(category__sub_category_name=r_top)).order_by('?'))[0:5]
@@ -120,7 +128,8 @@ class ProductRecommendView(APIView):
         serializer = {
             "outer":outer, 
             "top":top, 
-            "bottom":bottom
+            "bottom":bottom,
+            "info":info
             }
         return Response(serializer, status=status.HTTP_200_OK)
 
