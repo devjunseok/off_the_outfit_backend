@@ -194,3 +194,4 @@ MEDIA_URL = "/media/"
 CORS_ALLOW_ALL_ORIGINS = True
 
 
+
