@@ -12,7 +12,7 @@
 
 시연 영상 :
 
-youtube 링크
+[https://youtu.be/WbKLup-Qcuk/](https://youtu.be/WbKLup-Qcuk/)
 
 프로젝트 일정 : 2022.11.30 ~ 2022.12.29
 
@@ -57,7 +57,7 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ### 박준석 - [devjunseok - Overview](https://github.com/devjunseok)
 
-팀장 / 프로젝트 기획 / user 기능/ DB 모델링 / EC2, CloudFront, S3를 이용한 프로젝트 배포 총괄
+팀장 / 프로젝트 기획 / 테스트 코드 작성 / user 기능/ DB 모델링 / EC2, CloudFront, S3를 이용한 프로젝트 배포 총괄
 
 ### 노우석 - [WooSeok-Nho - Overview](https://github.com/WooSeok-Nho/)
 
@@ -120,7 +120,7 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 **문제 : 프론트엔드 보수 시, AWS s3 버킷에 파일을 업로드 하였는데, 연동된 CloudFront에서 업로드 된 파일이 갱신이 안돼는 상황 발생**
 
-원 **: CloudFront는 관리형 캐시 정책 사용 중, 때문에 업로드 된 파일이 바로 업로드 되지 않고 캐시가 업데이트 될 때까지 갱신이 되지 않음.**
+**원인 : CloudFront는 관리형 캐시 정책 사용 중, 때문에 업로드 된 파일이 바로 업로드 되지 않고 캐시가 업데이트 될 때까지 갱신이 되지 않음.**
 
 **해결 : CloudFront에서 무효화 처리를 해줌으로써 해결** 
 
@@ -128,6 +128,11 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 ### 양기철
 
+**문제 : Serializer를 사용하지않고 ManyToMany 필드를 사용하는 대량 DB 저장시 각 필드끼리 연결되지 않는 문제 발생**
+
+**원인 : 크롤링한 외부 데이터를 가져와서 DB에 저장시키려다보니 각각 알맞는 필드를 연결시키지 못함**
+
+**해결 : ManyToMany 필드에 맞는 로직으로 저장하여 해결**
 ### 노우석
 
 **문제 : 출석버튼을 눌렀을 때 db에 저장되어 있는 point가 증가하게 설계해놓았다.**

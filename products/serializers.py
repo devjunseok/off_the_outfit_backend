@@ -98,7 +98,7 @@ class ClosetUserSerializer(serializers.ModelSerializer):
         fields = ("pk", "user", "product", "name_tag", "created_at", "updated_at")
     
 
-        
+         
 
 # 유저 옷장 태그 조회 serializer
 class NameTagViewSerializer(serializers.ModelSerializer): 

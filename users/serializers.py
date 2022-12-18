@@ -93,7 +93,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'error_messages': {
                     'required': '개인정보 약관 동의를 해주세요!',
                     'blank':'개인정보 약관 동의를 해주세요!',
-                    'invalid': '알맞은 형식으로 해주세요!'
+                    'invalid': '약관 동의를 진행해주세요!'
                     },
                     'required': True # default : True
                     },
