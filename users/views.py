@@ -16,6 +16,7 @@ from rest_framework_simplejwt.views import (
 from django.db.models import Q
 
 
+
 # 회원정보 전체 보기, 회원가입, 회원정보 수정, 회원탈퇴 View
 class UserView(APIView): 
     permission_classes = [permissions.AllowAny]
