@@ -20,6 +20,8 @@ from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+
+
 # 유저 기반 옷장 상품 추천 View
 class ClosetUserRecommend(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -39,7 +41,7 @@ class ClosetUserRecommend(APIView):
 
         user_collab = cosine_similarity(product_user, product_user)
         user_collab = pd.DataFrame(user_collab, index=product_user.index, columns=product_user.index)
-
+    
         recommend_list = user_collab[me_id].sort_values(ascending=False)[:10]
         recommend_list = [x for x in recommend_list.keys()]
         
