@@ -59,7 +59,7 @@ class ClosetProductRecommend(APIView):
     def get(self, request, product_number):
         prod = Product.objects.filter(product_number=product_number)
         prod_id = prod.values()[0]['id']
-        me_id = request.user.id
+        
         closet = sqlite3.connect('./db.sqlite3')
         my_connection = pd.read_sql(f"SELECT id, user_id, product_id FROM closet;", closet, index_col='id')
         connection = pd.read_sql("SELECT id, user_id, product_id FROM closet;", closet, index_col='id')
@@ -70,12 +70,15 @@ class ClosetProductRecommend(APIView):
         user_collab = cosine_similarity(product_user, product_user)
         user_collab = pd.DataFrame(user_collab, index=product_user.index, columns=product_user.index)
 
-        recommend_list = user_collab[prod_id].sort_values(ascending=False)[:10]
-        recommend_list = [x for x in recommend_list.keys()]
-        
-        products = Product.objects.filter(id__in=recommend_list)
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try :
+            recommend_list = user_collab[prod_id].sort_values(ascending=False)[:10]
+            recommend_list = [x for x in recommend_list.keys()]
+            
+            products = Product.objects.filter(id__in=recommend_list)
+            serializer = ProductSerializer(products, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except KeyError :
+            return Response({"message":"추천 상품이 없습니다."}, status=status.HTTP_200_OK)
         
 # 날씨 기반 상품 추천 View
 class ProductRecommendView(APIView):
