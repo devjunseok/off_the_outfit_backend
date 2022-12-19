@@ -1,8 +1,9 @@
 from rest_framework import serializers
+# from products.serializers import 
 from products.models import Product
 from taggit.serializers import (TagListSerializerField,
                                 TaggitSerializer)     
-from communities.models import Feed,Comment,ReComment,ReportFeed, SearchWord
+from communities.models import Feed,Comment,ReComment,ReportFeed, SearchWord,FeedProductRelation
 
 
 #게시글 작성, 수정 serializer
