@@ -225,7 +225,7 @@ class CommunitySearchView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     # 검색 키워드를 지정했을 때, 매칭을 시도할 필드
     # search_fields = ["user","products_name"]
-    search_fields = ["user__nickname"]
+    search_fields = ["user__nickname","content","tags__name"]
     
     # 검색어 저장 추가
     def get(self, request, *args, **kwargs): 
