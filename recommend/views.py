@@ -21,43 +21,48 @@ from rest_framework import status, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
-
 # 유저 기반 옷장 상품 추천 View
 class ClosetUserRecommend(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
     #유저 기반 추천
-    def get(self, request): 
+    def get(self, request, user_id): 
 
-        me_id = request.user.id
         closet = sqlite3.connect('./db.sqlite3')
-        my_connection = pd.read_sql(f"SELECT id, user_id, product_id FROM closet WHERE user_id = {me_id};", closet, index_col='id')
+        my_connection = pd.read_sql(f"SELECT id, user_id, product_id FROM closet WHERE user_id = {user_id};", closet, index_col='id')
         connection = pd.read_sql("SELECT id, user_id, product_id FROM closet;", closet, index_col='id')
-        closet_merge = pd.merge(connection, my_connection, on='product_id')
 
-        product_user = closet_merge.pivot_table('product_id', index='user_id_x', columns='product_id' )
-        product_user = product_user.fillna(0)
+        if my_connection.empty :
+            return Response({"message":"옷장에 상품이 없습니다!"}, status=status.HTTP_200_OK)
+        else:     
+            closet_merge = pd.merge(connection, my_connection, on='product_id')
 
-        user_collab = cosine_similarity(product_user, product_user)
-        user_collab = pd.DataFrame(user_collab, index=product_user.index, columns=product_user.index)
-    
-        recommend_list = user_collab[me_id].sort_values(ascending=False)[:10]
-        recommend_list = [x for x in recommend_list.keys()]
-        
-        users = User.objects.filter(id__in=recommend_list)
-        serializer = UserProfileSerializer(users, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            product_user = closet_merge.pivot_table('product_id', index='user_id_x', columns='product_id' )
+            product_user = product_user.fillna(0)
+
+            user_collab = cosine_similarity(product_user, product_user)
+            user_collab = pd.DataFrame(user_collab, index=product_user.index, columns=product_user.index)
+            
+            recommend_list = user_collab[user_id].sort_values(ascending=False)[:10]
+            recommend_list = [x for x in recommend_list.keys()]
+            
+            users = User.objects.filter(id__in=recommend_list)
+            serializer = UserProfileSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
     
 # 상품 기반 추천 View
 class ClosetProductRecommend(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    def get(self, request):
-        me_id = request.user.id
+    def get(self, request, product_number):
+        prod = Product.objects.filter(product_number=product_number)
+        prod_id = prod.values()[0]['id']
+        
         closet = sqlite3.connect('./db.sqlite3')
-        my_connection = pd.read_sql(f"SELECT id, user_id, product_id FROM closet WHERE user_id = {me_id};", closet, index_col='id')
+        my_connection = pd.read_sql(f"SELECT id, user_id, product_id FROM closet;", closet, index_col='id')
         connection = pd.read_sql("SELECT id, user_id, product_id FROM closet;", closet, index_col='id')
         closet_merge = pd.merge(my_connection, connection, on='product_id')
         
@@ -66,12 +71,15 @@ class ClosetProductRecommend(APIView):
         user_collab = cosine_similarity(product_user, product_user)
         user_collab = pd.DataFrame(user_collab, index=product_user.index, columns=product_user.index)
 
-        recommend_list = user_collab[product_user.index[0]].sort_values(ascending=False)[:10]
-        recommend_list = [x for x in recommend_list.keys()]
-        
-        products = Product.objects.filter(id__in=recommend_list)
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try :
+            recommend_list = user_collab[prod_id].sort_values(ascending=False)[:10]
+            recommend_list = [x for x in recommend_list.keys()]
+            
+            products = Product.objects.filter(id__in=recommend_list)
+            serializer = ProductSerializer(products, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except KeyError :
+            return Response({"message":"추천 상품이 없습니다."}, status=status.HTTP_200_OK)
         
 # 날씨 기반 상품 추천 View
 class ProductRecommendView(APIView):
