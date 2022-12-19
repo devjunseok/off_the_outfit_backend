@@ -1,6 +1,7 @@
 from django.urls import path
 from users import views
 from rest_framework_simplejwt.views import TokenRefreshView
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.UserView.as_view(), name='user_view'),                                          # 회원가입, 회원정보 수정, 회원정보 삭제 url
@@ -19,4 +20,9 @@ urlpatterns = [
     path('<int:user_id>/followers/', views.GetFollowersView.as_view(), name='followers_view'),     # 팔로워 유저 조회
     path('search/', views.UserSearchView.as_view(), name = 'users_search_view'),                   # 유저 검색 url
     path('point/<int:user_id>/', views.GetPointView.as_view(), name='get_point_view'),             # 버튼 클릭 포인트 획득 url
+    ##이메일 패스워드 리셋
+    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]

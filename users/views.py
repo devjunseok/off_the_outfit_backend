@@ -33,6 +33,7 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 BASE_URL = 'http://127.0.0.1:8000/'
 KAKAO_CALLBACK_URI = BASE_URL + 'users/kakao/callback/'
 
+
 # 회원정보 전체 보기, 회원가입, 회원정보 수정, 회원탈퇴 View
 class UserView(APIView): 
     permission_classes = [permissions.AllowAny]
