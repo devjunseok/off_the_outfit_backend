@@ -24,7 +24,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ("pk", "category", "brand_name_kr", "brand_name_en", "product_number", "product_name", "product_image", "original_price", "discount_price", "review_count", "brand")
-        
+    
  
  # 상품 정보 게시글 serializer       
 class PostSerializer(serializers.ModelSerializer):
@@ -97,9 +97,6 @@ class ClosetUserSerializer(serializers.ModelSerializer):
         model = Closet
         fields = ("pk", "user", "product", "name_tag", "created_at", "updated_at")
     
-
-         
-
 # 유저 옷장 태그 조회 serializer
 class NameTagViewSerializer(serializers.ModelSerializer): 
     user = serializers.SerializerMethodField()
@@ -111,3 +108,48 @@ class NameTagViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = NameTag
         fields = '__all__'
+
+
+ # 상품 정보 게시글 조회 serializer       
+class PostListSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    posts = serializers.SerializerMethodField()
+    
+    def get_user(self, obj):
+        return obj.user.nickname
+    
+    def get_posts(self, instance):
+        posts = instance.posts.all()
+        return ReplySerializer(posts, many=True).data
+    
+    class Meta:
+        model = Post
+        fields = '__all__'
+
+
+        
+# 상품 상세 정보 조회 serializer     
+class ProductDetailSerializer(serializers.ModelSerializer): 
+    brand_name_kr = serializers.SerializerMethodField()
+    brand_name_en = serializers.SerializerMethodField()
+    category = CategorySerializer(many=True)
+    products = serializers.SerializerMethodField()
+    products_count = serializers.SerializerMethodField()
+
+    def get_brand_name_kr(self, obj):
+        return obj.brand.brand_name_kr
+    
+    def get_brand_name_en(self, obj):
+        return obj.brand.brand_name_en
+    
+    def get_products(self, instance):
+        products = instance.products.all()
+        return PostListSerializer(products, many=True).data
+    
+    def get_products_count(self, obj):
+        return obj.products.count()
+    
+    class Meta:
+        model = Product
+        fields = ("pk", "category", "brand_name_kr", "brand_name_en", "product_number", "product_name", "product_image", "original_price", "discount_price", "review_count", "brand", "products", "products_count")
+        
