@@ -20,7 +20,6 @@ from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from pprint import pprint
 
 # 유저 기반 옷장 상품 추천 View
 class ClosetUserRecommend(APIView):
@@ -33,6 +32,7 @@ class ClosetUserRecommend(APIView):
         closet = sqlite3.connect('./db.sqlite3')
         my_connection = pd.read_sql(f"SELECT id, user_id, product_id FROM closet WHERE user_id = {user_id};", closet, index_col='id')
         connection = pd.read_sql("SELECT id, user_id, product_id FROM closet;", closet, index_col='id')
+
         if my_connection.empty :
             return Response({"message":"옷장에 상품이 없습니다!"}, status=status.HTTP_200_OK)
         else:     
@@ -50,6 +50,7 @@ class ClosetUserRecommend(APIView):
             users = User.objects.filter(id__in=recommend_list)
             serializer = UserProfileSerializer(users, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
     
 # 상품 기반 추천 View
 class ClosetProductRecommend(APIView):

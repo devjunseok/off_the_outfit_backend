@@ -27,9 +27,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'django.contrib.sites',
+    
     "corsheaders", #cors headers
     'rest_framework',  # rest_framework
     'rest_framework_simplejwt', # jwt
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    
     "users",
     "communities",
     "products",
@@ -43,10 +49,22 @@ INSTALLED_APPS = [
     'taggit_serializer', #태그
     
     'django_seed', # 더미 생성
+    
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao',
 ]
 
+# 사이트는 1개만 사용할 것이라고 명시
+SITE_ID = 1
 
+REST_USE_JWT = True
 
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None # username 필드 사용 x
+ACCOUNT_EMAIL_REQUIRED = True            # email 필드 사용 o
+ACCOUNT_USERNAME_REQUIRED = False        # username 필드 사용 x
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 TAGGIT_CASE_INSENSITIVE = True
 TAGGIT_LIMIT = 50
@@ -194,4 +212,15 @@ MEDIA_URL = "/media/"
 CORS_ALLOW_ALL_ORIGINS = True
 
 
+# email
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = '587'
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+SECURE_SSL_REDIRECT = False
