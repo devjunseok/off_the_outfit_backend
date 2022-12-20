@@ -4,13 +4,14 @@ from products.models import Product
 from taggit.serializers import (TagListSerializerField,
                                 TaggitSerializer)     
 from communities.models import Feed,Comment,ReComment,ReportFeed, SearchWord,FeedProductRelation
+from products.serializers import ProductSerializer
 
 
 #게시글 작성, 수정 serializer
 class FeedSerializer(TaggitSerializer, serializers.ModelSerializer): 
     user = serializers.SerializerMethodField()
-    tags = TagListSerializerField()
-        
+    tags = TagListSerializerField()   
+
     def get_user(self, obj):
         return obj.user.email    
 
@@ -42,6 +43,7 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer):
     like_count = serializers.SerializerMethodField()
     unlike_count = serializers.SerializerMethodField()
     reports = serializers.SerializerMethodField()
+    product = ProductSerializer(many=True)
     
     def get_reports(self, instance):
         reports = instance.reports.all()
@@ -60,7 +62,7 @@ class FeedListSerializer(TaggitSerializer, serializers.ModelSerializer):
         return obj.user.user_id
     class Meta:
         model = Feed
-        fields =("pk", "user", "user_id", "tags", "like_count", "unlike_count", "reports", "content", "image", "created_at", "updated_at", "report_point", "like", "unlike" )
+        fields =("pk", "user", "user_id", "tags", "like_count", "unlike_count", "reports", "content", "image", "created_at", "updated_at", "report_point", "like", "unlike", "product" )
 
 
 #  대댓글을 작성을 위한 Serializer
@@ -141,6 +143,7 @@ class FeedDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
     profile_image = serializers.SerializerMethodField()
     tags = TagListSerializerField()
     like_count = serializers.SerializerMethodField()
+    product = ProductSerializer(many=True)
     
     def get_user(self, obj):
         return obj.user.nickname
@@ -156,7 +159,7 @@ class FeedDetailSerializer(TaggitSerializer, serializers.ModelSerializer):
     
     class Meta:
         model = Feed
-        fields = ("pk", "user_id", "user", "comments", "profile_image", "tags", "like_count", "content", "image", "created_at", "updated_at", "report_point", "like", "unlike")
+        fields = ("pk", "user_id", "user", "comments", "profile_image", "tags", "like_count", "content", "image", "created_at", "updated_at", "report_point", "like", "unlike", "product")
 
 
 # 상품 검색 serializer
@@ -186,3 +189,10 @@ class SearchWordSerializer(serializers.ModelSerializer):
         model = SearchWord
         fields = '__all__'
         
+        
+# FeedProductRelation :: 게시글 상품 태그 관련 Serializer
+class FeedProductSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = FeedProductRelation
+        fields = '__all__'
