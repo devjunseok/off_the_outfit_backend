@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from users.models import User, SocialUser
 from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer, PasswordChangeSerializer
 
+
 from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
