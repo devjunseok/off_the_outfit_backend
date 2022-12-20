@@ -5,10 +5,8 @@ from datetime import datetime
 from django.shortcuts import redirect
 from django.http import JsonResponse
 
-from users.models import User
+from users.models import User, SocialUser
 from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer, PasswordChangeSerializer
-
-from dj_rest_auth.registration.views import SocialLoginView
 
 from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -25,10 +23,6 @@ from rest_framework_simplejwt.views import (
 from django.db.models import Q
 
 from json import JSONDecodeError
-
-from allauth.socialaccount.models import SocialAccount
-from allauth.socialaccount.providers.kakao import views as kakao_view
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 BASE_URL = 'http://127.0.0.1:5500/'
 KAKAO_CALLBACK_URI = BASE_URL + 'users/login.html'
@@ -179,6 +173,7 @@ class GetFollowersView(APIView):
 class KakaoLoginView(APIView):
     
     def post(self, request): # 카카오 소셜 로그인 callback 함수
+        code = request.data.get('code')
         client_id = os.environ.get("SOCIAL_AUTH_KAKAO_CLIENT_ID")
         code = request.data.get("code")
         redirect_uri = KAKAO_CALLBACK_URI
@@ -190,56 +185,42 @@ class KakaoLoginView(APIView):
         if error is not None:
             raise JSONDecodeError(error)
         access_token = token_response_json.get("access_token")
-        
-        profile_request = requests.post(
-            "https://kapi.kakao.com/v2/user/me", headers={"Authorization": f"Bearer {access_token}"})
+        profile_request = requests.get("https://kapi.kakao.com/v2/user/me", headers={"Authorization": f"Bearer {access_token}"})
         profile_json = profile_request.json()
+
         kakao_account = profile_json.get('kakao_account')
-        
-        email = kakao_account.get("email", None) # 이메일!
-        
+        print(kakao_account)
+        profile = kakao_account.get('profile')
+        # print(kakao_account)
+        email = kakao_account.get("email")
+        nickname = profile.get('nickname')
+        profile_image = profile.get('profile_image_url')
+        print(email)
+        print(profile_image)
+
         try:
             user = User.objects.get(email=email)
-            # 기존에 가입된 유저의 Provider가 kakao가 아니면 에러 발생, 맞으면 로그인
-            # 다른 SNS로 가입된 유저
-            social_user = SocialAccount.objects.get(user=user)
+            social_user = SocialUser.objects.filter(user=user).first()
+            if social_user:
+                if social_user.provider != "kakao":
+                    return Response({"err_msg": "카카오 아이디인지 확인해주세요!"}, status=status.HTTP_400_BAD_REQUEST)
+                
+                refresh = RefreshToken.for_user(user)
+                return Response({'refresh_token': str(refresh), 'access_token':str(refresh.access_token), 'nickname':nickname, 'email':email,}, status=status.HTTP_200_OK)
+            
             if social_user is None:
-                return JsonResponse({"err_msg": "email exists but not social user"}, status=status.HTTP_400_BAD_REQUEST)
-            if social_user.provider != "kakao":
-                return JsonResponse({"err_msg": "no matching social type"}, status=status.HTTP_400_BAD_REQUEST)
-            # 기존에 Google로 가입된 유저
-
-            data = {'access_token': access_token, 'code': code}
-            accept = requests.post(
-                "http://127.0.0.1:8000/users/kakao/login/finish/", data=data)
-
-            print(accept)
-            accept_status = accept.status_code
-            if accept_status != 200:
-                return JsonResponse({"err_msg": "failed to signin"}, status=accept_status)
-            accept_json = accept.json()
-            accept_json.pop("user", None)
-            return JsonResponse(accept_json)
+                return Response({"err_msg": "이메일이 이미 존재합니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         except User.DoesNotExist:
-            # 기존에 가입된 유저가 없으면 새로 가입
-            data = {'access_token': access_token, 'code': code}
-            accept = requests.post(
-                "http://127.0.0.1:8000/users/kakao/login/finish/", data=data)
-            accept_status = accept.status_code
-            if accept_status != 200:
-                return JsonResponse({'err_msg': 'failed to signup'}, status=accept_status)
-            # user의 pk, email, first name, last name과 Access Token, Refresh token 가져옴
-            accept_json = accept.json()
-            accept_json.pop('user', None)
-            # return JsonResponse(accept_json)
-            return Response({'message': '가입 되었습니다!'}, status=status.HTTP_200_OK)
+            user = User.objects.create(email=email, nickname=nickname, profile_image=profile_image)
+            user.set_unusable_password()
+            user.save()
+            
+            SocialUser.objects.create(provider="kakao", access_token=access_token, user=user)
 
-class KakaoLogin(SocialLoginView): 
-    adapter_class = kakao_view.KakaoOAuth2Adapter
-    client_class = OAuth2Client
-    callback_url = KAKAO_CALLBACK_URI
-    
+            refresh = RefreshToken.for_user(user)
+            return Response({'refresh_token': str(refresh), 'access_token':str(refresh.access_token), 'nickname':nickname, 'email':email,}, status=status.HTTP_200_OK)
+
             
             
                 

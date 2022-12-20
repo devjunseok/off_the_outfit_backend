@@ -9,7 +9,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),                  # 리프레쉬 토근 url
     
     path('kakao/callback/', views.KakaoLoginView.as_view(), name='kakao_callback'),# 카카오 소셜로그인 url
-    path('kakao/login/finish/', views.KakaoLogin.as_view(), name='kakao_login_todjango'),# 카카오 소셜로그인 url
+    # path('kakao/login/finish/', views.KakaoLogin.as_view(), name='kakao_login_todjango'),# 카카오 소셜로그인 url
     
     # path('social/', views.SocialLoginView.as_view(), name='social_login_view'),
     path('follow/<int:user_id>/', views.FollowView.as_view(),name='follow_view'),                  # follow url
