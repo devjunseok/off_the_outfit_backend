@@ -19,6 +19,7 @@ class Feed(models.Model):
     unlike = models.ManyToManyField(User, related_name='unlike_posts', blank=True)
     report_point = models.PositiveIntegerField("신고 포인트", default=0)
     tags = TaggableManager(through=TaggedFeed, blank=True)
+    product = models.ManyToManyField(Product, through="FeedProductRelation", through_fields=('feed', 'products'), blank=True)
     
     def __str__(self):
         return str(self.content)

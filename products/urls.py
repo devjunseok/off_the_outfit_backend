@@ -20,5 +20,5 @@ urlpatterns = [
     path('product/closet/<int:user_id>/', views.UserClosetView.as_view(), name='user_closet_view'),                                                                   # 유저 기준 옷장 조회 url
     path('product/nametag/', views.NameTagView.as_view(), name='name_tag_view'),                                                                                      # 옷장 네임 태그 등록, 유저 옷장 태그 조회 url
     path('product/nametag/<int:nametag_id>/like/', views.NameTagLikeView.as_view(), name='name_tag_like_view'),                                                       # 옷장 네임 태그 좋아요 url
-
+    path('search/', views.ProductsSearchView.as_view(), name='product_search_view'),                                                                                  # 상품 검색 url
 ]
