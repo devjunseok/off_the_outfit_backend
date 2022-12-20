@@ -175,76 +175,13 @@ class GetFollowersView(APIView):
         users = User.objects.filter(followings = user_id)
         serializer = UserProfileSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class SocialLoginView(APIView):
-    permission_classes = [permissions.AllowAny]
-    
-    def get(self, requset):
-        client_id = "75756f04ae592ba908cfcfcdac87df17"
-        return redirect(f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={'users/social/'}&response_type=code&scope=account_email")
-    
-    
-    def post(self, request):
-        code = request.data.get('code')
-        token_request = requests.post(
-                "https://kauth.kakao.com/oauth/token",
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-                data={
-                    "grant_type": "authorization_code",
-                    "client_id": "75756f04ae592ba908cfcfcdac87df17",
-                    "redirect_uri": "http://http://127.0.0.1:8000//",
-                    "code": code,
-                },
-            )
-        token_response_json = token_request.json()
-        access_token = token_response_json.get("access_token")
-        
-        profile_request = requests.get(
-            "https://kapi.kakao.com/v2/user/me", headers={"Authorization": f"Bearer {access_token}", "Content-type": "application/x-www-form-urlencoded;charset=utf-8"})
-        profile_json = profile_request.json()
-        
-        email = profile_json.get('kakao_account')['email']
-        nickname = profile_json.get('properties')['nickname']
-        profile_image = profile_json.get('properties')['profile_image']
-        
-        try:
-            user = User.objects.get(email=email)
-            social_user = SocialAccount.objects.filter(user=user).first()
-            
-            if social_user:
-                if social_user.provider !="kakao":
-                    return Response({"error": "카카오로 가입한 유저가 아닙니다."}, status=status.HTTP_400_BAD_REQUEST)
-                
-                refresh = RefreshToken.for_user(user)
-                return Response({'refresh': str(refresh), 'access': str(refresh.access_token), "msg" : "로그인 성공"}, status=status.HTTP_200_OK)
-            
-            if social_user is None:
-                    return Response({"error":"이메일이 존재하지만 , 소셜유저가 아닙니다"}, status=status.HTTP_400_BAD_REQUEST)
-            
-        
-        except User.DoesNotExist:
-            new_user = User.objects.create(
-                username=nickname,
-                nickname=nickname,
-                email=email,
-            )
-            
-            SocialAccount.objects.create(
-                user_id=new_user.id,
-                uid=new_user.email,
-                provider="kakao",
-            )
-            
-            refresh = RefreshToken.for_user(new_user)
-            return Response({'refresh': str(refresh), 'access': str(refresh.access_token), "msg" : "회원가입 성공"}, status=status.HTTP_201_CREATED)
     
 
 def kakao_login(request):
     client_id = os.environ.get("SOCIAL_AUTH_KAKAO_CLIENT_ID")
     return redirect(f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={KAKAO_CALLBACK_URI}&response_type=code&scope=account_email")
 
-@api_view(['POST'])
+@api_view(['GET'])
 def kakao_callback(request): # 카카오 소셜 로그인 callback 함수
     client_id = os.environ.get("SOCIAL_AUTH_KAKAO_CLIENT_ID")
     code = request.GET.get("code")
