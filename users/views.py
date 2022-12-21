@@ -131,7 +131,7 @@ class UserSearchView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     # 검색 키워드를 지정했을 때, 매칭을 시도할 필드
 
-    search_fields = ["username"]
+    search_fields = ["nickname"]
 
 # 출석 포인트 View (하루에 한번 가능)
 class GetPointView(APIView): 
