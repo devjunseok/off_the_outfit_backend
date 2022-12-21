@@ -22,6 +22,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from django.db.models import Q
+from uuid import uuid4
 
 from json import JSONDecodeError
 
@@ -213,7 +214,8 @@ class KakaoLoginView(APIView):
                 return Response({"err_msg": "이메일이 이미 존재합니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         except User.DoesNotExist:
-            user = User.objects.create(email=email, nickname=nickname, profile_image=profile_image)
+            uuid = uuid4().hex
+            user = User.objects.create(email=email, username=f'k@{uuid}', nickname=nickname, profile_image=profile_image)
             user.set_unusable_password()
             user.save()
             
