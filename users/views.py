@@ -215,7 +215,8 @@ class KakaoLoginView(APIView):
 
         except User.DoesNotExist:
             uuid = uuid4().hex
-            user = User.objects.create(email=email, username=f'k@{uuid}', nickname=nickname, profile_image=profile_image)
+            uid = uuid[-5:]
+            user = User.objects.create(email=email, username=f'k@{uid}', nickname=nickname, profile_image=profile_image)
             user.set_unusable_password()
             user.save()
             
