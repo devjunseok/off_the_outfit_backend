@@ -69,7 +69,7 @@ class UserManageDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
     
-    # 신고당한 게시글 삭제    
+    # 특정 회원 삭제   
     def delete(self, request, user_id): 
         user = get_object_or_404(User, id=request.user.id)
         all_user = get_object_or_404(User, id=user_id)
@@ -81,7 +81,7 @@ class UserManageDetailView(APIView):
                 return Response({"message":"회원을 삭제했습니다!"}, status=status.HTTP_204_NO_CONTENT)
         return Response({"message":"권한이 없습니다!"}, status=status.HTTP_400_BAD_REQUEST)
 
-
+# 휴면 유저 삭제
 class UserDeleteView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]

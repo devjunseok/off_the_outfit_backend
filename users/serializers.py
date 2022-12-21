@@ -3,6 +3,7 @@ import re
 from users.models import User
 
 from products.serializers import NameTagViewSerializer
+from communities.serializers import FeedDetailSerializer
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
@@ -225,6 +226,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     feeds_count = serializers.SerializerMethodField()
     closet_set_count = serializers.SerializerMethodField()
     nametag_set = serializers.SerializerMethodField()
+    like_posts = FeedDetailSerializer(many=True)
     
     def get_nametag_set(self, instance):
         nametag = instance.nametag_set.all()
@@ -244,7 +246,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('pk', 'username', 'nametag_set', 'closet_set_count', 'feeds_count', 'nickname', 'email', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'profile_image', 'point', 'followings_count', 'followers_count', 'followings', 'followers')
+        fields = ('pk', 'username', 'like_posts', 'nametag_set', 'closet_set_count', 'feeds_count', 'nickname', 'email', 'address', 'gender', 'height', 'weight', 'date_of_birth', 'profile_image', 'point', 'followings_count', 'followers_count', 'followings', 'followers')
 
 # 패스워드 변경 serializer
 class PasswordChangeSerializer(serializers.ModelSerializer):

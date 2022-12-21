@@ -17,7 +17,6 @@ DEBUG = os.environ.get('DEBUG', '0') == '1'
 
 ALLOWED_HOSTS = ['backend', ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -27,9 +26,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'django.contrib.sites',
+    
     "corsheaders", #cors headers
     'rest_framework',  # rest_framework
     'rest_framework_simplejwt', # jwt
+    'rest_framework.authtoken',
+    
     "users",
     "communities",
     "products",
@@ -43,14 +46,8 @@ INSTALLED_APPS = [
     'taggit_serializer', #태그
     
     'django_seed', # 더미 생성
+
 ]
-
-
-
-
-TAGGIT_CASE_INSENSITIVE = True
-TAGGIT_LIMIT = 50
-
 
 REST_FRAMEWORK = {  # jwt
 
@@ -191,7 +188,7 @@ MEDIA_URL = "/media/"
 
 CORS_ALLOW_ALL_ORIGINS = True
 # CORS 허용 목록에 ec2 ip를 추가합니다.
-CORS_ORIGIN_WHITELIST = ['https://api.offtheoutfit.com',]
+CORS_ORIGIN_WHITELIST = ['https://api.offtheoutfit.com','https://www.offtheoutfit.com',]
 # ex) CORS_ORIGIN_WHITELIST = ['http://43.201.72.190']
 
 # CSRF 허용 목록을 CORS와 동일하게 설정합니다.
@@ -200,4 +197,15 @@ CSRF_TRUSTED_ORIGINS = CORS_ORIGIN_WHITELIST
 
 
 
+# email
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = '587'
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+SECURE_SSL_REDIRECT = False
