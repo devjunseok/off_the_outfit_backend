@@ -1,7 +1,9 @@
-from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, ReportSerializer, SearchWordSerializer
+from communities.serializers import FeedSerializer, FeedListSerializer, CommentListSerializer, FeedDetailSerializer ,ReCommentListSerializer, ReportSerializer, SearchWordSerializer, FeedProductSerializer
 from communities.models import Feed ,Comment,ReComment, SearchWord
 
 from users.models import User
+
+from products.models import Product
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -25,13 +27,35 @@ class ArticlesFeedView(APIView):
 
     # 게시글 등록
     def post(self, request):
-        serializer = FeedSerializer(data=request.data,)
+        try:
+            product_numbers = request.data['product'].split(',')
+            product_id_list = []
+            for product_number in product_numbers:
+                product = Product.objects.filter(product_number=product_number.strip())
+                product_id = product.values()[0]['id']
+                product_id_list.append(product_id)
+        except:
+            product_id_list = []
+            
+        
+        serializer = FeedSerializer(data=request.data)
         me= User.objects.get(id=request.user.id)
         if serializer.is_valid():
             if me == request.user:
                 me.point += 10
                 me.save()
                 serializer.save(user=request.user)
+                if product_id_list != []:
+                    for product_id in product_id_list:
+                        feed_id = serializer.data['id']
+                        data = {
+                            'products':product_id,
+                            'feed':feed_id
+                        }
+                        r_serializer = FeedProductSerializer(data=data)
+                        if r_serializer.is_valid():
+                            r_serializer.save()
+                
             return Response({"message":"게시글이 등록되었습니다!"}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -225,7 +249,7 @@ class CommunitySearchView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     # 검색 키워드를 지정했을 때, 매칭을 시도할 필드
     # search_fields = ["user","products_name"]
-    search_fields = ["user__nickname"]
+    search_fields = ["user__nickname","content","tags__name"]
     
     # 검색어 저장 추가
     def get(self, request, *args, **kwargs): 

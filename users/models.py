@@ -101,4 +101,9 @@ class User(AbstractBaseUser):
         return self.is_admin
     
 
+class SocialUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="social")
+    access_token = models.CharField(max_length=255)
+    provider = models.CharField(max_length=255)
+    
     

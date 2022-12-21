@@ -1,12 +1,20 @@
-from datetime import datetime
+import os
+import requests
 
-from users.models import User
+from datetime import datetime
+from django.shortcuts import redirect
+from django.http import JsonResponse
+
+from users.models import User, SocialUser
 from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer, PasswordChangeSerializer
 
+
 from rest_framework.generics import get_object_or_404
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status, permissions, filters, generics
+from rest_framework.decorators import api_view
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -14,6 +22,11 @@ from rest_framework_simplejwt.views import (
 )
 
 from django.db.models import Q
+
+from json import JSONDecodeError
+
+BASE_URL = 'http://127.0.0.1:5500/'
+KAKAO_CALLBACK_URI = BASE_URL + 'users/login.html'
 
 
 # 회원정보 전체 보기, 회원가입, 회원정보 수정, 회원탈퇴 View
@@ -157,3 +170,60 @@ class GetFollowersView(APIView):
         users = User.objects.filter(followings = user_id)
         serializer = UserProfileSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class KakaoLoginView(APIView):
+    
+    def post(self, request): # 카카오 소셜 로그인 callback 함수
+        code = request.data.get('code')
+        client_id = os.environ.get("SOCIAL_AUTH_KAKAO_CLIENT_ID")
+        code = request.data.get("code")
+        redirect_uri = KAKAO_CALLBACK_URI
+
+        # code로 access token 요청
+        token_request = requests.post(f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={client_id}&redirect_uri={KAKAO_CALLBACK_URI}&code={code}")
+        token_response_json = token_request.json()
+        error = token_response_json.get("error")
+        if error is not None:
+            raise JSONDecodeError(error)
+        access_token = token_response_json.get("access_token")
+        profile_request = requests.get("https://kapi.kakao.com/v2/user/me", headers={"Authorization": f"Bearer {access_token}"})
+        profile_json = profile_request.json()
+
+        kakao_account = profile_json.get('kakao_account')
+        print(kakao_account)
+        profile = kakao_account.get('profile')
+        # print(kakao_account)
+        email = kakao_account.get("email")
+        nickname = profile.get('nickname')
+        profile_image = profile.get('profile_image_url')
+        print(email)
+        print(profile_image)
+
+        try:
+            user = User.objects.get(email=email)
+            social_user = SocialUser.objects.filter(user=user).first()
+            if social_user:
+                if social_user.provider != "kakao":
+                    return Response({"err_msg": "카카오 아이디인지 확인해주세요!"}, status=status.HTTP_400_BAD_REQUEST)
+                
+                refresh = RefreshToken.for_user(user)
+                return Response({'refresh_token': str(refresh), 'access_token':str(refresh.access_token), 'nickname':nickname, 'email':email,}, status=status.HTTP_200_OK)
+            
+            if social_user is None:
+                return Response({"err_msg": "이메일이 이미 존재합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        except User.DoesNotExist:
+            user = User.objects.create(email=email, nickname=nickname, profile_image=profile_image)
+            user.set_unusable_password()
+            user.save()
+            
+            SocialUser.objects.create(provider="kakao", access_token=access_token, user=user)
+
+            refresh = RefreshToken.for_user(user)
+            return Response({'refresh_token': str(refresh), 'access_token':str(refresh.access_token), 'nickname':nickname, 'email':email,}, status=status.HTTP_200_OK)
+
+            
+            
+                
+        
+        

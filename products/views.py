@@ -1,13 +1,15 @@
 import pandas as pd
 
-from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, PostSerializer, ReplySerializer, ClosetSerializer, NameTagSerializer, NameTagViewSerializer, ClosetUserSerializer
+from products.serializers import ProductSerializer, BrandSerializer, CategorySerializer, PostSerializer, ReplySerializer, ClosetSerializer, NameTagSerializer, NameTagViewSerializer, ClosetUserSerializer, ProductDetailSerializer
 from products.models import Brand, Category, Product, Post, Reply, Closet, NameTag
 from products.crawling import ProductsUpdate, MusinsaNumberProductsCreate
+
+from communities.models import SearchWord
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
-from rest_framework import status, permissions
+from rest_framework import status, permissions, filters, generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
@@ -87,7 +89,7 @@ class ProductInfoDetailView(APIView):
     
     def get(self, request, product_number): 
         product = get_object_or_404(Product, product_number=product_number)
-        serializer = ProductSerializer(product)
+        serializer = ProductDetailSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 # 상품정보 게시글 View
@@ -392,4 +394,23 @@ class UserClosetView(APIView):
         serializer = ClosetUserSerializer(articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
+
+# 상품 정보 검색 View
+class ProductsSearchView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer # 게시글 전체 보기
+
+    filter_backends = [filters.SearchFilter]
+
+    search_fields = ['brand__brand_name_kr', 'brand__brand_name_en', 'product_number', 'product_name', 'category__main_category_name', 'category__sub_category_name']
+    
+    # 검색어 저장 추가
+    def get(self, request, *args, **kwargs): 
+        search = SearchWord()
+        word = request.GET.get('search')
+        search.word = word
+        search.save()
+        return self.list(request, *args, **kwargs)
