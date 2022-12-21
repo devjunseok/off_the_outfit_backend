@@ -175,7 +175,7 @@ class KakaoLoginView(APIView):
     
     def post(self, request): # 카카오 소셜 로그인 callback 함수
         code = request.data.get('code')
-        client_id = os.environ.get("SOCIAL_AUTH_KAKAO_CLIENT_ID")
+        client_id = "75756f04ae592ba908cfcfcdac87df17"
         code = request.data.get("code")
         redirect_uri = KAKAO_CALLBACK_URI
 
