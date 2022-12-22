@@ -2,8 +2,7 @@ import os
 import requests
 
 from datetime import datetime
-from django.shortcuts import redirect
-from django.http import JsonResponse
+from django.shortcuts import render
 
 from users.models import User, SocialUser
 from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer, PasswordChangeSerializer
@@ -234,6 +233,9 @@ class KakaoLoginView(APIView):
 
             refresh = RefreshToken.for_user(user)
             return Response({'refresh_token': str(refresh), 'access_token':str(refresh.access_token), 'nickname':nickname, 'email':email,}, status=status.HTTP_200_OK)
+
+def page_not_found(request, exception):
+    return render(request, 'users/404.html', {})
 
             
             
