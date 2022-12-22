@@ -62,7 +62,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'error_messages': {
                     'required': '키를 입력해주세요.',
                     'blank':'키를 입력해주세요.',
-                    'invalid': '숫자만 입력 가능합니다.'
+                    'invalid': '키에 알맞은 숫자를 입력해주세요.'
                     },
                     'required': True # default : True
                     },
@@ -70,7 +70,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'error_messages': {
                     'required': '몸무게를 입력해주세요',
                     'blank':'몸무게를 입력해주세요.',
-                    'invalid': '숫자만 입력 가능합니다'
+                    'invalid': '몸무게에 알맞은 숫자를 입력해주세요.'
                     },
                     'required': True # default : True
                     },
