@@ -106,7 +106,7 @@ class ProductPostView(APIView):
     # 상품 정보 게시글 작성
     def post(self, request, product_number): 
         product = Product.objects.get(product_number=product_number)
-        serializer = PostSerializer(data=request.data)
+        serializer = PostSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save(user=request.user, product_id=product.id)
             return Response({"message":f"{serializer.data['post_type']}가 등록되었습니다!"}, status=status.HTTP_200_OK)
