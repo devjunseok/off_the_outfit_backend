@@ -29,6 +29,15 @@ from json import JSONDecodeError
 BASE_URL = 'http://127.0.0.1:5500/'
 KAKAO_CALLBACK_URI = BASE_URL + 'users/login.html'
 
+# 전체 유저 포인트 순 조회 View
+class UserRankingView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request):
+        user = User.objects.all().order_by('-point')
+        serializer = UserProfileSerializer(user, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 # 회원정보 전체 보기, 회원가입, 회원정보 수정, 회원탈퇴 View
 class UserView(APIView): 
@@ -203,6 +212,7 @@ class KakaoLoginView(APIView):
         try:
             user = User.objects.get(email=email)
             social_user = SocialUser.objects.filter(user=user).first()
+
             if social_user:
                 if social_user.provider != "kakao":
                     return Response({"err_msg": "카카오 아이디인지 확인해주세요!"}, status=status.HTTP_400_BAD_REQUEST)
