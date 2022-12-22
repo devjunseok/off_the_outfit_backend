@@ -217,6 +217,9 @@ class KakaoLoginView(APIView):
                     return Response({"err_msg": "카카오 아이디인지 확인해주세요!"}, status=status.HTTP_400_BAD_REQUEST)
                 
                 refresh = RefreshToken.for_user(user)
+                user.profile_image = profile_image
+                user.nickname = nickname
+                user.save()
                 return Response({'refresh_token': str(refresh), 'access_token':str(refresh.access_token), 'nickname':nickname, 'email':email,}, status=status.HTTP_200_OK)
             
             if social_user is None:
