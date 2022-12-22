@@ -119,11 +119,32 @@ class ArticlesFeedDetailView(APIView):
 
     # 게시글 수정
     def put(self, request, feed_id): 
+        try:
+            product_numbers = request.data['product'].split(',')
+            product_id_list = []
+            for product_number in product_numbers:
+                product = Product.objects.filter(product_number=product_number.strip())
+                product_id = product.values()[0]['id']
+                product_id_list.append(product_id)
+        except:
+            product_id_list = []
+            
+            
         feed = get_object_or_404(Feed, id= feed_id)
         if request.user == feed.user:
             serializer = FeedSerializer(feed, data=request.data)
             if serializer.is_valid():
                 serializer.save()
+                if product_id_list != []:
+                    for product_id in product_id_list:
+                        feed_id = serializer.data['id']
+                        data = {
+                            'products':product_id,
+                            'feed':feed_id
+                        }
+                        r_serializer = FeedProductSerializer(data=data)
+                        if r_serializer.is_valid():
+                            r_serializer.save()
                 return Response({"message":"게시글이 수정되었습니다!"}, status=status.HTTP_200_OK)
 
             else:
