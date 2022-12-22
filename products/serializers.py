@@ -51,10 +51,14 @@ class ReplySerializer(serializers.ModelSerializer):
 
 # Brand :: 브랜드 정보 관련 Serializer
 class BrandSerializer(serializers.ModelSerializer):
+    product_set_count = serializers.SerializerMethodField()
     
+    def get_product_set_count(self, obj):
+        return obj.product_set.count()
+
     class Meta:
         model = Brand
-        fields = '__all__'
+        fields = ('id', 'brand_name_kr', 'brand_name_en', 'brand_link', 'product_set_count')
         
         
         
