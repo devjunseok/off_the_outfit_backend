@@ -5,6 +5,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.UserView.as_view(), name='user_view'),                                          # 회원가입, 회원정보 수정, 회원정보 삭제 url
+    path('ranking/', views.UserRankingView.as_view(), name='user_ranking_view'),                   # 유저 포인트 조회 url
     path('api/token/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),       # 로그인 url
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),                  # 리프레쉬 토근 url
     path('kakao/callback/', views.KakaoLoginView.as_view(), name='kakao_callback'),                # 카카오 소셜로그인 url
