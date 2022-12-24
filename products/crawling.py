@@ -1,6 +1,6 @@
 import os
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 from products.models import Product, Brand, Category
 
 

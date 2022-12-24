@@ -2,28 +2,26 @@ import os
 import requests
 
 from datetime import datetime
+from uuid import uuid4
+from json import JSONDecodeError
+
 from django.shortcuts import render
+from django.db.models import Q
 
 from users.models import User, SocialUser
 from users.serializers import UserSerializer, CustomTokenObtainPairSerializer , UserProfileSerializer, PasswordChangeSerializer
-
 
 from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status, permissions, filters, generics
-from rest_framework.decorators import api_view
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
-from django.db.models import Q
-from uuid import uuid4
-
-from json import JSONDecodeError
 
 BASE_URL = 'https://www.offtheoutfit.com/'
 KAKAO_CALLBACK_URI = BASE_URL + 'users/login.html'
