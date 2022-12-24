@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 from users.models import User
 
 # 회원가입 테스트
-class UserRegistrationTest(APITestCase):
+class UserRegistrationTestCase(APITestCase):
     
     #회원가입 성공 테스트
     def test_registration(self): 
@@ -386,14 +386,14 @@ class UserRegistrationTest(APITestCase):
         response = self.client.post(url, user_data)
         self.assertEqual(response.status_code, 400)
         
-#회원정보 수정 테스트
+#회원정보 수정, 탈퇴 테스트
 class UserProfileViewTestCase(APITestCase):
     def setUp(self):
         self.data = {'username': 'testuser', 'password': 'password123@'}
         self.user_case_1 = User.objects.create_user("test@test.com", "testuser", "tester", "password123@")
         self.user_case_2 = User.objects.create_user("test1@test.com", "testuser1", "tester1", "password123@")
     
-    # 회원정보 수정 성공
+    # 회원정보 수정 성공 테스트
     def test_user_update_success(self): 
         access_token = self.client.post(reverse('token_obtain_pair'), self.data).data['access']
         response = self.client.put(
@@ -402,9 +402,29 @@ class UserProfileViewTestCase(APITestCase):
             data={"nickname":"changenickname"} 
         )
         self.assertEqual(response.status_code, 200)
+        
+    # 회원정보 수정 실패 테스트(닉네임 빈칸)
+    def test_user_update_faile_nickname_blank(self): 
+        access_token = self.client.post(reverse('token_obtain_pair'), self.data).data['access']
+        response = self.client.put(
+            path=reverse("user_view"),
+            HTTP_AUTHORIZATION=f"Bearer {access_token}",
+            data={"nickname":""} 
+        )
+        self.assertEqual(response.status_code, 400)
+
+    # 회원 탈퇴 테스트
+    def test_user_delete_success(self): 
+        access_token = self.client.post(reverse('token_obtain_pair'), self.data).data['access']
+        response = self.client.delete(
+            path=reverse("user_view"),
+            HTTP_AUTHORIZATION=f"Bearer {access_token}",
+        )
+        self.assertEqual(response.status_code, 204)
+        
 
 # 로그인 테스트
-class LoginUserTest(APITestCase):
+class LoginUserTestCase(APITestCase):
     
      # DB 셋업
     def setUp(self):
@@ -422,3 +442,68 @@ class LoginUserTest(APITestCase):
     def test_login_failed(self):
         response = self.client.post(reverse('token_obtain_pair'), self.failed_data)
         self.assertEqual(response.status_code, 401)
+
+class PasswordChangeTestCase(APITestCase):
+    def setUp(self):
+        self.data = {'username': 'testuser', 'password': 'password123@'}
+        self.user_case = User.objects.create_user("test@test.com", "testuser", "tester", "password123@")
+    
+    # 비밀번호 변경 성공 테스트
+    def test_password_change_success(self):
+        access_token = self.client.post(reverse('token_obtain_pair'), self.data).data['access']
+        response = self.client.put(
+            path=reverse("passwordchange_view"),
+            HTTP_AUTHORIZATION=f"Bearer {access_token}",
+            data={"password":"change123@", "password2":"change123@"} 
+        )
+        self.assertEqual(response.status_code, 200)
+
+    # 비밀번호 변경 실패 테스트(비밀번호 공백)
+    def test_password_change_faild_password_blank(self):
+        access_token = self.client.post(reverse('token_obtain_pair'), self.data).data['access']
+        response = self.client.put(
+            path=reverse("passwordchange_view"),
+            HTTP_AUTHORIZATION=f"Bearer {access_token}",
+            data={"password":"", "password2":"change123@"} 
+        )
+        self.assertEqual(response.status_code, 400)
+
+    # 비밀번호 변경 실패 테스트(비밀번호 확인 공백)
+    def test_password_change_failed_password2_blank(self):
+        access_token = self.client.post(reverse('token_obtain_pair'), self.data).data['access']
+        response = self.client.put(
+            path=reverse("passwordchange_view"),
+            HTTP_AUTHORIZATION=f"Bearer {access_token}",
+            data={"password":"change123@", "password2":""} 
+        )
+        self.assertEqual(response.status_code, 400)
+    
+        # 비밀번호 변경 실패 테스트(비밀번호, 비밀번호 확인 불일치)
+    def test_password_change_faile_password_different(self):
+        access_token = self.client.post(reverse('token_obtain_pair'), self.data).data['access']
+        response = self.client.put(
+            path=reverse("passwordchange_view"),
+            HTTP_AUTHORIZATION=f"Bearer {access_token}",
+            data={"password":"change123@", "password2":""} 
+        )
+        self.assertEqual(response.status_code, 400)
+
+    # 비밀번호 변경 실패 테스트(현재 비밀번호와 동일 시)
+    def test_password_change_faile_password_same(self):
+        access_token = self.client.post(reverse('token_obtain_pair'), self.data).data['access']
+        response = self.client.put(
+            path=reverse("passwordchange_view"),
+            HTTP_AUTHORIZATION=f"Bearer {access_token}",
+            data={"password":"password123@", "password2":"password123@"} 
+        )
+        self.assertEqual(response.status_code, 400)
+
+    # 비밀번호 변경 실패 테스트(비밀번호 유효성 검사 통과 x)
+    def test_password_change_faile_password_valid(self):
+        access_token = self.client.post(reverse('token_obtain_pair'), self.data).data['access']
+        response = self.client.put(
+            path=reverse("passwordchange_view"),
+            HTTP_AUTHORIZATION=f"Bearer {access_token}",
+            data={"password":"1234", "password2":"1234"} 
+        )
+        self.assertEqual(response.status_code, 400)
