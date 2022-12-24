@@ -1,0 +1,55 @@
+version: '3.8'
+
+volumes:
+  postgres: {}
+  django_media: {}
+  django_static: {}
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:14.5
+    # 만약 .env 파일을 다른 이름으로 사용할 경우 env_file 옵션을 사용해 불러올 수 있습니다.
+    # env_file:
+    #   - prod.env
+    volumes:
+      - postgres:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    restart: always
+
+  backend:
+    container_name: backend
+    build: ./backend/
+    entrypoint: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn off_the_outfit.wsgi --workers=5 -b 0.0.0.0:8000"
+    volumes:
+      - ./backend/django/:/app/
+      - /etc/localtime:/etc/localtime:ro
+      - django_media:/app/media/
+      - django_static:/app/static/
+    environment: # 
+      - DEBUG
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+    depends_on:
+      - postgres
+    restart: always
+
+  nginx:
+    container_name : nginx
+    image: nginx:1.23.2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - django_media:/media/ # django의 media를 사용할 수 있도록 volume을 지정해줍니다.
+      - django_static:/static/ # django의 static 사용할 수 있도록 volume을 지정해줍니다.
+    depends_on:
+      - backend
+    restart: always

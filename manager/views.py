@@ -19,7 +19,7 @@ class ReportFeedView(APIView):
     # 신고당한 게시글 열람
     def get(self, request):  
         user = get_object_or_404(User, id= request.user.id)
-        feed = Feed.objects.filter(report_point__ge=1)
+        feed = Feed.objects.filter(report_point__gt=0)
         if user.roles == 'ROLE_SUPER':
             serializer = FeedListSerializer(feed, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
