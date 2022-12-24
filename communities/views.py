@@ -243,21 +243,6 @@ class ReCommentDetailView(APIView):
             else:
                 return Response({"message":"권한이 없습니다!"}, status=status.HTTP_403_FORBIDDEN) 
 
-# 대댓글 좋아요 View
-class ReCommentLike(APIView): 
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
-    
-    # 댓글 좋아요
-    def post(self, request,comment_id,feed_id,recomment_id ): 
-        recomment = get_object_or_404(ReComment, id=recomment_id)
-        if request.user in recomment.recomment_like.all():
-            recomment.recomment_like.remove(request.user)
-            return Response({"message":"대댓글 좋아요 취소 했습니다!"}, status=status.HTTP_200_OK)
-        else:
-            recomment.recomment_like.add(request.user)
-            return Response({"message":"대댓글 좋아요 했습니다!"}, status=status.HTTP_200_OK)
-    
 # 게시글 검색 View
 class CommunitySearchView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]

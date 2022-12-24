@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from communities.serializers import FeedListSerializer
 from communities.models import Feed 
 
@@ -9,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
-from datetime import datetime, timedelta
 
 # 일정횟수 신고당한 게시글 열람 View
 class ReportFeedView(APIView): 
