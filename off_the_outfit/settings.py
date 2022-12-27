@@ -13,10 +13,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['backend', ]
 
 # Application definition
 
@@ -92,9 +91,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "off_the_outfit.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
+# postgres 환경변수가 존재 할 경우에 postgres db에 연결을 시도합니다.
 POSTGRES_DB = os.environ.get('POSTGRES_DB', '')
 if POSTGRES_DB:
     DATABASES = {
@@ -150,8 +147,8 @@ AUTH_USER_MODEL = 'users.User'
 
 
 SIMPLE_JWT = {  ##jwt 설정
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20000),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=60),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': True,
@@ -189,6 +186,14 @@ MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
 CORS_ALLOW_ALL_ORIGINS = True
+# CORS 허용 목록에 ec2 ip를 추가합니다.
+CORS_ORIGIN_WHITELIST = ['https://api.offtheoutfit.com','https://www.offtheoutfit.com',]
+# ex) CORS_ORIGIN_WHITELIST = ['http://43.201.72.190']
+
+# CSRF 허용 목록을 CORS와 동일하게 설정합니다.
+CSRF_TRUSTED_ORIGINS = CORS_ORIGIN_WHITELIST
+
+
 
 
 # email
