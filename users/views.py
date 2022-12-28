@@ -23,7 +23,7 @@ from rest_framework_simplejwt.views import (
 )
 
 
-BASE_URL = 'http://127.0.0.1:5500/'
+BASE_URL = 'https://www.offtheoutfit.com/'
 KAKAO_CALLBACK_URI = BASE_URL + 'users/login.html'
 
 # 전체 유저 포인트 순 조회 View
