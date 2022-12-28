@@ -155,20 +155,44 @@ S.A 링크 : [B1팀 최종 프로젝트](https://www.notion.so/B1-27932c8fdffb4
 
 **해결 : 이중 반복문 을 활용하여 해결.**
 
-## 5. 와이어프레임
+## 5. 유저 피드백 반영
+
+### 1. 좋아요 싫어요 버튼이 같이 눌리는 현상이 있습니다.
+
+- 프론트 자체 로직에서 조건을 줄때 내 유저정보와 게시물을 좋아하는 유저목록안에 유저 정보를 비교하면서
+내 유저 id가 게시물을 좋아하는 유저 id목록 안에 있을때 와 없을때 count라는 변수안에 숫자를 줘서 그 숫자에 
+따라함수가 작동하거나 작동하지 않게 끔 로직을 재작성했다
+
+### 2. 유저 포인트 활용하는 기능이 있었으면 좋겠습니다.
+
+- 포인트 활용하는 부분이 없는 부분에 대해서 피드백이 많이 들어와 해당 부분 대해서 고민을 해보고 유저 랭킹 페이지를 신설하여, 임시적으로라도 유저 포인트를 가지고 활용되는부분을 만들어서 피드백 반영 완료
+
+### 3. 상품이 존재하지 않는 브랜드 카테고리를 누를시에 아무것도 뜨지 않아 사용자가 헷갈립니다.
+
+- 브랜드 탭에서 상품이 없는 브랜드는 에러가 뜨는 상황이 있는데 해당부분은 자바스크립트 window.onload 부분에서 실행되어야 할 코드가 상품이 없는 관계로 실행되지 못하는 코드로 예외 처리를 해주었고 브랜드탭에 상품 카운트를 보여줌으로써 상품이 존재하지 않는 브랜드를 처리함으로써 피드백 반영 완료.
+
+### 4. 피드에 좋아요 싫어요 카운트 아이콘이 댓글 갯수 아이콘인지 좋아요 갯수 아이콘인지  헷갈립니다.
+
+-  좋아요 싫어요 갯수를 원래 아이콘으로 보여줬었는데, html을 수정하여 한글로 보이게 해둬서 직관성을 높임. 피드백 반영 완료
+
+### 5. 게시글 작성 시, 필수내용을 한 가지라도 넣지 않았을 때, 안내 메세지가 뜨지 않아 사용자 입장에서는 왜 게시글이 작성이 안되는지 모르겠습니다.
+ 
+- 프론트엔드 js에서 게시글을 등록했을 때, http status code에 따라 if문을 줘서 사용자에게 왜 안되는지 안내하는 alert창 제공, 이 부분 뿐만 아니라 모든 부분에 적용. 피드백 반영 완료
+
+## 6. 와이어프레임
 
 [https://www.figma.com/file/hgtTToRaWbfP87GfNvHaMa/Off_the_Outfit?node-id=0%3A1&t=xw7FNe87Jr8IecaC-1](https://www.figma.com/file/hgtTToRaWbfP87GfNvHaMa/Off_the_Outfit?node-id=0%3A1&t=xw7FNe87Jr8IecaC-1)
 
 ![https://user-images.githubusercontent.com/111295065/207312359-91bb78a9-c108-4897-8cc3-e0cbb1f00cd0.png](https://user-images.githubusercontent.com/111295065/207312359-91bb78a9-c108-4897-8cc3-e0cbb1f00cd0.png)
 
-## 6. Architecture
+## 7. Architecture
 
 ![https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png](https://user-images.githubusercontent.com/111295065/207308569-1f6531bf-c8b1-4ff7-b6cf-442bcbe5cfb9.png)
 
-## 7. API 명세서
+## 8. API 명세서
 
 [off_the_outfit (getpostman.com)](https://documenter.getpostman.com/view/24913558/2s8YzWRfo4)
 
-## 8. DB 설계 ERD
+## 9. DB 설계 ERD
 
 ![https://user-images.githubusercontent.com/111295065/207309475-759e6e8d-8265-4c49-8c8f-9f83478c329d.png](https://user-images.githubusercontent.com/111295065/207309475-759e6e8d-8265-4c49-8c8f-9f83478c329d.png)
