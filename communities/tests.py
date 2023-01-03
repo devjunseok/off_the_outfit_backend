@@ -44,3 +44,15 @@ class ArticleCreateTest(APITestCase):
         )
         self.assertEqual(response.data["message"], "게시글이 등록되었습니다!")
         self.assertEqual(response.status_code, 200)
+    
+    # 이미지 없는 게시글 업로드 테스트
+    def test_create_feed_failed_image_blank(self):
+        
+        #전송
+        response = self.client.post(
+            path=reverse("feed_list_view"),
+            data=encode_multipart(data = self.article_data, boundary=BOUNDARY),
+            content_type=MULTIPART_CONTENT,
+            HTTP_AUTHORIZATION=f"Bearer {self.access_token}"
+        )
+        self.assertEqual(response.status_code, 200)
